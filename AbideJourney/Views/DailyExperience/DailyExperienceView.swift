@@ -106,9 +106,12 @@ struct DailyExperienceView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showingPrayerTimer) {
-                PrayerTimerView(timerService: viewModel.prayerTimer) {
-                    viewModel.savePrayerSession(context: modelContext)
-                }
+                PrayerTimerView(
+                    timerService: viewModel.prayerTimer,
+                    onSave: { viewModel.savePrayerSession(context: modelContext) },
+                    focusArea: viewModel.currentDay?.focusArea,
+                    scriptureReference: viewModel.currentDay?.scriptureReference
+                )
             }
         }
     }
