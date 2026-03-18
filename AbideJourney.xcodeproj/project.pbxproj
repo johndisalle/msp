@@ -41,6 +41,7 @@
 		A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */; };
 		A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */; };
 		A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000034 /* SettingsView.swift */; };
+		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
 		A1B2C3D4E5F60001000035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000035 /* Assets.xcassets */; };
 		A1B2C3D4E5F60001000036 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000036 /* Products.storekit */; };
 		A1B2C3D4E5F60001000040 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
@@ -87,6 +88,7 @@
 		A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDashboardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPaywallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000034 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000036 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000037 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		A1B2C3D4E5F60301000006 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */,
 				A1B2C3D4E5F60101000013 /* ContentData.swift */,
 				A1B2C3D4E5F60101000014 /* ContentLibrary.swift */,
 				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
@@ -393,6 +396,7 @@
 				A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */,
 				A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */,
 				A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */,
+				A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

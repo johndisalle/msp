@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct CheckInSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -20,6 +21,7 @@ struct CheckInSheet: View {
                             withAnimation(.spring(response: 0.3)) {
                                 selectedRating = rating
                             }
+                            UISelectionFeedbackGenerator().selectionChanged()
                         } label: {
                             VStack(spacing: 6) {
                                 Text(rating.rawValue)
@@ -35,6 +37,8 @@ struct CheckInSheet: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(rating.label)
+                        .accessibilityAddTraits(selectedRating == rating ? .isSelected : [])
                     }
                 }
 

@@ -82,6 +82,10 @@ final class DailyExperienceViewModel {
             journey.isActive = false
         }
 
+        // Adapt upcoming content based on check-in patterns
+        let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
+        AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
+
         try? context.save()
 
         // Schedule next day's notifications

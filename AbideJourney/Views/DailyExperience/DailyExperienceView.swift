@@ -150,6 +150,8 @@ struct DayHeaderView: View {
                     Text("\(dayNumber)/\(totalDays)")
                         .font(.caption2.bold())
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Journey progress, day \(dayNumber) of \(totalDays), \(Int(progress * 100)) percent complete")
             }
 
             ProgressView(value: progress)
@@ -196,6 +198,8 @@ struct ScriptureCardView: View {
                 .fill(Color.accentColor.opacity(0.08))
         )
         .padding(.horizontal)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Scripture from \(reference): \(text)")
     }
 }
 
@@ -278,6 +282,10 @@ struct ActionStepsCardView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(step.text)
+                .accessibilityValue(step.isCompleted ? "Completed" : "Not completed")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint("Double tap to toggle completion")
             }
         }
         .padding()

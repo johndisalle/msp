@@ -136,6 +136,8 @@ struct StreakStatView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label.replacingOccurrences(of: "\n", with: " ")), \(value)")
     }
 }
 
@@ -198,6 +200,8 @@ struct HabitRingView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(Int(progress * 100)) percent")
     }
 }
 
@@ -252,6 +256,8 @@ struct StatItemView: View {
         .padding(.vertical, 12)
         .background(color.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(value) \(unit)")
     }
 }
 
@@ -275,6 +281,7 @@ struct StreakCalendarView: View {
                                 .font(.caption2)
                                 .foregroundStyle(day.isCompleted ? .white : .secondary)
                         }
+                        .accessibilityLabel("Day \(day.dayNumber), \(day.isCompleted ? "completed" : day.isUnlocked ? "current" : "upcoming")")
                 }
             }
 

@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 
 @Observable
 final class PrayerTimerService {
@@ -83,6 +84,10 @@ final class PrayerTimerService {
 
     func complete() {
         pause()
+
+        // Haptic feedback on prayer completion
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
 
         // Save to HealthKit
         if let startDate = sessionStartDate, elapsedSeconds > 0 {

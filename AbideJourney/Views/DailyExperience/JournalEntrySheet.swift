@@ -52,6 +52,8 @@ struct JournalEntrySheet: View {
                                     )
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityLabel(mood.label)
+                                .accessibilityAddTraits(selectedMood == mood ? .isSelected : [])
                             }
                         }
                     }

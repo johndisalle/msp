@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PrayerTimerView: View {
     @Environment(\.dismiss) private var dismiss
@@ -38,6 +39,11 @@ struct PrayerTimerView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(timerService.isRunning
+                    ? "Prayer timer, \(timerService.formattedRemaining) remaining"
+                    : "Prayer timer, \(selectedMinutes) minutes selected")
+                .accessibilityValue("\(Int(timerService.progress * 100)) percent complete")
 
                 // Duration picker (only when not running)
                 if !timerService.isRunning && timerService.elapsedSeconds == 0 {
@@ -46,6 +52,7 @@ struct PrayerTimerView: View {
                             Button {
                                 selectedMinutes = minutes
                                 timerService.targetMinutes = minutes
+                                UISelectionFeedbackGenerator().selectionChanged()
                             } label: {
                                 Text("\(minutes)m")
                                     .font(.subheadline.bold())
@@ -57,6 +64,8 @@ struct PrayerTimerView: View {
                                     )
                                     .foregroundStyle(selectedMinutes == minutes ? .white : .primary)
                             }
+                            .accessibilityLabel("\(minutes) minutes")
+                            .accessibilityAddTraits(selectedMinutes == minutes ? .isSelected : [])
                         }
                     }
                 }
@@ -73,6 +82,7 @@ struct PrayerTimerView: View {
                                 .background(Color(.systemGray5))
                                 .clipShape(Circle())
                         }
+                        .accessibilityLabel("Reset timer")
                     }
 
                     Button {
@@ -90,6 +100,7 @@ struct PrayerTimerView: View {
                             .foregroundColor(.white)
                             .clipShape(Circle())
                     }
+                    .accessibilityLabel(timerService.isRunning ? "Pause prayer" : "Start prayer")
 
                     if timerService.elapsedSeconds > 0 && !timerService.isRunning {
                         Button {
@@ -103,6 +114,7 @@ struct PrayerTimerView: View {
                                 .foregroundColor(.white)
                                 .clipShape(Circle())
                         }
+                        .accessibilityLabel("Save prayer session")
                     }
                 }
 

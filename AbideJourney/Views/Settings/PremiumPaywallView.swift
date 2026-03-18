@@ -284,6 +284,8 @@ struct PlanButton: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(title) plan, \(price)")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

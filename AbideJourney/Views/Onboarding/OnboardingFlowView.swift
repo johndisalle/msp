@@ -194,6 +194,8 @@ struct MaturityStepView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(maturity.rawValue)
+                    .accessibilityAddTraits(viewModel.selectedMaturity == maturity ? .isSelected : [])
                 }
             }
             .padding(.horizontal)
@@ -403,6 +405,8 @@ struct TranslationStepView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("\(translation.rawValue), \(translation.fullName)")
+                    .accessibilityAddTraits(viewModel.selectedTranslation == translation ? .isSelected : [])
                 }
             }
             .padding(.horizontal)
