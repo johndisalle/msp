@@ -29,6 +29,21 @@ final class DailyExperienceViewModel {
 
         if let day = currentDay {
             actionSteps = day.actionSteps
+
+            // Start Live Activity for today's devotional
+            LiveActivityService.shared.startDevotionalActivity(
+                journeyTitle: activeJourney.title,
+                dayNumber: day.dayNumber,
+                totalDays: activeJourney.totalDays,
+                verseSnippet: String(day.scriptureText.prefix(80)),
+                verseReference: day.scriptureReference,
+                focusArea: day.focusArea.rawValue
+            )
+        }
+
+        // Request HealthKit authorization on first load
+        Task {
+            _ = await HealthKitService.shared.requestAuthorization()
         }
     }
 
@@ -110,11 +125,22 @@ final class DailyExperienceViewModel {
         guard prayerTimer.elapsedSeconds > 0 else { return }
 
         let session = PrayerSession(
+            startTime: prayerTimer.sessionStartDate ?? Date(),
             duration: prayerTimer.elapsedSeconds,
             type: .devotional
         )
         context.insert(session)
         try? context.save()
+
+        // Save to HealthKit as Mindfulness session
+        if let startDate = prayerTimer.sessionStartDate {
+            Task {
+                try? await HealthKitService.shared.saveMindfulnessSession(
+                    startDate: startDate,
+                    duration: prayerTimer.elapsedSeconds
+                )
+            }
+        }
 
         prayerTimer.reset()
         showingPrayerTimer = false

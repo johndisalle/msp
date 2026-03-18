@@ -1,27 +1,25 @@
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct PremiumPaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var profiles: [UserProfile]
     @State private var selectedPlan: PremiumPlan = .yearly
+    @State private var isPurchasing = false
+    @State private var purchaseError: String?
+
+    private let storeService = StoreKitService.shared
 
     enum PremiumPlan {
         case monthly
         case yearly
 
-        var price: String {
+        var productID: String {
             switch self {
-            case .monthly: return "$4.99/month"
-            case .yearly: return "$39.99/year"
-            }
-        }
-
-        var savings: String? {
-            switch self {
-            case .monthly: return nil
-            case .yearly: return "Save 33%"
+            case .monthly: return StoreKitService.monthlyProductID
+            case .yearly: return StoreKitService.yearlyProductID
             }
         }
     }
@@ -85,53 +83,103 @@ struct PremiumPaywallView: View {
 
                     // Plan selection
                     VStack(spacing: 12) {
-                        PlanButton(
-                            title: "Yearly",
-                            price: "$39.99/year",
-                            badge: "Best Value",
-                            isSelected: selectedPlan == .yearly
-                        ) {
-                            selectedPlan = .yearly
+                        if let yearly = storeService.yearlyProduct {
+                            PlanButton(
+                                title: "Yearly",
+                                price: yearly.displayPrice + "/year",
+                                badge: "Best Value",
+                                isSelected: selectedPlan == .yearly
+                            ) {
+                                selectedPlan = .yearly
+                            }
+                        } else {
+                            PlanButton(
+                                title: "Yearly",
+                                price: "$39.99/year",
+                                badge: "Best Value",
+                                isSelected: selectedPlan == .yearly
+                            ) {
+                                selectedPlan = .yearly
+                            }
                         }
 
-                        PlanButton(
-                            title: "Monthly",
-                            price: "$4.99/month",
-                            badge: nil,
-                            isSelected: selectedPlan == .monthly
-                        ) {
-                            selectedPlan = .monthly
+                        if let monthly = storeService.monthlyProduct {
+                            PlanButton(
+                                title: "Monthly",
+                                price: monthly.displayPrice + "/month",
+                                badge: nil,
+                                isSelected: selectedPlan == .monthly
+                            ) {
+                                selectedPlan = .monthly
+                            }
+                        } else {
+                            PlanButton(
+                                title: "Monthly",
+                                price: "$4.99/month",
+                                badge: nil,
+                                isSelected: selectedPlan == .monthly
+                            ) {
+                                selectedPlan = .monthly
+                            }
                         }
                     }
                     .padding(.horizontal)
+
+                    // Error message
+                    if let error = purchaseError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .padding(.horizontal)
+                    }
 
                     // Subscribe button
                     Button {
-                        // StoreKit purchase would go here
-                        if let profile = profiles.first {
-                            profile.isPremium = true
-                            try? modelContext.save()
-                        }
-                        dismiss()
+                        Task { await purchaseSelected() }
                     } label: {
-                        Text("Start Free Trial")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                        Group {
+                            if isPurchasing {
+                                ProgressView()
+                                    .tint(.white)
+                            } else {
+                                Text("Start Free Trial")
+                            }
+                        }
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
+                    .disabled(isPurchasing)
                     .padding(.horizontal)
 
-                    Text("7-day free trial, then \(selectedPlan.price). Cancel anytime.")
+                    let priceText: String = {
+                        switch selectedPlan {
+                        case .yearly:
+                            return storeService.yearlyProduct?.displayPrice ?? "$39.99"
+                        case .monthly:
+                            return storeService.monthlyProduct?.displayPrice ?? "$4.99"
+                        }
+                    }()
+                    Text("7-day free trial, then \(priceText)/\(selectedPlan == .yearly ? "year" : "month"). Cancel anytime.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
 
                     // Restore
                     Button("Restore Purchases") {
-                        // StoreKit restore
+                        Task {
+                            await storeService.restorePurchases()
+                            if storeService.isPremium {
+                                if let profile = profiles.first {
+                                    profile.isPremium = true
+                                    try? modelContext.save()
+                                }
+                                dismiss()
+                            }
+                        }
                     }
                     .font(.caption)
                     .padding(.bottom, 32)
@@ -142,7 +190,51 @@ struct PremiumPaywallView: View {
                     Button("Close") { dismiss() }
                 }
             }
+            .task {
+                await storeService.loadProducts()
+                await storeService.updatePurchasedProducts()
+                if storeService.isPremium {
+                    if let profile = profiles.first {
+                        profile.isPremium = true
+                        try? modelContext.save()
+                    }
+                }
+            }
         }
+    }
+
+    private func purchaseSelected() async {
+        isPurchasing = true
+        purchaseError = nil
+
+        let product: Product?
+        switch selectedPlan {
+        case .monthly:
+            product = storeService.monthlyProduct
+        case .yearly:
+            product = storeService.yearlyProduct
+        }
+
+        guard let product else {
+            purchaseError = "Product not available. Please try again."
+            isPurchasing = false
+            return
+        }
+
+        do {
+            if let _ = try await storeService.purchase(product) {
+                // Purchase successful
+                if let profile = profiles.first {
+                    profile.isPremium = true
+                    try? modelContext.save()
+                }
+                dismiss()
+            }
+        } catch {
+            purchaseError = "Purchase failed: \(error.localizedDescription)"
+        }
+
+        isPurchasing = false
     }
 }
 
