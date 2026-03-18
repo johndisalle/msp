@@ -48,21 +48,14 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            // Prayer timer button
-                            Button {
-                                viewModel.showingPrayerTimer = true
-                            } label: {
-                                HStack {
-                                    Image(systemName: "timer")
-                                    Text("Start Prayer Timer")
+                            // Prayer section with guidance
+                            PrayerCardView(
+                                focusArea: day.focusArea,
+                                scriptureReference: day.scriptureReference,
+                                onStartPrayer: {
+                                    viewModel.showingPrayerTimer = true
                                 }
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(.systemGray6))
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                            }
-                            .padding(.horizontal)
+                            )
 
                             // Complete day button
                             Button {
@@ -333,6 +326,121 @@ struct ReflectionCardView: View {
                 .padding(.vertical, 10)
                 .background(Color.purple.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6))
+        )
+        .padding(.horizontal)
+    }
+}
+
+// MARK: - Prayer Card
+
+struct PrayerCardView: View {
+    let focusArea: DiscipleshipArea
+    let scriptureReference: String
+    let onStartPrayer: () -> Void
+
+    @State private var showingSteps = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "hands.sparkles.fill")
+                    .foregroundStyle(.yellow)
+                Text("Prayer")
+                    .font(.headline)
+                Spacer()
+                Image(systemName: "timer")
+                    .foregroundStyle(.secondary)
+            }
+
+            // Encouraging message
+            Text("Prayer is simply talking to God. There's no wrong way to do it — just be yourself.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineSpacing(3)
+
+            // Expandable prayer steps
+            Button {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showingSteps.toggle()
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "lightbulb.fill")
+                        .font(.caption)
+                        .foregroundStyle(.yellow)
+                    Text("Not sure what to say? Here's a simple guide")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Image(systemName: showingSteps ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            if showingSteps {
+                VStack(alignment: .leading, spacing: 12) {
+                    PrayerStepRow(
+                        number: "1",
+                        title: "Thank Him",
+                        description: "Start by thanking God for something specific today.",
+                        color: .green
+                    )
+                    PrayerStepRow(
+                        number: "2",
+                        title: "Be Honest",
+                        description: "Tell God what's on your heart — worries, joys, questions. He can handle it all.",
+                        color: .blue
+                    )
+                    PrayerStepRow(
+                        number: "3",
+                        title: "Ask",
+                        description: "Pray for your needs and for others. Nothing is too small.",
+                        color: .purple
+                    )
+                    PrayerStepRow(
+                        number: "4",
+                        title: "Listen",
+                        description: "Sit quietly for a moment. God speaks through peace, through His Word, and through the stillness.",
+                        color: .orange
+                    )
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "text.book.closed.fill")
+                            .font(.caption)
+                            .foregroundStyle(.accent)
+                        Text("Try praying today's scripture back to God: \(scriptureReference)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(.leading, 4)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            // Start prayer button
+            Button {
+                onStartPrayer()
+            } label: {
+                HStack {
+                    Image(systemName: "play.fill")
+                        .font(.caption)
+                    Text("Start Prayer Timer")
+                }
+                .font(.subheadline.bold())
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.accentColor)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
         .padding()
