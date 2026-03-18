@@ -20,8 +20,7 @@ struct AbideJourneyApp: App {
             ])
             let config = ModelConfiguration(
                 schema: schema,
-                isStoredInMemoryOnly: false,
-                cloudKitDatabase: .automatic
+                isStoredInMemoryOnly: false
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {
