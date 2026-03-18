@@ -15,6 +15,7 @@ final class DailyExperienceViewModel {
     var actionSteps: [ActionStep] = []
 
     let prayerTimer = PrayerTimerService()
+    let audioPlayer = AudioPlayerService.shared
 
     func loadCurrentDay(from journeys: [Journey]) {
         guard let activeJourney = journeys.first(where: { $0.isActive && !$0.isCompleted }) else {
@@ -30,6 +31,17 @@ final class DailyExperienceViewModel {
 
         if let day = currentDay {
             actionSteps = day.actionSteps
+
+            // Update widget data
+            WidgetDataService.shared.updateWidgetData(
+                dayNumber: day.dayNumber,
+                totalDays: activeJourney.totalDays,
+                verseReference: day.scriptureReference,
+                verseSnippet: String(day.scriptureText.prefix(120)),
+                focusArea: day.focusArea.rawValue,
+                progress: activeJourney.progress,
+                journeyTitle: activeJourney.title
+            )
 
             // Start Live Activity for today's devotional
             LiveActivityService.shared.startDevotionalActivity(
@@ -125,6 +137,17 @@ final class DailyExperienceViewModel {
         try? context.save()
 
         showingCheckInSheet = false
+    }
+
+    func toggleAudio(for day: JourneyDay) {
+        if audioPlayer.isPlaying {
+            audioPlayer.togglePlayPause()
+        } else if audioPlayer.currentTime > 0 && !audioPlayer.isPlaying {
+            // Resume paused audio
+            audioPlayer.togglePlayPause()
+        } else if let urlString = day.devotionalAudioURL {
+            audioPlayer.play(urlString: urlString)
+        }
     }
 
     func savePrayerSession(context: ModelContext) {
