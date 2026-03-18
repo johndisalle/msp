@@ -4,7 +4,12 @@ import SwiftData
 struct DailyExperienceView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<Journey> { $0.isActive }) private var journeys: [Journey]
+    @Query private var profiles: [UserProfile]
     @State private var viewModel = DailyExperienceViewModel()
+    @State private var showingPremiumSheet = false
+    @State private var showingCompletionSheet = false
+
+    private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
     var body: some View {
         NavigationStack {
@@ -29,7 +34,11 @@ struct DailyExperienceView: View {
                             // Devotional
                             DevotionalCardView(
                                 title: day.devotionalTitle,
-                                text: day.devotionalText
+                                text: day.devotionalText,
+                                isPremium: isPremium,
+                                onTapListenPremium: isPremium ? nil : {
+                                    showingPremiumSheet = true
+                                }
                             )
 
                             // Action steps
@@ -105,6 +114,22 @@ struct DailyExperienceView: View {
                     focusArea: viewModel.currentDay?.focusArea,
                     scriptureReference: viewModel.currentDay?.scriptureReference
                 )
+            }
+            .sheet(isPresented: $showingPremiumSheet) {
+                PremiumPaywallView()
+            }
+            .sheet(isPresented: $showingCompletionSheet) {
+                JourneyCompletionView(
+                    journey: viewModel.journey,
+                    isPremium: isPremium,
+                    onStartNewJourney: { showingPremiumSheet = true }
+                )
+            }
+            .onChange(of: viewModel.journeyJustCompleted) { _, completed in
+                if completed {
+                    showingCompletionSheet = true
+                    viewModel.journeyJustCompleted = false
+                }
             }
         }
     }
@@ -204,6 +229,8 @@ struct ScriptureCardView: View {
 struct DevotionalCardView: View {
     let title: String
     let text: String
+    var isPremium: Bool = false
+    var onTapListenPremium: (() -> Void)?
     @State private var isExpanded = false
 
     var body: some View {
@@ -214,6 +241,27 @@ struct DevotionalCardView: View {
                 Text("Devotional")
                     .font(.headline)
                 Spacer()
+
+                // Subtle listen button — premium nudge for free users
+                if !isPremium, let onTap = onTapListenPremium {
+                    Button {
+                        onTap()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "speaker.wave.2")
+                                .font(.caption)
+                            Text("Listen")
+                                .font(.caption)
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(Capsule().fill(Color(.systemGray5)))
+                    }
+                    .accessibilityLabel("Listen to devotional, premium feature")
+                }
             }
 
             Text(title)

@@ -33,97 +33,34 @@ struct PremiumPaywallView: View {
         ("xmark.circle", "Ad-Free", "Distraction-free devotional experience")
     ]
 
+    // Premium-only journey themes to showcase
+    private let premiumThemes: [(icon: String, name: String, description: String)] = [
+        ("heart.circle.fill", "Overcoming Anxiety", "40 days of peace when your mind won't stop"),
+        ("drop.fill", "Walking Through Grief", "Finding God's comfort in seasons of loss"),
+        ("figure.stand", "Leading Like Jesus", "Servant leadership for everyday life"),
+        ("arrow.trianglehead.2.clockwise.rotate.90.circle.fill", "Starting Over", "Grace for new beginnings after failure"),
+        ("person.2.circle.fill", "Healing Relationships", "Restoring what feels broken"),
+        ("flame.fill", "Hearing God's Voice", "Learning to listen when God feels silent"),
+    ]
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    // Header
-                    VStack(spacing: 12) {
-                        Image(systemName: "crown.fill")
-                            .font(.system(size: 48))
-                            .foregroundStyle(.orange)
-                            .symbolEffect(.bounce)
+                VStack(spacing: 28) {
+                    // Hero section - lead with free trial
+                    heroSection
 
-                        Text("Abide Premium")
-                            .font(.largeTitle.bold())
+                    // Testimonial
+                    testimonialCard
 
-                        Text("Deepen your journey with full access")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.top, 32)
+                    // Premium journey themes preview
+                    themesPreview
 
-                    // Features
-                    VStack(spacing: 16) {
-                        ForEach(features, id: \.0) { icon, title, description in
-                            HStack(spacing: 16) {
-                                Image(systemName: icon)
-                                    .font(.title3)
-                                    .foregroundStyle(.accent)
-                                    .frame(width: 32)
-
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(title)
-                                        .font(.subheadline.bold())
-                                    Text(description)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                Spacer()
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.systemGray6))
-                    )
-                    .padding(.horizontal)
+                    // Feature list
+                    featureList
 
                     // Plan selection
-                    VStack(spacing: 12) {
-                        if let yearly = storeService.yearlyProduct {
-                            PlanButton(
-                                title: "Yearly",
-                                price: yearly.displayPrice + "/year",
-                                badge: "Best Value",
-                                isSelected: selectedPlan == .yearly
-                            ) {
-                                selectedPlan = .yearly
-                            }
-                        } else {
-                            PlanButton(
-                                title: "Yearly",
-                                price: "$39.99/year",
-                                badge: "Best Value",
-                                isSelected: selectedPlan == .yearly
-                            ) {
-                                selectedPlan = .yearly
-                            }
-                        }
-
-                        if let monthly = storeService.monthlyProduct {
-                            PlanButton(
-                                title: "Monthly",
-                                price: monthly.displayPrice + "/month",
-                                badge: nil,
-                                isSelected: selectedPlan == .monthly
-                            ) {
-                                selectedPlan = .monthly
-                            }
-                        } else {
-                            PlanButton(
-                                title: "Monthly",
-                                price: "$4.99/month",
-                                badge: nil,
-                                isSelected: selectedPlan == .monthly
-                            ) {
-                                selectedPlan = .monthly
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
+                    planSelection
 
                     // Error message
                     if let error = purchaseError {
@@ -134,27 +71,9 @@ struct PremiumPaywallView: View {
                     }
 
                     // Subscribe button
-                    Button {
-                        Task { await purchaseSelected() }
-                    } label: {
-                        Group {
-                            if isPurchasing {
-                                ProgressView()
-                                    .tint(.white)
-                            } else {
-                                Text("Start Free Trial")
-                            }
-                        }
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                    .disabled(isPurchasing)
-                    .padding(.horizontal)
+                    subscribeButton
 
+                    // Price disclaimer
                     let priceText: String = {
                         switch selectedPlan {
                         case .yearly:
@@ -201,6 +120,205 @@ struct PremiumPaywallView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Hero Section
+
+    private var heroSection: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "crown.fill")
+                .font(.system(size: 44))
+                .foregroundStyle(.orange)
+                .symbolEffect(.bounce)
+                .padding(.top, 24)
+
+            Text("Try Premium Free\nfor 7 Days")
+                .font(.largeTitle.bold())
+                .multilineTextAlignment(.center)
+
+            Text("Go deeper in your walk with Christ.\nCancel anytime — no commitment.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    // MARK: - Testimonial
+
+    private var testimonialCard: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 2) {
+                ForEach(0..<5) { _ in
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundStyle(.yellow)
+                }
+            }
+
+            Text("\"I used to feel like I was just going through the motions. This app taught me how to actually connect with God every single day.\"")
+                .font(.subheadline)
+                .italic()
+                .multilineTextAlignment(.center)
+                .lineSpacing(3)
+
+            Text("— Sarah M., Premium member")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6))
+        )
+        .padding(.horizontal)
+    }
+
+    // MARK: - Premium Themes Preview
+
+    private var themesPreview: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "paintpalette.fill")
+                    .foregroundStyle(.purple)
+                Text("Unlock Deep-Dive Journeys")
+                    .font(.headline)
+            }
+            .padding(.horizontal)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(premiumThemes, id: \.name) { theme in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Image(systemName: theme.icon)
+                                .font(.title2)
+                                .foregroundStyle(.accent)
+
+                            Text(theme.name)
+                                .font(.subheadline.bold())
+                                .lineLimit(2)
+
+                            Text(theme.description)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                        .frame(width: 150, alignment: .leading)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(Color(.systemGray6))
+                        )
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+
+    // MARK: - Feature List
+
+    private var featureList: some View {
+        VStack(spacing: 14) {
+            ForEach(features, id: \.0) { icon, title, description in
+                HStack(spacing: 14) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(title)
+                            .font(.subheadline.bold())
+                        Text(description)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6))
+        )
+        .padding(.horizontal)
+    }
+
+    // MARK: - Plan Selection
+
+    private var planSelection: some View {
+        VStack(spacing: 12) {
+            if let yearly = storeService.yearlyProduct {
+                PlanButton(
+                    title: "Yearly",
+                    price: yearly.displayPrice + "/year",
+                    badge: "Save 33%",
+                    isSelected: selectedPlan == .yearly
+                ) {
+                    selectedPlan = .yearly
+                }
+            } else {
+                PlanButton(
+                    title: "Yearly",
+                    price: "$39.99/year",
+                    badge: "Save 33%",
+                    isSelected: selectedPlan == .yearly
+                ) {
+                    selectedPlan = .yearly
+                }
+            }
+
+            if let monthly = storeService.monthlyProduct {
+                PlanButton(
+                    title: "Monthly",
+                    price: monthly.displayPrice + "/month",
+                    badge: nil,
+                    isSelected: selectedPlan == .monthly
+                ) {
+                    selectedPlan = .monthly
+                }
+            } else {
+                PlanButton(
+                    title: "Monthly",
+                    price: "$4.99/month",
+                    badge: nil,
+                    isSelected: selectedPlan == .monthly
+                ) {
+                    selectedPlan = .monthly
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+
+    // MARK: - Subscribe Button
+
+    private var subscribeButton: some View {
+        Button {
+            Task { await purchaseSelected() }
+        } label: {
+            Group {
+                if isPurchasing {
+                    ProgressView()
+                        .tint(.white)
+                } else {
+                    VStack(spacing: 2) {
+                        Text("Start Your Free Trial")
+                            .font(.headline)
+                        Text("No charge for 7 days")
+                            .font(.caption)
+                            .opacity(0.85)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .disabled(isPurchasing)
+        .padding(.horizontal)
     }
 
     private func purchaseSelected() async {

@@ -11,6 +11,7 @@ final class DailyExperienceViewModel {
     var showingJournalSheet = false
     var showingCheckInSheet = false
     var showingPrayerTimer = false
+    var journeyJustCompleted = false
     var actionSteps: [ActionStep] = []
 
     let prayerTimer = PrayerTimerService()
@@ -80,6 +81,7 @@ final class DailyExperienceViewModel {
         if day.dayNumber >= journey.totalDays {
             journey.isCompleted = true
             journey.isActive = false
+            journeyJustCompleted = true
         }
 
         // Adapt upcoming content based on check-in patterns

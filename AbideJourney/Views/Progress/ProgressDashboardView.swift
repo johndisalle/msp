@@ -5,7 +5,11 @@ struct ProgressDashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var journeys: [Journey]
     @Query private var prayerSessions: [PrayerSession]
+    @Query private var profiles: [UserProfile]
     @State private var viewModel = ProgressViewModel()
+    @State private var showingPremiumSheet = false
+
+    private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
     var body: some View {
         NavigationStack {
@@ -40,6 +44,13 @@ struct ProgressDashboardView: View {
                     if let journey = viewModel.journey {
                         StreakCalendarView(journey: journey)
                     }
+
+                    // Premium journey themes teaser (only for free users, shown after 7+ days)
+                    if !isPremium, let journey = viewModel.journey, journey.currentDay >= 7 {
+                        PremiumThemesTeaser {
+                            showingPremiumSheet = true
+                        }
+                    }
                 }
                 .padding(.vertical)
             }
@@ -47,7 +58,78 @@ struct ProgressDashboardView: View {
             .onAppear {
                 viewModel.loadProgress(from: journeys, sessions: prayerSessions)
             }
+            .sheet(isPresented: $showingPremiumSheet) {
+                PremiumPaywallView()
+            }
         }
+    }
+}
+
+// MARK: - Premium Themes Teaser
+
+struct PremiumThemesTeaser: View {
+    let onTap: () -> Void
+
+    private let themes: [(icon: String, name: String, color: Color)] = [
+        ("heart.circle.fill", "Anxiety", .red),
+        ("drop.fill", "Grief", .blue),
+        ("figure.stand", "Leadership", .orange),
+        ("flame.fill", "Hearing God", .purple),
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("What's Next?")
+                .font(.headline)
+
+            Text("Keep growing with deep-dive journeys designed for where life has you right now.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineSpacing(2)
+
+            HStack(spacing: 10) {
+                ForEach(themes, id: \.name) { theme in
+                    VStack(spacing: 6) {
+                        Image(systemName: theme.icon)
+                            .font(.title3)
+                            .foregroundStyle(theme.color)
+
+                        Text(theme.name)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(theme.color.opacity(0.08))
+                    )
+                }
+            }
+
+            Button {
+                onTap()
+            } label: {
+                HStack {
+                    Text("Explore with Free Trial")
+                        .font(.subheadline.bold())
+                    Image(systemName: "arrow.right")
+                        .font(.caption)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(Color.accentColor.opacity(0.1))
+                .foregroundStyle(.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
+        )
+        .padding(.horizontal)
     }
 }
 
