@@ -1,6 +1,10 @@
 import Foundation
 import Combine
+#if os(iOS)
 import UIKit
+#elseif os(watchOS)
+import WatchKit
+#endif
 
 @Observable
 final class PrayerTimerService {
@@ -51,6 +55,7 @@ final class PrayerTimerService {
             guard let self, let startTime = self.startTime else { return }
             self.elapsedSeconds = Date().timeIntervalSince(startTime)
 
+            #if os(iOS)
             // Update Live Activity with prayer progress
             Task {
                 await LiveActivityService.shared.updatePrayerTimer(
@@ -58,6 +63,7 @@ final class PrayerTimerService {
                     target: self.targetMinutes * 60
                 )
             }
+            #endif
 
             if self.elapsedSeconds >= TimeInterval(self.targetMinutes * 60) {
                 self.complete()
@@ -77,19 +83,26 @@ final class PrayerTimerService {
         startTime = nil
         sessionStartDate = nil
 
+        #if os(iOS)
         Task {
             await LiveActivityService.shared.stopPrayerTimer()
         }
+        #endif
     }
 
     func complete() {
         pause()
 
         // Haptic feedback on prayer completion
+        #if os(iOS)
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
+        #elseif os(watchOS)
+        WKInterfaceDevice.current().play(.success)
+        #endif
 
-        // Save to HealthKit
+        // Save to HealthKit and stop Live Activity
+        #if os(iOS)
         if let startDate = sessionStartDate, elapsedSeconds > 0 {
             Task {
                 try? await HealthKitService.shared.saveMindfulnessSession(
@@ -99,5 +112,6 @@ final class PrayerTimerService {
                 await LiveActivityService.shared.stopPrayerTimer()
             }
         }
+        #endif
     }
 }
