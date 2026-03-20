@@ -11,8 +11,36 @@ struct AIQuestSettingsView: View {
 
     @State private var showAPIKeyField = false
 
+    @State private var showingPaywall = false
+
     var body: some View {
         Form {
+            // Premium gate
+            if !PremiumManager.shared.isFeatureUnlocked(.aiQuests) {
+                Section {
+                    Button {
+                        showingPaywall = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "lock.fill")
+                                .foregroundStyle(Color("FaithGold"))
+                            Text("Premium Feature")
+                                .foregroundStyle(Color("TextPrimary"))
+                            Spacer()
+                            Text("Unlock")
+                                .font(.caption.bold())
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color("FaithGold"))
+                                .clipShape(Capsule())
+                        }
+                    }
+                } footer: {
+                    Text("AI Quest Generation is a premium feature. Upgrade to personalize your daily quests.")
+                }
+            }
+
             // Status
             Section {
                 HStack {
@@ -106,6 +134,9 @@ struct AIQuestSettingsView: View {
             }
         }
         .navigationTitle("AI Quests")
+        .sheet(isPresented: $showingPaywall) {
+            PremiumPaywallView()
+        }
     }
 
     // MARK: - Weak Areas Editor

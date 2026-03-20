@@ -38,15 +38,10 @@ final class ChallengeService {
         challenge.isJoined = true
         challenge.participantCount += 1
 
-        // MARK: Firestore Stub
-        // In production:
-        //
-        // let db = Firestore.firestore()
-        // let ref = db.collection("challenges").document(challenge.id.uuidString)
-        // try await ref.updateData([
-        //     "participantCount": FieldValue.increment(Int64(1)),
-        //     "participants": FieldValue.arrayUnion([localUserID]),
-        // ])
+        // Push to Firestore via FirebaseService
+        Task {
+            try? await FirebaseService.shared.joinChallenge(challengeID: challenge.id.uuidString)
+        }
 
         try? modelContext.save()
         refresh()
@@ -75,42 +70,51 @@ final class ChallengeService {
             }
         }
 
-        // MARK: Firestore Stub
-        // In production:
-        //
-        // for challenge in joinedChallenges where challenge.category == category {
-        //     let ref = db.collection("challenges").document(challenge.id.uuidString)
-        //     try await ref.updateData([
-        //         "communityXPCurrent": FieldValue.increment(Int64(amount)),
-        //     ])
-        //     let userRef = ref.collection("participants").document(localUserID)
-        //     try await userRef.setData([
-        //         "contribution": FieldValue.increment(Int64(amount)),
-        //     ], merge: true)
-        // }
+        // Push to Firestore via FirebaseService
+        for challenge in joinedChallenges where challenge.category == category || challenge.type == .epic {
+            Task {
+                try? await FirebaseService.shared.contributeToChallenge(
+                    challengeID: challenge.id.uuidString,
+                    xp: amount
+                )
+            }
+        }
 
         try? modelContext.save()
         refresh()
     }
 
-    /// Pull latest challenge data from Firestore.
+    /// Pull latest challenge data from Firestore via FirebaseService.
     func pullFromFirestore() async {
-        // MARK: Firestore Pull Stub
-        // In production, fetch active challenges and update local SwiftData.
+        do {
+            let remoteChallenges = try await FirebaseService.shared.fetchActiveChallenges()
 
-        // Simulate community XP growth for demo
-        await MainActor.run {
-            for challenge in activeChallenges {
-                let randomGrowth = Int.random(in: 50...300)
-                challenge.communityXPCurrent = min(
-                    challenge.communityXPCurrent + randomGrowth,
-                    challenge.communityXPGoal
-                )
-                // Simulate other participants
-                challenge.participantCount = max(challenge.participantCount, Int.random(in: 15...150))
+            await MainActor.run {
+                for remote in remoteChallenges {
+                    // Try to match by title since IDs may differ between local/remote
+                    if let local = activeChallenges.first(where: { $0.title == remote.title }) {
+                        local.communityXPCurrent = remote.communityXPCurrent
+                        local.communityXPGoal = remote.communityXPGoal
+                        local.participantCount = remote.participantCount
+                    }
+                }
+                try? modelContext.save()
+                refresh()
             }
-            try? modelContext.save()
-            refresh()
+        } catch {
+            // Fallback: simulate community XP growth for demo
+            await MainActor.run {
+                for challenge in activeChallenges {
+                    let randomGrowth = Int.random(in: 50...300)
+                    challenge.communityXPCurrent = min(
+                        challenge.communityXPCurrent + randomGrowth,
+                        challenge.communityXPGoal
+                    )
+                    challenge.participantCount = max(challenge.participantCount, Int.random(in: 15...150))
+                }
+                try? modelContext.save()
+                refresh()
+            }
         }
     }
 

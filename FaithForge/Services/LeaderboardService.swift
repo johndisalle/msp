@@ -69,47 +69,74 @@ final class LeaderboardService {
 
         try? modelContext.save()
 
-        // MARK: Firestore Sync Stub
-        // In production, push to Firestore:
-        //
-        // let db = Firestore.firestore()
-        // try await db.collection("leaderboard").document(userID).setData([
-        //     "displayName": entry.displayName,
-        //     "totalXP": entry.totalXP,
-        //     "weeklyXP": entry.weeklyXP,
-        //     "monthlyXP": entry.monthlyXP,
-        //     "currentStreak": entry.currentStreak,
-        //     "level": entry.levelRaw,
-        //     "lastSync": FieldValue.serverTimestamp(),
-        // ], merge: true)
+        // Push profile to Firestore via FirebaseService
+        let profileData = UserProfileData(
+            displayName: profile.displayName,
+            totalXP: profile.totalXP,
+            weeklyXP: entry.weeklyXP,
+            monthlyXP: entry.monthlyXP,
+            currentStreak: profile.currentStreak,
+            longestStreak: profile.longestStreak,
+            level: profile.level.rawValue
+        )
+        Task {
+            try? await FirebaseService.shared.createOrUpdateUserDocument(profile: profileData)
+        }
 
         fetchRankings()
     }
 
-    /// Pull latest leaderboard data from Firestore.
+    /// Pull latest leaderboard data from Firestore via FirebaseService.
     func pullFromFirestore() async {
         await MainActor.run { isLoading = true }
 
-        // MARK: Firestore Pull Stub
-        // In production:
-        //
-        // let db = Firestore.firestore()
-        // let snapshot = try await db.collection("leaderboard")
-        //     .order(by: "weeklyXP", descending: true)
-        //     .limit(to: 50)
-        //     .getDocuments()
-        //
-        // for doc in snapshot.documents {
-        //     let data = doc.data()
-        //     // Upsert into SwiftData
-        // }
+        do {
+            let field: String
+            switch selectedPeriod {
+            case .weekly: field = "weekly"
+            case .monthly: field = "monthly"
+            case .allTime: field = "allTime"
+            }
 
-        // Simulate network delay for demo
-        try? await Task.sleep(for: .seconds(1))
+            let remoteData = try await FirebaseService.shared.fetchLeaderboard(period: field, limit: 50)
 
-        await MainActor.run {
-            isLoading = false
-            fetchRankings()
+            await MainActor.run {
+                // Upsert remote entries into SwiftData
+                for data in remoteData {
+                    let predicate = #Predicate<LeaderboardEntry> { $0.userID == data.userID }
+                    let descriptor = FetchDescriptor<LeaderboardEntry>(predicate: predicate)
+                    let existing = try? modelContext.fetch(descriptor)
+
+                    let entry: LeaderboardEntry
+                    if let found = existing?.first {
+                        entry = found
+                    } else {
+                        entry = LeaderboardEntry(
+                            userID: data.userID,
+                            displayName: data.displayName
+                        )
+                        modelContext.insert(entry)
+                    }
+
+                    entry.displayName = data.displayName
+                    entry.totalXP = data.totalXP
+                    entry.weeklyXP = data.weeklyXP
+                    entry.monthlyXP = data.monthlyXP
+                    entry.currentStreak = data.currentStreak
+                    entry.levelRaw = data.level
+                    entry.lastSyncDate = Date()
+                }
+                try? modelContext.save()
+                isLoading = false
+                fetchRankings()
+            }
+        } catch {
+            // Fallback: simulate delay for demo when Firebase SDK isn't wired
+            try? await Task.sleep(for: .seconds(1))
+            await MainActor.run {
+                isLoading = false
+                fetchRankings()
+            }
         }
     }
 

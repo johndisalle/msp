@@ -52,16 +52,10 @@ final class FriendService {
         )
         modelContext.insert(connection)
 
-        // MARK: Firestore Stub
-        // In production, write to Firestore:
-        //
-        // let db = Firestore.firestore()
-        // try await db.collection("friendRequests").addDocument(data: [
-        //     "from": localUserID,
-        //     "to": friendUserID,
-        //     "status": "pending",
-        //     "timestamp": FieldValue.serverTimestamp(),
-        // ])
+        // Push to Firestore via FirebaseService
+        Task {
+            try? await FirebaseService.shared.sendFriendRequest(toUserID: friendUserID)
+        }
 
         try? modelContext.save()
         refresh()
@@ -90,21 +84,26 @@ final class FriendService {
         refresh()
     }
 
-    /// Sync friend data from Firestore.
+    /// Sync friend data from Firestore via FirebaseService.
     func syncFriendData() async {
-        // MARK: Firestore Sync Stub
-        // In production:
-        //
-        // let db = Firestore.firestore()
-        // for friend in friends {
-        //     let doc = try await db.collection("users").document(friend.friendUserID).getDocument()
-        //     friend.friendTotalXP = doc.data()?["totalXP"] as? Int ?? 0
-        //     friend.friendCurrentStreak = doc.data()?["currentStreak"] as? Int ?? 0
-        //     friend.friendLevelRaw = doc.data()?["level"] as? String ?? "Novice"
-        // }
-
-        try? await Task.sleep(for: .seconds(0.5))
-        await MainActor.run { refresh() }
+        do {
+            let remoteFriends = try await FirebaseService.shared.fetchFriends()
+            await MainActor.run {
+                for remote in remoteFriends {
+                    if let local = friends.first(where: { $0.friendUserID == remote.userID }) {
+                        local.friendTotalXP = remote.totalXP
+                        local.friendCurrentStreak = remote.currentStreak
+                        local.friendLevelRaw = remote.level
+                    }
+                }
+                try? modelContext.save()
+                refresh()
+            }
+        } catch {
+            // Fallback: no-op when Firebase SDK isn't wired
+            try? await Task.sleep(for: .seconds(0.5))
+            await MainActor.run { refresh() }
+        }
     }
 
     // MARK: - Demo Data

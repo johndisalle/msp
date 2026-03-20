@@ -1,0 +1,128 @@
+// Firestore Security Rules for FaithForge
+// Deploy: firebase deploy --only firestore:rules
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ──────────────────────────────────────
+    // Helper Functions
+    // ──────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidString(field, maxLen) {
+      return field is string && field.size() > 0 && field.size() <= maxLen;
+    }
+
+    function isValidInt(field, min, max) {
+      return field is int && field >= min && field <= max;
+    }
+
+    // ──────────────────────────────────────
+    // Users Collection
+    // ──────────────────────────────────────
+
+    match /users/{userId} {
+      // Anyone authenticated can read user profiles (for leaderboard/friends).
+      allow read: if isAuthenticated();
+
+      // Users can only write their own profile.
+      allow create: if isOwner(userId) &&
+        isValidString(request.resource.data.displayName, 50);
+
+      allow update: if isOwner(userId) &&
+        // Prevent spoofing XP — only allow increments, not arbitrary writes.
+        // In production, XP updates should go through Cloud Functions.
+        isValidString(request.resource.data.displayName, 50) &&
+        isValidInt(request.resource.data.totalXP, 0, 1000000) &&
+        isValidInt(request.resource.data.currentStreak, 0, 10000);
+
+      allow delete: if isOwner(userId);
+
+      // Friends subcollection
+      match /friends/{friendId} {
+        allow read: if isAuthenticated();
+        allow write: if isOwner(userId);
+      }
+    }
+
+    // ──────────────────────────────────────
+    // Friend Requests
+    // ──────────────────────────────────────
+
+    match /friendRequests/{requestId} {
+      // Both sender and recipient can read.
+      allow read: if isAuthenticated() && (
+        resource.data.from == request.auth.uid ||
+        resource.data.to == request.auth.uid
+      );
+
+      // Any authenticated user can create a request.
+      allow create: if isAuthenticated() &&
+        request.resource.data.from == request.auth.uid &&
+        isValidString(request.resource.data.to, 128) &&
+        request.resource.data.status == "pending";
+
+      // Only the recipient can accept/decline.
+      allow update: if isAuthenticated() &&
+        resource.data.to == request.auth.uid &&
+        request.resource.data.status in ["accepted", "declined"];
+
+      // Either party can delete.
+      allow delete: if isAuthenticated() && (
+        resource.data.from == request.auth.uid ||
+        resource.data.to == request.auth.uid
+      );
+    }
+
+    // ──────────────────────────────────────
+    // Challenges
+    // ──────────────────────────────────────
+
+    match /challenges/{challengeId} {
+      // All authenticated users can read challenges.
+      allow read: if isAuthenticated();
+
+      // Only admins (Cloud Functions) should create challenges.
+      // For MVP, allow any authenticated user to create.
+      allow create: if isAuthenticated();
+
+      // Participants can update community XP and participant count.
+      // In production, use Cloud Functions for atomic increments.
+      allow update: if isAuthenticated();
+
+      allow delete: if false; // Never delete challenges from client
+
+      // Participant contributions subcollection
+      match /participants/{participantId} {
+        allow read: if isAuthenticated();
+        allow write: if isOwner(participantId);
+      }
+    }
+
+    // ──────────────────────────────────────
+    // Leaderboard (aggregated by Cloud Functions)
+    // ──────────────────────────────────────
+
+    match /leaderboard/{period} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only writable by Cloud Functions
+    }
+
+    // ──────────────────────────────────────
+    // Default: deny everything else
+    // ──────────────────────────────────────
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

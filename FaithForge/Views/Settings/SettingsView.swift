@@ -10,6 +10,8 @@ struct SettingsView: View {
     @Bindable var aiService: AIQuestService
     @Bindable var authService: FirebaseAuthStub
 
+    @State private var showingPaywall = false
+
     var body: some View {
         NavigationStack {
             Form {
@@ -110,25 +112,47 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Future: Premium
+                // Premium
                 Section {
-                    HStack {
-                        Label("FaithForge Premium", systemImage: "crown.fill")
-                            .foregroundStyle(Color("FaithGold"))
-                        Spacer()
-                        Text("Coming Soon")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background(Color("FaithGold").opacity(0.15))
-                            .clipShape(Capsule())
+                    if PremiumManager.shared.isPremium {
+                        HStack {
+                            Label("FaithForge Premium", systemImage: "crown.fill")
+                                .foregroundStyle(Color("FaithGold"))
+                            Spacer()
+                            Text("Active")
+                                .font(.caption)
+                                .foregroundStyle(Color("FaithGreen"))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color("FaithGreen").opacity(0.15))
+                                .clipShape(Capsule())
+                        }
+                    } else {
+                        Button {
+                            showingPaywall = true
+                        } label: {
+                            HStack {
+                                Label("FaithForge Premium", systemImage: "crown.fill")
+                                    .foregroundStyle(Color("FaithGold"))
+                                Spacer()
+                                Text("Upgrade")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(Color("FaithGold"))
+                                    .clipShape(Capsule())
+                            }
+                        }
                     }
                 } footer: {
                     Text("Unlock AI quests, custom themes, advanced stats, and ad-free experience.")
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showingPaywall) {
+                PremiumPaywallView()
+            }
         }
     }
 }
