@@ -8,7 +8,7 @@ final class JourneyDay {
     var date: Date?
     var isCompleted: Bool
     var isUnlocked: Bool
-    var hasBeenAdapted: Bool
+    var hasBeenAdapted: Bool = false
 
     // Content
     var scriptureReference: String
