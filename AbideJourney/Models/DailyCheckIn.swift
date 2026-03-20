@@ -46,4 +46,14 @@ enum CheckInRating: String, Codable, CaseIterable {
         case .missed: return "Missed"
         }
     }
+
+    var icon: String {
+        switch self {
+        case .great: return "\u{1F525}"         // 🔥
+        case .good: return "\u{1F44D}"          // 👍
+        case .okay: return "\u{1F610}"          // 😐
+        case .tough: return "\u{1F613}"         // 😓
+        case .missed: return "\u{23ED}\u{FE0F}" // ⏭️
+        }
+    }
 }

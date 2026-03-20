@@ -123,7 +123,7 @@ final class DailyExperienceViewModel {
         // Reset for next day
         journalText = ""
         selectedMood = nil
-        loadCurrentDay(from: journey.user?.journeys ?? [])
+        loadCurrentDay(from: [journey])
     }
 
     func submitCheckIn(rating: CheckInRating, note: String?, context: ModelContext) {
