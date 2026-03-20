@@ -130,9 +130,11 @@ struct NewJourneyView: View {
         guard let profile else { return }
         isGenerating = true
 
-        // Archive existing active journeys
+        // Archive existing active journeys — mark as both inactive and completed
+        // so they appear in the Past Journeys list rather than disappearing
         for journey in journeys where journey.isActive && !journey.isCompleted {
             journey.isActive = false
+            journey.isCompleted = true
         }
 
         // Generate new journey with selected theme

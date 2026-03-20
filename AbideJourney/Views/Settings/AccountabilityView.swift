@@ -246,6 +246,20 @@ struct AddPartnerSheet: View {
     @State private var email = ""
     let onAdd: (String, String) -> Void
 
+    private var isValidEmail: Bool {
+        let pattern = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/
+        return email.wholeMatch(of: pattern) != nil
+    }
+
+    private var emailFooter: String {
+        if email.isEmpty {
+            return "They'll receive an invitation to join you as an accountability partner."
+        } else if !isValidEmail {
+            return "Please enter a valid email address."
+        }
+        return "They'll receive an invitation to join you as an accountability partner."
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -259,7 +273,8 @@ struct AddPartnerSheet: View {
                 } header: {
                     Text("Partner Details")
                 } footer: {
-                    Text("They'll receive an invitation to join you as an accountability partner.")
+                    Text(emailFooter)
+                        .foregroundStyle(!email.isEmpty && !isValidEmail ? .red : .secondary)
                 }
 
                 Section {
@@ -286,7 +301,7 @@ struct AddPartnerSheet: View {
                         dismiss()
                     }
                     .bold()
-                    .disabled(name.isEmpty || email.isEmpty)
+                    .disabled(name.isEmpty || !isValidEmail)
                 }
             }
         }

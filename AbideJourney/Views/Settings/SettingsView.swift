@@ -7,8 +7,21 @@ struct SettingsView: View {
     @Query private var journeys: [Journey]
     @State private var showingPremiumSheet = false
     @State private var showingNewJourneySheet = false
+    @State private var showingAbandonConfirmation = false
 
     private var profile: UserProfile? { profiles.first }
+    private var completedJourneys: [Journey] {
+        journeys.filter { $0.isCompleted }.sorted { $0.startDate > $1.startDate }
+    }
+    private var notificationTimeConflict: Bool {
+        guard let profile, profile.notificationsEnabled else { return false }
+        let cal = Calendar.current
+        let morning = cal.dateComponents([.hour, .minute], from: profile.notificationMorningTime)
+        let evening = cal.dateComponents([.hour, .minute], from: profile.notificationEveningTime)
+        let morningMinutes = (morning.hour ?? 0) * 60 + (morning.minute ?? 0)
+        let eveningMinutes = (evening.hour ?? 0) * 60 + (evening.minute ?? 0)
+        return morningMinutes >= eveningMinutes
+    }
 
     var body: some View {
         NavigationStack {
@@ -66,16 +79,90 @@ struct SettingsView: View {
                             .onChange(of: profile.notificationEveningTime) { _, _ in
                                 rescheduleNotifications(for: profile)
                             }
+
+                            if notificationTimeConflict {
+                                Label("Morning reminder should be earlier than the evening check-in.", systemImage: "exclamationmark.triangle.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.orange)
+                            }
                         }
                     }
                 }
 
                 // Journey
                 Section("Journey") {
+                    if let activeJourney = journeys.first(where: { $0.isActive && !$0.isCompleted }) {
+                        HStack(spacing: 12) {
+                            Image(systemName: activeJourney.theme.icon)
+                                .foregroundStyle(Color(activeJourney.theme.color, default: .accentColor))
+                                .frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(activeJourney.title)
+                                    .font(.subheadline.bold())
+                                Text("Day \(activeJourney.currentDay)/\(activeJourney.totalDays)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            ProgressView(value: activeJourney.progress)
+                                .tint(.accent)
+                                .frame(width: 60)
+                        }
+
+                        Button(role: .destructive) {
+                            showingAbandonConfirmation = true
+                        } label: {
+                            Label("Abandon Journey", systemImage: "xmark.circle")
+                        }
+                        .confirmationDialog(
+                            "Abandon \"\(activeJourney.title)\"?",
+                            isPresented: $showingAbandonConfirmation,
+                            titleVisibility: .visible
+                        ) {
+                            Button("Abandon Journey", role: .destructive) {
+                                activeJourney.isActive = false
+                                activeJourney.isCompleted = true
+                                try? modelContext.save()
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        } message: {
+                            Text("Your progress will be saved in Past Journeys, but you won't be able to resume it.")
+                        }
+                    }
+
                     Button {
                         showingNewJourneySheet = true
                     } label: {
                         Label("Start New Journey", systemImage: "plus.circle")
+                    }
+                }
+
+                // Past journeys
+                if !completedJourneys.isEmpty {
+                    Section("Past Journeys") {
+                        ForEach(completedJourneys) { journey in
+                            HStack(spacing: 12) {
+                                Image(systemName: journey.theme.icon)
+                                    .foregroundStyle(Color(journey.theme.color, default: .accentColor))
+                                    .frame(width: 24)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(journey.title)
+                                        .font(.subheadline.bold())
+                                    Text("Day \(journey.currentDay)/\(journey.totalDays) — \(journey.startDate, format: .dateTime.month().year())")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if journey.currentDay >= journey.totalDays {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.green)
+                                } else {
+                                    Text("Archived")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
                     }
                 }
 
