@@ -443,7 +443,25 @@ struct GeneratingStepView: View {
         VStack(spacing: 32) {
             Spacer()
 
-            if viewModel.isGeneratingJourney {
+            if let errorMessage = viewModel.generationError {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.orange)
+
+                Text("Something went wrong")
+                    .font(.title3.bold())
+
+                Text(errorMessage)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Button("Try Again") {
+                    viewModel.generationError = nil
+                    hasStarted = false
+                }
+                .buttonStyle(.borderedProminent)
+            } else if viewModel.isGeneratingJourney {
                 ProgressView()
                     .scaleEffect(1.5)
 
@@ -468,6 +486,7 @@ struct GeneratingStepView: View {
             hasStarted = true
             viewModel.generateJourney(context: modelContext)
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                guard viewModel.generationError == nil else { return }
                 viewModel.nextStep()
             }
         }

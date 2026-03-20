@@ -34,16 +34,7 @@ struct DailyExperienceView: View {
                             // Devotional
                             DevotionalCardView(
                                 title: day.devotionalTitle,
-                                text: day.devotionalText,
-                                isPremium: isPremium,
-                                audioURL: day.devotionalAudioURL,
-                                audioPlayer: isPremium ? viewModel.audioPlayer : nil,
-                                onTapListenPremium: isPremium ? nil : {
-                                    showingPremiumSheet = true
-                                },
-                                onTapListen: isPremium ? {
-                                    viewModel.toggleAudio(for: day)
-                                } : nil
+                                text: day.devotionalText
                             )
 
                             // Action steps
@@ -234,11 +225,6 @@ struct ScriptureCardView: View {
 struct DevotionalCardView: View {
     let title: String
     let text: String
-    var isPremium: Bool = false
-    var audioURL: String?
-    var audioPlayer: AudioPlayerService?
-    var onTapListenPremium: (() -> Void)?
-    var onTapListen: (() -> Void)?
     @State private var isExpanded = false
 
     var body: some View {
@@ -249,49 +235,6 @@ struct DevotionalCardView: View {
                 Text("Devotional")
                     .font(.headline)
                 Spacer()
-
-                if isPremium, let onPlay = onTapListen {
-                    // Premium user — functional listen button
-                    Button {
-                        onPlay()
-                    } label: {
-                        HStack(spacing: 4) {
-                            if let player = audioPlayer, player.isLoading {
-                                ProgressView()
-                                    .controlSize(.mini)
-                            } else {
-                                Image(systemName: audioPlayer?.isPlaying == true ? "pause.fill" : "speaker.wave.2")
-                                    .font(.caption)
-                            }
-                            Text(audioPlayer?.isPlaying == true ? "Pause" : "Listen")
-                                .font(.caption)
-                        }
-                        .foregroundStyle(.accent)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(Color.accentColor.opacity(0.15)))
-                    }
-                    .accessibilityLabel(audioPlayer?.isPlaying == true ? "Pause devotional audio" : "Listen to devotional")
-                } else if !isPremium, let onTap = onTapListenPremium {
-                    // Free user — premium nudge
-                    Button {
-                        onTap()
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "speaker.wave.2")
-                                .font(.caption)
-                            Text("Listen")
-                                .font(.caption)
-                            Image(systemName: "lock.fill")
-                                .font(.caption2)
-                        }
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(Color(.systemGray5)))
-                    }
-                    .accessibilityLabel("Listen to devotional, premium feature")
-                }
             }
 
             Text(title)
@@ -309,51 +252,6 @@ struct DevotionalCardView: View {
                 .font(.subheadline.bold())
             }
 
-            // Audio player controls — shown when audio is active
-            if let player = audioPlayer, (player.isPlaying || player.currentTime > 0) && isPremium {
-                VStack(spacing: 8) {
-                    // Progress bar
-                    ProgressView(value: player.progress)
-                        .tint(.accent)
-
-                    HStack {
-                        Text(player.formattedCurrentTime)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-
-                        Spacer()
-
-                        // Playback controls
-                        HStack(spacing: 20) {
-                            Button { player.skipBackward() } label: {
-                                Image(systemName: "gobackward.15")
-                                    .font(.caption)
-                            }
-
-                            Button { player.togglePlayPause() } label: {
-                                Image(systemName: player.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                                    .font(.title2)
-                            }
-
-                            Button { player.skipForward() } label: {
-                                Image(systemName: "goforward.15")
-                                    .font(.caption)
-                            }
-                        }
-                        .foregroundStyle(.accent)
-
-                        Spacer()
-
-                        Text("-\(player.formattedRemaining)")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                    }
-                }
-                .padding(.top, 4)
-                .transition(.opacity.combined(with: .move(edge: .bottom)))
-            }
         }
         .padding()
         .background(

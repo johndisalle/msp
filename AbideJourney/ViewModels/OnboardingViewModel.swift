@@ -12,6 +12,7 @@ final class OnboardingViewModel {
     var answers: [String: QuizAnswer] = [:]
     var isGeneratingJourney = false
     var generatedJourney: Journey?
+    var generationError: String?
 
     struct QuizAnswer {
         let answer: String
@@ -119,7 +120,13 @@ final class OnboardingViewModel {
             context: context
         )
 
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            generationError = "We couldn't save your journey. Please try again."
+            isGeneratingJourney = false
+            return
+        }
 
         generatedJourney = journey
         isGeneratingJourney = false
