@@ -30,7 +30,8 @@ struct PremiumPaywallView: View {
         ("paintpalette.fill", "Custom Themes", "Anxiety, grief, leadership & more deep-dive journeys"),
         ("person.2.fill", "Accountability", "Connect with trusted friends for mutual encouragement"),
         ("square.and.arrow.up", "Export Journals", "Save your reflections as beautiful PDFs"),
-        ("xmark.circle", "Ad-Free", "Distraction-free devotional experience — and we tithe our profits")
+        ("xmark.circle", "Ad-Free", "Distraction-free devotional experience"),
+        ("heart.fill", "Kingdom-Funded", "We tithe 10% of profits to ministry and missions")
     ]
 
     // Premium-only journey themes to showcase
