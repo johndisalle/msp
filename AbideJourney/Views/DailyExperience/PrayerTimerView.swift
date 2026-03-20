@@ -31,7 +31,7 @@ struct PrayerTimerView: View {
                     timerDisplay
 
                     // Rotating prayer prompts while timer is running
-                    if timerService.isRunning {
+                    if timerService.isRunning, !prompts.isEmpty {
                         rotatingPrompt
                     }
 
@@ -75,7 +75,7 @@ struct PrayerTimerView: View {
         }
         .presentationDetents([.large])
         .onReceive(Timer.publish(every: 15, on: .main, in: .common).autoconnect()) { _ in
-            if timerService.isRunning {
+            if timerService.isRunning, !prompts.isEmpty {
                 withAnimation(.easeInOut(duration: 0.5)) {
                     currentPromptIndex = (currentPromptIndex + 1) % prompts.count
                 }

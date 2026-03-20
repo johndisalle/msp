@@ -3,6 +3,7 @@ import SwiftData
 
 struct DailyExperienceView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @Query(filter: #Predicate<Journey> { $0.isActive }) private var journeys: [Journey]
     @Query private var profiles: [UserProfile]
     @State private var viewModel = DailyExperienceViewModel()
@@ -41,7 +42,7 @@ struct DailyExperienceView: View {
                             ActionStepsCardView(
                                 steps: $viewModel.actionSteps,
                                 onToggle: { index in
-                                    viewModel.toggleActionStep(at: index)
+                                    viewModel.toggleActionStep(at: index, context: modelContext)
                                 }
                             )
 
@@ -127,6 +128,12 @@ struct DailyExperienceView: View {
                     isPremium: isPremium,
                     onStartNewJourney: { showingPremiumSheet = true }
                 )
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    viewModel.loadCurrentDay(from: journeys)
+                    viewModel.checkDailyLimit(isPremium: isPremium)
+                }
             }
             .onChange(of: viewModel.journeyJustCompleted) { _, completed in
                 if completed {
