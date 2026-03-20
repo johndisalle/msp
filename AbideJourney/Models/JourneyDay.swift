@@ -8,6 +8,7 @@ final class JourneyDay {
     var date: Date?
     var isCompleted: Bool
     var isUnlocked: Bool
+    var hasBeenAdapted: Bool
 
     // Content
     var scriptureReference: String
@@ -48,6 +49,7 @@ final class JourneyDay {
         self.date = nil
         self.isCompleted = false
         self.isUnlocked = dayNumber == 1
+        self.hasBeenAdapted = false
         self.scriptureReference = scriptureReference
         self.scriptureText = scriptureText
         self.devotionalTitle = devotionalTitle

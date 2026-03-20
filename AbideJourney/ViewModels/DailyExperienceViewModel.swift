@@ -67,7 +67,7 @@ final class DailyExperienceViewModel {
         currentDay?.actionSteps = actionSteps
     }
 
-    func completeDay(context: ModelContext) {
+    func completeDay(rating: CheckInRating, context: ModelContext) {
         guard let day = currentDay, let journey = journey else { return }
 
         day.isCompleted = true
@@ -97,9 +97,12 @@ final class DailyExperienceViewModel {
             journeyJustCompleted = true
         }
 
-        // Adapt upcoming content based on check-in patterns
-        let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
-        AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
+        // Adapt upcoming content only when the current check-in warrants it
+        // (missed or tough), not based on stale history from the rolling window
+        if rating == .missed || rating == .tough {
+            let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
+            AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
+        }
 
         do {
             try context.save()

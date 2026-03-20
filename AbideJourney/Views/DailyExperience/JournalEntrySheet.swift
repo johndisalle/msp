@@ -38,7 +38,7 @@ struct JournalEntrySheet: View {
                                     selectedMood = mood
                                 } label: {
                                     VStack(spacing: 4) {
-                                        Text(mood.rawValue)
+                                        Text(mood.icon)
                                             .font(.title)
                                         Text(mood.label)
                                             .font(.caption2)

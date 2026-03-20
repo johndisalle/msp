@@ -100,7 +100,7 @@ struct DailyExperienceView: View {
             .sheet(isPresented: $viewModel.showingCheckInSheet) {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
-                    viewModel.completeDay(context: modelContext)
+                    viewModel.completeDay(rating: rating, context: modelContext)
                 }
             }
             .sheet(isPresented: $viewModel.showingPrayerTimer) {

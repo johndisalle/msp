@@ -86,7 +86,8 @@ final class AdaptiveJourneyService {
     // MARK: - Content Adaptation
 
     /// Adapt the next day's content based on recent check-in patterns.
-    /// Called when completing a day, modifies upcoming unlocked days.
+    /// Called when completing a day, modifies only the immediately next day.
+    /// Skips days that have already been adapted to prevent accumulation.
     func adaptUpcomingContent(journey: Journey, analysis: WeeklyAnalysis) {
         let upcomingDays = journey.days
             .filter { !$0.isCompleted }
@@ -94,13 +95,19 @@ final class AdaptiveJourneyService {
 
         guard let nextDay = upcomingDays.first else { return }
 
+        // Don't re-adapt a day that was already adapted
+        if nextDay.hasBeenAdapted { return }
+
         switch analysis.sentiment {
         case .struggling:
             injectGraceContent(into: nextDay, analysis: analysis)
+            nextDay.hasBeenAdapted = true
         case .needsGrace:
             softenContent(into: nextDay, analysis: analysis)
+            nextDay.hasBeenAdapted = true
         case .thriving:
             enrichContent(into: nextDay, analysis: analysis)
+            nextDay.hasBeenAdapted = true
         case .steady:
             break // No adaptation needed
         }

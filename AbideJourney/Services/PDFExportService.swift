@@ -80,7 +80,7 @@ final class PDFExportService {
                         .font: UIFont.systemFont(ofSize: 13, weight: .medium),
                         .foregroundColor: UIColor.secondaryLabel
                     ]
-                    "\(mood.rawValue)".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: moodAttrs)
+                    "\(mood.icon)".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: moodAttrs)
                     "  \(mood.label)".draw(at: CGPoint(x: margin + 30, y: yPosition + 4), withAttributes: moodLabel)
                     yPosition += 32
                 }

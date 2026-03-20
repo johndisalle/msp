@@ -40,4 +40,15 @@ enum Mood: String, Codable, CaseIterable {
         case .hopeful: return "Hopeful"
         }
     }
+
+    var icon: String {
+        switch self {
+        case .joyful: return "\u{1F60A}"      // 😊
+        case .peaceful: return "\u{1F60C}"     // 😌
+        case .grateful: return "\u{1F64F}"     // 🙏
+        case .reflective: return "\u{1F914}"   // 🤔
+        case .struggling: return "\u{1F614}"   // 😔
+        case .hopeful: return "\u{1F31F}"      // 🌟
+        }
+    }
 }
