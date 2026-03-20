@@ -15,16 +15,33 @@ final class ContentLibrary {
         let actionSteps: [String]
     }
 
-    /// Returns content for a specific day, cycling through the content bank for the given area.
-    /// Each discipleship area has 6-8 unique entries, and the journey cycles through
-    /// 5 focus areas weekly, giving 40 unique days across the journey.
+    /// Returns content for a specific day. Theme-specific banks are used when available,
+    /// falling back to the general discipleship area bank.
     func content(for theme: JourneyTheme, area: DiscipleshipArea, dayInArea: Int) -> DayContent {
-        let bank = contentBank(for: area)
+        let bank = themeContentBank(for: theme) ?? contentBank(for: area)
         let index = (dayInArea - 1) % bank.count
         return bank[index]
     }
 
-    // MARK: - Content Bank by Area
+    // MARK: - Theme-Specific Content Banks
+
+    /// Returns a dedicated content bank for themes that have their own curated content,
+    /// or nil to fall back to the general discipleship area bank.
+    private func themeContentBank(for theme: JourneyTheme) -> [DayContent]? {
+        switch theme {
+        case .overcomingAnxiety:        return Self.anxietyContent
+        case .walkingThroughGrief:      return Self.griefContent
+        case .leadingLikeJesus:         return Self.leadershipContent
+        case .startingOver:             return Self.startingOverContent
+        case .healingRelationships:     return Self.healingRelationshipsContent
+        case .hearingGodsVoice:         return Self.hearingGodsVoiceContent
+        case .findingPeace:             return Self.findingPeaceContent
+        case .overcomingDoubt:          return Self.overcomingDoubtContent
+        default:                        return nil
+        }
+    }
+
+    // MARK: - General Content Bank by Area
 
     /// Returns the full content array for a discipleship area.
     /// Uses the expanded ContentData entries (6-8 per area = 42-56 total).

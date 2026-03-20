@@ -41,6 +41,8 @@
 		A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */; };
 		A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */; };
 		A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000034 /* SettingsView.swift */; };
+		A1B2C3D4E5F60001000054 /* AccountabilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000054 /* AccountabilityView.swift */; };
+		A1B2C3D4E5F60001000055 /* NewJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000055 /* NewJourneyView.swift */; };
 		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
 		A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */; };
 		A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000052 /* WidgetDataService.swift */; };
@@ -96,6 +98,8 @@
 		A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDashboardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPaywallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000034 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000054 /* AccountabilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000055 /* NewJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000052 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
@@ -338,6 +342,8 @@
 			children = (
 				A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */,
 				A1B2C3D4E5F60101000034 /* SettingsView.swift */,
+				A1B2C3D4E5F60101000054 /* AccountabilityView.swift */,
+				A1B2C3D4E5F60101000055 /* NewJourneyView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -492,6 +498,8 @@
 				A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */,
 				A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */,
 				A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */,
+				A1B2C3D4E5F60001000054 /* AccountabilityView.swift in Sources */,
+				A1B2C3D4E5F60001000055 /* NewJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */,
 				A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */,
 				A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */,
