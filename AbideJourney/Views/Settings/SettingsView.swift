@@ -10,6 +10,9 @@ struct SettingsView: View {
     @State private var showingNewJourneySheet = false
     @State private var showingAbandonConfirmation = false
     @State private var showingDeleteConfirmation = false
+    @State private var showingCouplesSheet = false
+    @State private var showingDynamicSheet = false
+    @State private var showingGiftSheet = false
 
     private var profile: UserProfile? { profiles.first }
     private var completedJourneys: [Journey] {
@@ -137,6 +140,21 @@ struct SettingsView: View {
                     } label: {
                         Label("Start New Journey", systemImage: "plus.circle")
                     }
+
+                    if profile?.isPremium == true {
+                        Button {
+                            showingDynamicSheet = true
+                        } label: {
+                            Label("Create Custom Journey", systemImage: "wand.and.stars")
+                        }
+
+                        Button {
+                            showingCouplesSheet = true
+                        } label: {
+                            Label("Couples Journey", systemImage: "heart.circle.fill")
+                                .foregroundStyle(.pink)
+                        }
+                    }
                 }
 
                 // Past journeys
@@ -189,6 +207,18 @@ struct SettingsView: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
                                 .accessibilityHidden(true)
+                        }
+
+                        Button {
+                            showingGiftSheet = true
+                        } label: {
+                            Label("Gift a Journey", systemImage: "gift.fill")
+                        }
+
+                        NavigationLink {
+                            FaithReportView()
+                        } label: {
+                            Label("Annual Faith Report", systemImage: "sparkles.rectangle.stack.fill")
                         }
                     } else {
                         Button {
@@ -256,6 +286,15 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingNewJourneySheet) {
                 NewJourneyView()
+            }
+            .sheet(isPresented: $showingCouplesSheet) {
+                CouplesJourneyView()
+            }
+            .sheet(isPresented: $showingDynamicSheet) {
+                DynamicJourneyView()
+            }
+            .sheet(isPresented: $showingGiftSheet) {
+                GiftJourneyView()
             }
         }
     }

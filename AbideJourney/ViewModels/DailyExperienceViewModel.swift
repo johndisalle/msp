@@ -13,6 +13,7 @@ final class DailyExperienceViewModel {
     var showingCheckInSheet = false
     var showingPrayerTimer = false
     var journeyJustCompleted = false
+    var milestoneDay: Int?
     var actionSteps: [ActionStep] = []
     var saveError: String?
 
@@ -138,6 +139,11 @@ final class DailyExperienceViewModel {
             journey.isCompleted = true
             journey.isActive = false
             journeyJustCompleted = true
+        }
+
+        // Check for milestone celebration
+        if MilestoneCelebrationView.milestoneDays.contains(day.dayNumber) {
+            milestoneDay = day.dayNumber
         }
 
         // Adapt upcoming content based on rolling weekly sentiment analysis.

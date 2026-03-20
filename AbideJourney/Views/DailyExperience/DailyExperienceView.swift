@@ -9,6 +9,7 @@ struct DailyExperienceView: View {
     @State private var viewModel = DailyExperienceViewModel()
     @State private var showingPremiumSheet = false
     @State private var showingCompletionSheet = false
+    @State private var showingMilestoneSheet = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -141,6 +142,23 @@ struct DailyExperienceView: View {
                 if completed {
                     showingCompletionSheet = true
                     viewModel.journeyJustCompleted = false
+                }
+            }
+            .onChange(of: viewModel.milestoneDay) { _, day in
+                if day != nil {
+                    showingMilestoneSheet = true
+                }
+            }
+            .sheet(isPresented: $showingMilestoneSheet, onDismiss: {
+                viewModel.milestoneDay = nil
+            }) {
+                if let day = viewModel.milestoneDay, let journey = viewModel.journey {
+                    MilestoneCelebrationView(
+                        dayNumber: day,
+                        journeyTitle: journey.title,
+                        journeyTheme: journey.theme,
+                        userName: profiles.first?.name ?? "Friend"
+                    )
                 }
             }
         }

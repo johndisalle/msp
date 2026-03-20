@@ -13,6 +13,8 @@ final class Journey {
     var isCompleted: Bool
     var theme: JourneyTheme
     var focusAreas: [DiscipleshipArea]
+    var isCouple: Bool
+    var partnerName: String?
 
     var user: UserProfile?
 
@@ -45,6 +47,8 @@ final class Journey {
         self.isCompleted = false
         self.theme = theme
         self.focusAreas = focusAreas
+        self.isCouple = false
+        self.partnerName = nil
         self.days = []
     }
 }

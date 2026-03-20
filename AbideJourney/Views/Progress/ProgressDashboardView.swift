@@ -45,6 +45,29 @@ struct ProgressDashboardView: View {
                         StreakCalendarView(journey: journey)
                     }
 
+                    // Faith Map link
+                    NavigationLink {
+                        FaithMapView()
+                    } label: {
+                        HStack {
+                            Image(systemName: "map.fill")
+                                .foregroundStyle(.accent)
+                            Text("View Faith Map")
+                                .font(.subheadline.bold())
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.accentColor.opacity(0.08))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
                     // Premium journey themes teaser (only for free users, shown after 7+ days)
                     if !isPremium, let journey = viewModel.journey, journey.currentDay >= 7 {
                         PremiumThemesTeaser {
