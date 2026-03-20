@@ -76,10 +76,10 @@
           "displayPrice" : "4.99",
           "familyShareable" : false,
           "groupNumber" : 2,
-          "internalID" : "monthly_001",
+          "internalID" : "D3A1B2C4-1001-4001-8001-000000000001",
           "introductoryOffer" : {
             "displayPrice" : "0",
-            "internalID" : "trial_001",
+            "internalID" : "D3A1B2C4-2001-4001-8001-000000000001",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P3D"
@@ -107,10 +107,10 @@
           "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "yearly_001",
+          "internalID" : "D3A1B2C4-1001-4001-8001-000000000002",
           "introductoryOffer" : {
             "displayPrice" : "0",
-            "internalID" : "trial_002",
+            "internalID" : "D3A1B2C4-2001-4001-8001-000000000002",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P3D"
