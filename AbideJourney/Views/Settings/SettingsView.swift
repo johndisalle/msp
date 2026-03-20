@@ -5,9 +5,11 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var profiles: [UserProfile]
     @Query private var journeys: [Journey]
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var showingPremiumSheet = false
     @State private var showingNewJourneySheet = false
     @State private var showingAbandonConfirmation = false
+    @State private var showingDeleteConfirmation = false
 
     private var profile: UserProfile? { profiles.first }
     private var completedJourneys: [Journey] {
@@ -213,6 +215,29 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                // Account management
+                Section {
+                    Button(role: .destructive) {
+                        showingDeleteConfirmation = true
+                    } label: {
+                        Label("Delete All Data & Reset", systemImage: "trash")
+                    }
+                    .confirmationDialog(
+                        "Delete all your data?",
+                        isPresented: $showingDeleteConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Delete Everything", role: .destructive) {
+                            deleteAllData()
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("This will permanently delete your profile, all journeys, journal entries, prayer sessions, and accountability partners. This cannot be undone.")
+                    }
+                } footer: {
+                    Text("Removes all app data and returns to the welcome screen.")
+                }
             }
             .navigationTitle("Settings")
             .sheet(isPresented: $showingPremiumSheet) {
@@ -223,6 +248,24 @@ struct SettingsView: View {
             }
         }
     }
+    private func deleteAllData() {
+        // Cancel notifications
+        NotificationService.shared.cancelAllNotifications()
+
+        // Delete all profiles (cascade will delete journeys, days, entries, partners, etc.)
+        for profile in profiles {
+            modelContext.delete(profile)
+        }
+        // Delete any orphaned journeys just in case
+        for journey in journeys {
+            modelContext.delete(journey)
+        }
+        try? modelContext.save()
+
+        // Reset onboarding flag to return to welcome screen
+        hasCompletedOnboarding = false
+    }
+
     private func rescheduleNotifications(for profile: UserProfile) {
         NotificationService.shared.cancelAllNotifications()
         guard profile.notificationsEnabled,

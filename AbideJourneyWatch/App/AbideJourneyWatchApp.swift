@@ -3,7 +3,7 @@ import SwiftData
 
 @main
 struct AbideJourneyWatchApp: App {
-    let modelContainer: ModelContainer
+    let modelContainer: ModelContainer?
 
     init() {
         do {
@@ -20,14 +20,22 @@ struct AbideJourneyWatchApp: App {
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
+            modelContainer = nil
         }
     }
 
     var body: some Scene {
         WindowGroup {
-            WatchHomeView()
-                .modelContainer(modelContainer)
+            if let modelContainer {
+                WatchHomeView()
+                    .modelContainer(modelContainer)
+            } else {
+                ContentUnavailableView(
+                    "Unable to Load",
+                    systemImage: "exclamationmark.triangle.fill",
+                    description: Text("Please restart the app.")
+                )
+            }
         }
     }
 }

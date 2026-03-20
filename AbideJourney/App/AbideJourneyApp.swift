@@ -3,7 +3,7 @@ import SwiftData
 
 @main
 struct AbideJourneyApp: App {
-    let modelContainer: ModelContainer
+    let modelContainer: ModelContainer?
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
@@ -25,14 +25,29 @@ struct AbideJourneyApp: App {
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
+            modelContainer = nil
         }
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .modelContainer(modelContainer)
+            if let modelContainer {
+                RootView()
+                    .modelContainer(modelContainer)
+            } else {
+                DatabaseErrorView()
+            }
+        }
+    }
+}
+
+/// Shown when SwiftData fails to initialize — avoids a crash.
+private struct DatabaseErrorView: View {
+    var body: some View {
+        ContentUnavailableView {
+            Label("Unable to Load Data", systemImage: "exclamationmark.triangle.fill")
+        } description: {
+            Text("Abide Journey could not open its database. Please restart the app. If the problem persists, try reinstalling.")
         }
     }
 }
