@@ -29,12 +29,20 @@ struct TitheStewardApp: App {
         }
     }()
 
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(appState)
         }
         .modelContainer(sharedModelContainer)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                let context = sharedModelContainer.mainContext
+                RecurringGiftScheduler.shared.processAndSchedule(modelContext: context)
+            }
+        }
     }
 }
 

@@ -74,17 +74,40 @@ struct GivingHubView: View {
                     .padding(.horizontal)
 
                     // Recurring Giving
-                    if !viewModel.recurringGifts.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Text("Recurring Gifts")
-                                    .font(.headline)
-                                Spacer()
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Recurring Gifts")
+                                .font(.headline)
+                            Spacer()
+                            if !viewModel.recurringGifts.isEmpty {
                                 Text(viewModel.monthlyRecurringTotal.currencyWhole + "/mo")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
+                            Button {
+                                viewModel.showingAddRecurring = true
+                            } label: {
+                                Image(systemName: "plus.circle")
+                                    .foregroundColor(Color("AccentGold"))
+                            }
+                        }
 
+                        if viewModel.recurringGifts.isEmpty {
+                            VStack(spacing: 8) {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.title2)
+                                    .foregroundColor(.secondary)
+                                Text("No recurring gifts yet")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                Text("Set up automated giving to stay consistent")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical)
+                        } else {
                             ForEach(viewModel.recurringGifts) { gift in
                                 HStack {
                                     Image(systemName: gift.isActive ? "arrow.triangle.2.circlepath.circle.fill" : "pause.circle.fill")
@@ -105,12 +128,12 @@ struct GivingHubView: View {
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(16)
-                        .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
-                        .padding(.horizontal)
                     }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+                    .padding(.horizontal)
 
                     // All Recipients
                     VStack(alignment: .leading, spacing: 12) {
@@ -188,9 +211,19 @@ struct GivingHubView: View {
                             .foregroundColor(Color("AccentGold"))
                     }
                 }
+                ToolbarItem(placement: .secondaryAction) {
+                    Button {
+                        viewModel.showingAddRecurring = true
+                    } label: {
+                        Label("Add Recurring Gift", systemImage: "arrow.triangle.2.circlepath")
+                    }
+                }
             }
             .sheet(isPresented: $viewModel.showingAddRecipient) {
                 AddRecipientSheet(viewModel: viewModel)
+            }
+            .sheet(isPresented: $viewModel.showingAddRecurring) {
+                AddRecurringGiftSheet(viewModel: viewModel)
             }
         }
     }
@@ -232,6 +265,86 @@ struct AddRecipientSheet: View {
                         dismiss()
                     }
                     .disabled(viewModel.newRecipientName.isEmpty)
+                }
+            }
+        }
+    }
+}
+
+struct AddRecurringGiftSheet: View {
+    @ObservedObject var viewModel: GivingViewModel
+    @Environment(\.dismiss) var dismiss
+
+    @State private var amount = ""
+    @State private var frequency: GiftFrequency = .monthly
+    @State private var category: GivingCategory = .tithe
+    @State private var startDate = Date()
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Gift Details") {
+                    HStack {
+                        Text("$")
+                            .foregroundColor(.secondary)
+                        TextField("Amount", text: $amount)
+                            .keyboardType(.decimalPad)
+                    }
+
+                    Picker("Frequency", selection: $frequency) {
+                        ForEach(GiftFrequency.allCases, id: \.self) { freq in
+                            Text(freq.rawValue).tag(freq)
+                        }
+                    }
+
+                    Picker("Category", selection: $category) {
+                        ForEach(GivingCategory.allCases, id: \.self) { cat in
+                            Label(cat.rawValue, systemImage: cat.icon).tag(cat)
+                        }
+                    }
+
+                    DatePicker("First Gift Date", selection: $startDate, displayedComponents: .date)
+                }
+
+                if let recipient = viewModel.selectedRecipient {
+                    Section {
+                        HStack {
+                            Image(systemName: recipient.type.icon)
+                                .foregroundColor(Color("AccentGold"))
+                            Text(recipient.name)
+                                .font(.subheadline.bold())
+                        }
+                    } header: {
+                        Text("Recipient")
+                    }
+                }
+
+                Section {
+                    Text("\"On the first day of every week, each one of you should set aside a sum of money in keeping with your income.\"")
+                        .font(.caption.italic())
+                        .foregroundColor(.secondary)
+                    Text("— 1 Corinthians 16:2")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .navigationTitle("Recurring Gift")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Schedule") {
+                        viewModel.addRecurringGift(
+                            amount: amount,
+                            frequency: frequency,
+                            category: category,
+                            startDate: startDate
+                        )
+                        dismiss()
+                    }
+                    .disabled(amount.isEmpty || viewModel.selectedRecipient == nil)
                 }
             }
         }

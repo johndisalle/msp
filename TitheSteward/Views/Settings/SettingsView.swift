@@ -47,6 +47,24 @@ struct SettingsView: View {
                     } label: {
                         Label("Debt Freedom Tools", systemImage: "lock.open.fill")
                     }
+
+                    NavigationLink {
+                        AICounselorChatView()
+                    } label: {
+                        HStack {
+                            Label("AI Counselor", systemImage: "bubble.left.and.bubble.right.fill")
+                            if !appState.isPremium {
+                                Spacer()
+                                Text("Premium")
+                                    .font(.caption2.bold())
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color("AccentGold"))
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
                 }
 
                 // Notifications

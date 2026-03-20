@@ -89,6 +89,50 @@ class GivingService: ObservableObject {
         }
     }
 
+    // MARK: - Auto-Processing
+
+    func processDueRecurringGifts(for profile: UserProfile) -> [TitheRecord] {
+        let now = Date()
+        let gifts = fetchRecurringGifts().filter { $0.isActive && $0.nextDate <= now }
+        var created: [TitheRecord] = []
+
+        for gift in gifts {
+            let record = TitheRecord(
+                date: now,
+                amount: gift.amount,
+                category: gift.category,
+                recipient: gift.recipient?.name ?? "",
+                note: "Auto-created from recurring gift",
+                isRecurring: true
+            )
+            record.userProfile = profile
+            profile.titheRecords.append(record)
+            modelContext.insert(record)
+
+            // Advance next date
+            let calendar = Calendar.current
+            switch gift.frequency {
+            case .weekly:
+                gift.nextDate = calendar.date(byAdding: .weekOfYear, value: 1, to: gift.nextDate) ?? now
+            case .biweekly:
+                gift.nextDate = calendar.date(byAdding: .weekOfYear, value: 2, to: gift.nextDate) ?? now
+            case .monthly:
+                gift.nextDate = calendar.date(byAdding: .month, value: 1, to: gift.nextDate) ?? now
+            case .quarterly:
+                gift.nextDate = calendar.date(byAdding: .month, value: 3, to: gift.nextDate) ?? now
+            case .annually:
+                gift.nextDate = calendar.date(byAdding: .year, value: 1, to: gift.nextDate) ?? now
+            }
+
+            created.append(record)
+        }
+
+        if !created.isEmpty {
+            try? modelContext.save()
+        }
+        return created
+    }
+
     func save() {
         try? modelContext.save()
     }

@@ -15,6 +15,7 @@ class GivingViewModel: ObservableObject {
     // Quick give form
     @Published var quickGiveAmount: String = ""
     @Published var quickGiveCategory: GivingCategory = .tithe
+    @Published var showingAddRecurring = false
 
     private var givingService: GivingService?
     private var modelContext: ModelContext?
@@ -79,6 +80,23 @@ class GivingViewModel: ObservableObject {
 
     func deleteRecurring(_ gift: RecurringGift) {
         givingService?.deleteRecurringGift(gift)
+        objectWillChange.send()
+    }
+
+    func addRecurringGift(amount: String, frequency: GiftFrequency, category: GivingCategory, startDate: Date) {
+        guard let amountDecimal = Decimal(string: amount), amountDecimal > 0,
+              let recipient = selectedRecipient,
+              let service = givingService else { return }
+
+        let gift = RecurringGift(
+            amount: amountDecimal,
+            frequency: frequency,
+            category: category,
+            nextDate: startDate
+        )
+        service.addRecurringGift(gift, to: recipient)
+        showingAddRecurring = false
+        selectedRecipient = nil
         objectWillChange.send()
     }
 

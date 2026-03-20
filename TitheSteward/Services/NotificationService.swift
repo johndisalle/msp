@@ -96,6 +96,41 @@ class NotificationService: ObservableObject {
         UNUserNotificationCenter.current().add(request)
     }
 
+    // MARK: - Recurring Gift Reminders
+
+    func scheduleRecurringGiftReminder(giftId: String, recipientName: String, amount: Decimal, nextDate: Date) {
+        let identifier = "recurring_gift_\(giftId)"
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+
+        let content = UNMutableNotificationContent()
+        content.title = "Recurring Gift Due"
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        let amountStr = formatter.string(from: amount as NSDecimalNumber) ?? "$\(amount)"
+        content.body = "Your \(amountStr) gift to \(recipientName) is scheduled for today. \"Each of you should give what you have decided in your heart.\" — 2 Cor 9:7"
+        content.sound = .default
+        content.categoryIdentifier = "RECURRING_GIFT"
+
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour], from: nextDate)
+        var triggerComponents = DateComponents()
+        triggerComponents.year = components.year
+        triggerComponents.month = components.month
+        triggerComponents.day = components.day
+        triggerComponents.hour = 8 // 8 AM reminder
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    func clearRecurringGiftReminders() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let ids = requests.filter { $0.identifier.hasPrefix("recurring_gift_") }.map { $0.identifier }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
+        }
+    }
+
     // MARK: - Clear All
 
     func clearAllNotifications() {
