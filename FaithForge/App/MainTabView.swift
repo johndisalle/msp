@@ -74,6 +74,9 @@ struct MainTabView: View {
                     }
                 }
                 .tint(Color("FaithBlue"))
+                .onChange(of: selectedTab) { _, newTab in
+                    AnalyticsService.logTabSelected(tab: newTab.rawValue)
+                }
             } else {
                 ProgressLoadingView()
             }

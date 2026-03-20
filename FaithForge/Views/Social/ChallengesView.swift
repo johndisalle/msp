@@ -167,6 +167,8 @@ private struct ChallengeCard: View {
             }
         }
         .faithCard()
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("\(challenge.title), \(challenge.type.rawValue) challenge, \(Int(challenge.communityProgress * 100)) percent complete, \(challenge.daysRemaining) days remaining, \(challenge.participantCount) participants")
     }
 
     private var typeColor: Color {
@@ -226,6 +228,8 @@ private struct JoinedChallengeCard: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(Color("FaithGold").opacity(0.3), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(challenge.title), community progress \(Int(challenge.communityProgress * 100)) percent, your contribution \(challenge.myContribution) XP, \(challenge.daysRemaining) days left")
         .contextMenu {
             Button(role: .destructive) {
                 showLeaveConfirm = true

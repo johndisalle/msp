@@ -112,8 +112,11 @@ struct QuestDetailView: View {
                 .padding(.vertical, 8)
                 .background(Color("FaithGold").opacity(0.15))
                 .clipShape(Capsule())
+                .accessibilityLabel("\(quest.xpReward) experience points reward")
         }
         .faithCard()
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(quest.title), \(quest.category.rawValue) \(quest.type.rawValue) quest, \(quest.xpReward) XP")
     }
 
     // MARK: - Interaction Section (varies by quest type)
@@ -159,6 +162,9 @@ struct QuestDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Timer, \(timerRemaining.timerFormatted) remaining")
+            .accessibilityValue(timerActive ? "In progress" : "Ready")
 
             HStack(spacing: 16) {
                 if timerActive {
@@ -346,6 +352,7 @@ struct QuestDetailView: View {
                     .font(.system(size: 56))
                     .foregroundStyle(Color("FaithGold"))
                     .symbolEffect(.bounce)
+                    .accessibilityHidden(true)
 
                 Text("+\(xpEarned) XP!")
                     .font(.largeTitle.bold())
@@ -366,6 +373,8 @@ struct QuestDetailView: View {
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 24))
             .padding(32)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Quest completed! You earned \(xpEarned) experience points.")
         }
         .transition(.opacity)
     }
@@ -388,13 +397,30 @@ struct QuestDetailView: View {
         // Cancel streak-at-risk notification since user completed a quest
         NotificationService.shared.cancelStreakAtRiskAlert()
 
+        // Analytics
+        AnalyticsService.logQuestCompleted(
+            category: quest.category.rawValue,
+            type: quest.type.rawValue,
+            xpEarned: xp
+        )
+        AnalyticsService.logXPAwarded(amount: xp, totalXP: profile.totalXP)
+
         withAnimation {
             showCompletion = true
             showConfetti = true
         }
 
+        // Check if all quests done
+        if questManager.allComplete {
+            AnalyticsService.logAllQuestsCompleted(
+                questCount: questManager.todaysQuests.count,
+                totalXP: xpManager.todayTotalXP
+            )
+        }
+
         // Check for level-up
         if profile.level != levelBefore {
+            AnalyticsService.logLevelUp(newLevel: profile.level.rawValue, totalXP: profile.totalXP)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 showCompletion = false
                 showLevelUp = true

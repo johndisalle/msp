@@ -169,6 +169,8 @@ struct LevelUpCelebrationView: View {
                 }
                 .opacity(textOpacity)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Level up! You are now a \(newLevel.rawValue)")
         }
         .confetti(isActive: $showConfetti, particleCount: 80)
         .onAppear {
@@ -232,6 +234,8 @@ struct RingClosedCelebrationView: View {
                         .foregroundStyle(.white)
                 }
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("\(ringCategory.rawValue) ring closed! You hit your daily \(ringCategory.rawValue) goal.")
         }
         .confetti(isActive: $showConfetti, particleCount: 40)
         .onAppear {

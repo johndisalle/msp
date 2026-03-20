@@ -143,12 +143,14 @@ private struct PendingRequestRow: View {
                         .font(.title2)
                         .foregroundStyle(Color("FaithGreen"))
                 }
+                .accessibilityLabel("Accept friend request from \(request.friendDisplayName)")
 
                 Button(action: onDecline) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title2)
                         .foregroundStyle(.secondary)
                 }
+                .accessibilityLabel("Decline friend request from \(request.friendDisplayName)")
             } else {
                 Text("Pending")
                     .font(.caption)
@@ -211,6 +213,8 @@ private struct FriendRow: View {
             }
         }
         .faithCard()
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(friend.friendDisplayName), \(friend.friendLevel.rawValue), \(friend.friendTotalXP) XP, \(friend.friendCurrentStreak) day streak")
         .contextMenu {
             Button(role: .destructive) {
                 showRemoveConfirm = true

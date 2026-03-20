@@ -11,6 +11,8 @@ struct SettingsView: View {
     @Bindable var authService: FirebaseAuthStub
 
     @State private var showingPaywall = false
+    @State private var showingPrivacyPolicy = false
+    @State private var showingTermsOfService = false
 
     var body: some View {
         NavigationStack {
@@ -98,13 +100,27 @@ struct SettingsView: View {
                     }
                 }
 
-                // About
+                // About & Legal
                 Section("About") {
                     HStack {
                         Label("Version", systemImage: "info.circle")
                         Spacer()
                         Text("1.0.0 (MVP)")
                             .foregroundStyle(.secondary)
+                    }
+
+                    Button {
+                        showingPrivacyPolicy = true
+                    } label: {
+                        Label("Privacy Policy", systemImage: "hand.raised.fill")
+                            .foregroundStyle(Color("TextPrimary"))
+                    }
+
+                    Button {
+                        showingTermsOfService = true
+                    } label: {
+                        Label("Terms of Service", systemImage: "doc.text.fill")
+                            .foregroundStyle(Color("TextPrimary"))
                     }
 
                     Label("FaithForge — Duolingo for Discipleship", systemImage: "cross.fill")
@@ -152,6 +168,15 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .sheet(isPresented: $showingPaywall) {
                 PremiumPaywallView()
+            }
+            .sheet(isPresented: $showingPrivacyPolicy) {
+                PrivacyPolicyView()
+            }
+            .sheet(isPresented: $showingTermsOfService) {
+                TermsOfServiceView()
+            }
+            .onAppear {
+                AnalyticsService.logSettingsOpened()
             }
         }
     }

@@ -49,6 +49,14 @@ struct PremiumPaywallView: View {
             } message: {
                 Text("You now have access to all premium features. God bless your journey!")
             }
+            .onAppear {
+                AnalyticsService.logPaywallViewed()
+            }
+            .onDisappear {
+                if !showingSuccess {
+                    AnalyticsService.logPaywallDismissed()
+                }
+            }
             .alert("Error", isPresented: $showingError) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -183,6 +191,7 @@ struct PremiumPaywallView: View {
                 let success = await premium.purchase(selectedTier)
                 if success {
                     showingSuccess = true
+                    AnalyticsService.logSubscriptionStarted(tier: selectedTier.rawValue)
                 } else if premium.errorMessage != nil {
                     showingError = true
                 }
@@ -219,6 +228,7 @@ struct PremiumPaywallView: View {
             Button("Restore Purchases") {
                 Task {
                     await premium.restorePurchases()
+                    AnalyticsService.logSubscriptionRestored()
                 }
             }
             .font(.subheadline)

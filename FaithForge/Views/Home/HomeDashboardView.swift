@@ -68,6 +68,8 @@ struct HomeDashboardView: View {
             StreakFlameView(streak: profile.currentStreak)
         }
         .padding(.top, 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Hello \(profile.displayName), \(profile.level.rawValue) level, \(profile.currentStreak) day streak")
     }
 
     // MARK: - Faith Rings
