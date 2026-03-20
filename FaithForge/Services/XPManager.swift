@@ -14,6 +14,12 @@ final class XPManager {
     /// Today's ring progress (3 entries).
     private(set) var todayRings: [FaithRingProgress] = []
 
+    /// Optional challenge service to contribute XP to joined challenges.
+    var challengeService: ChallengeService?
+
+    /// Optional leaderboard service to sync profile after XP changes.
+    var leaderboardService: LeaderboardService?
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
         loadTodayRings()
@@ -21,7 +27,7 @@ final class XPManager {
 
     // MARK: - Public API
 
-    /// Award XP from completing a quest: updates profile, ring, streak, badges.
+    /// Award XP from completing a quest: updates profile, ring, streak, badges, challenges, leaderboard.
     func awardXP(amount: Int, questCategory: QuestCategory, profile: UserProfile) {
         // 1. Update total XP
         profile.totalXP += amount
@@ -37,6 +43,12 @@ final class XPManager {
 
         // 4. Check badge unlocks
         checkBadgeUnlocks(profile: profile)
+
+        // 5. Contribute XP to joined community challenges
+        challengeService?.contributeXP(amount: amount, category: questCategory)
+
+        // 6. Sync to leaderboard
+        leaderboardService?.syncLocalProfile(profile, userID: profile.id.uuidString)
 
         try? modelContext.save()
         loadTodayRings()

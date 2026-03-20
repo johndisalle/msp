@@ -14,6 +14,9 @@ final class QuestManager {
     /// Today's quests, refreshed on access.
     private(set) var todaysQuests: [DailyQuest] = []
 
+    /// Optional AI service for personalized quest generation.
+    var aiService: AIQuestService?
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
         loadOrGenerateTodaysQuests()
@@ -24,6 +27,41 @@ final class QuestManager {
     /// Reload quests for today. Called on app foreground / day change.
     func refresh() {
         loadOrGenerateTodaysQuests()
+    }
+
+    /// Generate AI quests for today, replacing any unstarted hardcoded quests.
+    func generateAIQuests(profile: UserProfile) async {
+        guard let aiService else { return }
+
+        let templates = await aiService.generateQuests(
+            profile: profile,
+            count: profile.dailyGoal.questCount,
+            existingQuests: todaysQuests
+        )
+
+        await MainActor.run {
+            // Remove uncompleted quests from today
+            for quest in todaysQuests where !quest.isCompleted {
+                modelContext.delete(quest)
+            }
+
+            // Insert AI-generated quests
+            let completedCount = todaysQuests.filter(\.isCompleted).count
+            for (i, template) in templates.enumerated() {
+                let quest = DailyQuest(
+                    title: template.title,
+                    description: template.description,
+                    category: template.category,
+                    type: template.type,
+                    xpReward: template.xpReward,
+                    timerDuration: template.timerDuration,
+                    sortOrder: completedCount + i
+                )
+                modelContext.insert(quest)
+            }
+            try? modelContext.save()
+            loadOrGenerateTodaysQuests()
+        }
     }
 
     /// Mark a quest as completed, persist, and return XP earned.
@@ -69,7 +107,7 @@ final class QuestManager {
             return
         }
 
-        // First time today — generate from seed quests
+        // First time today — generate from seed quests (AI override handled by generateAIQuests)
         let seeds = Self.sampleQuests.shuffled().prefix(5)
         for (i, template) in seeds.enumerated() {
             let quest = DailyQuest(

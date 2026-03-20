@@ -40,5 +40,6 @@ struct RootView: View {
 
 #Preview {
     RootView()
-        .modelContainer(for: [UserProfile.self, DailyQuest.self, Badge.self, FaithRingProgress.self], inMemory: true)
+        .modelContainer(for: [UserProfile.self, DailyQuest.self, Badge.self, FaithRingProgress.self, LeaderboardEntry.self, FriendConnection.self, CommunityChallenge.self], inMemory: true)
+        .environment(FirebaseAuthStub())
 }

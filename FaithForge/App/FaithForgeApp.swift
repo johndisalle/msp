@@ -21,6 +21,9 @@ struct FaithForgeApp: App {
             DailyQuest.self,
             Badge.self,
             FaithRingProgress.self,
+            LeaderboardEntry.self,
+            FriendConnection.self,
+            CommunityChallenge.self,
         ])
         let config = ModelConfiguration(isStoredInMemoryOnly: false)
 
