@@ -5,6 +5,9 @@ struct JournalListView: View {
     @Query(sort: \JournalEntry.createdAt, order: .reverse) private var entries: [JournalEntry]
     @Query private var profiles: [UserProfile]
     @State private var showingPremiumSheet = false
+    @State private var showingShareSheet = false
+    @State private var exportedPDFURL: URL?
+    @State private var isExporting = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -62,11 +65,66 @@ struct JournalListView: View {
                 }
             }
             .navigationTitle("Journal")
+            .toolbar {
+                if isPremium && !entries.isEmpty {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            exportPDF()
+                        } label: {
+                            if isExporting {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Label("Export PDF", systemImage: "square.and.arrow.up")
+                            }
+                        }
+                        .disabled(isExporting)
+                    }
+                }
+            }
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
             }
+            .sheet(isPresented: $showingShareSheet) {
+                if let url = exportedPDFURL {
+                    ShareSheet(items: [url])
+                }
+            }
         }
     }
+
+    private func exportPDF() {
+        isExporting = true
+        let userName = profiles.first?.name ?? "Journal"
+        let entriesSnapshot = Array(entries)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            let pdfData = PDFExportService.shared.generateJournalPDF(
+                entries: entriesSnapshot,
+                userName: userName
+            )
+
+            let tempURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("AbideJourney-Journal.pdf")
+            try? pdfData.write(to: tempURL)
+
+            DispatchQueue.main.async {
+                exportedPDFURL = tempURL
+                isExporting = false
+                showingShareSheet = true
+            }
+        }
+    }
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 struct JournalEntryRow: View {
@@ -77,6 +135,11 @@ struct JournalEntryRow: View {
             HStack {
                 if let mood = entry.mood {
                     Text(mood.rawValue)
+                }
+                if entry.isVoiceEntry {
+                    Image(systemName: "mic.fill")
+                        .font(.caption)
+                        .foregroundStyle(.purple)
                 }
                 if let day = entry.journeyDay {
                     Text("Day \(day.dayNumber)")

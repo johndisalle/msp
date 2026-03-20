@@ -20,6 +20,9 @@ final class UserProfile {
     @Relationship(deleteRule: .cascade, inverse: \QuizResponse.user)
     var quizResponses: [QuizResponse]
 
+    @Relationship(deleteRule: .cascade, inverse: \AccountabilityPartner.user)
+    var accountabilityPartners: [AccountabilityPartner]
+
     init(
         name: String = "",
         spiritualMaturity: SpiritualMaturity = .exploring,
@@ -35,6 +38,7 @@ final class UserProfile {
         self.notificationsEnabled = true
         self.journeys = []
         self.quizResponses = []
+        self.accountabilityPartners = []
 
         // Default morning 7:00 AM, evening 8:00 PM
         var morningComponents = DateComponents()

@@ -1,0 +1,281 @@
+import SwiftUI
+import SwiftData
+
+struct AccountabilityView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var partners: [AccountabilityPartner]
+    @Query private var profiles: [UserProfile]
+    @Query private var journeys: [Journey]
+    @State private var showingAddSheet = false
+    @State private var showingShareSheet = false
+    @State private var shareMessage = ""
+
+    private var activeJourney: Journey? {
+        journeys.first(where: { $0.isActive && !$0.isCompleted })
+    }
+
+    var body: some View {
+        List {
+            // Progress sharing section
+            if let journey = activeJourney {
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Image(systemName: "chart.bar.fill")
+                                .foregroundStyle(.accent)
+                            Text("Your Progress")
+                                .font(.headline)
+                        }
+
+                        Text("Day \(journey.currentDay) of \(journey.totalDays) — \(journey.theme.rawValue)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+
+                        ProgressView(value: journey.progress)
+                            .tint(.accent)
+
+                        Button {
+                            shareProgress(journey: journey)
+                        } label: {
+                            HStack {
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Share My Progress")
+                            }
+                            .font(.subheadline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.accentColor.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                    .padding(.vertical, 4)
+                } header: {
+                    Text("Journey Progress")
+                }
+            }
+
+            // Partners list
+            Section {
+                if partners.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "person.2.circle")
+                            .font(.largeTitle)
+                            .foregroundStyle(.secondary)
+
+                        Text("No accountability partners yet")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+
+                        Text("Invite a trusted friend to encourage each other on your faith journey.")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                } else {
+                    ForEach(partners) { partner in
+                        PartnerRow(partner: partner, onSendEncouragement: {
+                            sendEncouragement(to: partner)
+                        })
+                    }
+                    .onDelete(perform: deletePartners)
+                }
+            } header: {
+                Text("Partners")
+            }
+
+            // Tips section
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Pray for each other daily", systemImage: "hands.sparkles.fill")
+                        .font(.subheadline)
+                    Label("Check in weekly on progress", systemImage: "message.fill")
+                        .font(.subheadline)
+                    Label("Share struggles honestly", systemImage: "heart.fill")
+                        .font(.subheadline)
+                    Label("Celebrate wins together", systemImage: "party.popper.fill")
+                        .font(.subheadline)
+                }
+                .foregroundStyle(.secondary)
+                .padding(.vertical, 4)
+            } header: {
+                Text("Tips for Accountability")
+            }
+        }
+        .navigationTitle("Accountability")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingAddSheet = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddSheet) {
+            AddPartnerSheet { name, email in
+                addPartner(name: name, email: email)
+            }
+        }
+        .sheet(isPresented: $showingShareSheet) {
+            ShareSheet(items: [shareMessage])
+        }
+    }
+
+    private func addPartner(name: String, email: String) {
+        let partner = AccountabilityPartner(name: name, email: email)
+        partner.user = profiles.first
+        modelContext.insert(partner)
+        try? modelContext.save()
+    }
+
+    private func deletePartners(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(partners[index])
+        }
+        try? modelContext.save()
+    }
+
+    private func sendEncouragement(to partner: AccountabilityPartner) {
+        let userName = profiles.first?.name ?? "Your friend"
+        shareMessage = "Hey \(partner.name)! \(userName) is thinking of you and praying for you on the Abide Journey. Keep going strong! 🙏"
+        partner.lastEncouragementSent = Date()
+        try? modelContext.save()
+        showingShareSheet = true
+    }
+
+    private func shareProgress(journey: Journey) {
+        let userName = profiles.first?.name ?? "I"
+        let percentage = Int(journey.progress * 100)
+        shareMessage = "\(userName) has completed \(percentage)% of the \(journey.theme.rawValue) journey on Abide Journey! Day \(journey.currentDay) of \(journey.totalDays). 🙏✨"
+        showingShareSheet = true
+    }
+}
+
+// MARK: - Partner Row
+
+struct PartnerRow: View {
+    let partner: AccountabilityPartner
+    let onSendEncouragement: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: "person.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(.accent)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(partner.name)
+                        .font(.subheadline.bold())
+                    Text(partner.email)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Text(partner.status.rawValue)
+                    .font(.caption2.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(statusColor.opacity(0.15))
+                    .foregroundStyle(statusColor)
+                    .clipShape(Capsule())
+            }
+
+            if partner.status == .active {
+                Button {
+                    onSendEncouragement()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "heart.fill")
+                            .font(.caption)
+                        Text("Send Encouragement")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.accent)
+                }
+
+                if let lastSent = partner.lastEncouragementSent {
+                    Text("Last encouraged \(lastSent, style: .relative) ago")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var statusColor: Color {
+        switch partner.status {
+        case .invited: return .orange
+        case .active: return .green
+        case .declined: return .red
+        }
+    }
+}
+
+// MARK: - Add Partner Sheet
+
+struct AddPartnerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var name = ""
+    @State private var email = ""
+    let onAdd: (String, String) -> Void
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Name", text: $name)
+                        .textContentType(.name)
+                    TextField("Email", text: $email)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                } header: {
+                    Text("Partner Details")
+                } footer: {
+                    Text("They'll receive an invitation to join you as an accountability partner.")
+                }
+
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("\"Therefore confess your sins to each other and pray for each other so that you may be healed.\"")
+                            .font(.subheadline)
+                            .italic()
+                        Text("— James 5:16")
+                            .font(.caption)
+                            .foregroundStyle(.accent)
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+            .navigationTitle("Add Partner")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Invite") {
+                        onAdd(name, email)
+                        dismiss()
+                    }
+                    .bold()
+                    .disabled(name.isEmpty || email.isEmpty)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+#Preview {
+    NavigationStack {
+        AccountabilityView()
+            .modelContainer(for: AccountabilityPartner.self, inMemory: true)
+    }
+}
