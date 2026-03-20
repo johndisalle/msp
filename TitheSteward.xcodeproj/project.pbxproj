@@ -43,10 +43,15 @@
 		TS00000001000034 /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000034 /* PremiumPaywallView.swift */; };
 		TS00000001000035 /* DebtDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000035 /* DebtDashboardView.swift */; };
 		TS00000001000036 /* ProgressCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000036 /* ProgressCircleView.swift */; };
-		TS00000001000039 /* DevotionalContentLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000039 /* DevotionalContentLibrary.swift */; };
+		TS00000001000041 /* DevotionalContentLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000041 /* DevotionalContentLibrary.swift */; };
 		TS00000001000037 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000037 /* Assets.xcassets */; };
 		TS00000001000038 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000040 /* Products.storekit */; };
 		TS00000001000050 /* TitheStewardWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000050 /* TitheStewardWidgets.swift */; };
+		TS00000001100001 /* TitheCalculatorServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100001 /* TitheCalculatorServiceTests.swift */; };
+		TS00000001100002 /* BudgetServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100002 /* BudgetServiceTests.swift */; };
+		TS00000001100003 /* DebtServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100003 /* DebtServiceTests.swift */; };
+		TS00000001100004 /* DevotionalServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100004 /* DevotionalServiceTests.swift */; };
+		TS00000001100005 /* GenerosityScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100005 /* GenerosityScoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +61,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = TS00000005000002;
 			remoteInfo = TitheStewardWidgets;
+		};
+		TS00000003000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = TS00000004000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = TS00000005000001;
+			remoteInfo = TitheSteward;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -93,7 +105,7 @@
 		TS00000002000018 /* StoreKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitService.swift; sourceTree = "<group>"; };
 		TS00000002000019 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
 		TS00000002000020 /* DebtService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtService.swift; sourceTree = "<group>"; };
-		TS00000002000039 /* DevotionalContentLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionalContentLibrary.swift; sourceTree = "<group>"; };
+		TS00000002000041 /* DevotionalContentLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionalContentLibrary.swift; sourceTree = "<group>"; };
 		TS00000002000021 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000022 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000023 /* TitheViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitheViewModel.swift; sourceTree = "<group>"; };
@@ -118,6 +130,12 @@
 		TS00000002000051 /* TitheStewardWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TitheStewardWidgets.entitlements; sourceTree = "<group>"; };
 		TS00000007000001 /* TitheSteward.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TitheSteward.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		TS00000007000002 /* TitheStewardWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TitheStewardWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		TS00000007000003 /* TitheStewardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TitheStewardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TS00000002100001 /* TitheCalculatorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitheCalculatorServiceTests.swift; sourceTree = "<group>"; };
+		TS00000002100002 /* BudgetServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetServiceTests.swift; sourceTree = "<group>"; };
+		TS00000002100003 /* DebtServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtServiceTests.swift; sourceTree = "<group>"; };
+		TS00000002100004 /* DevotionalServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionalServiceTests.swift; sourceTree = "<group>"; };
+		TS00000002100005 /* GenerosityScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerosityScoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +153,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		TS00000008000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -143,6 +168,7 @@
 			children = (
 				TS00000009000002 /* TitheSteward */,
 				TS00000009000010 /* TitheStewardWidgets */,
+				TS00000009000011 /* TitheStewardTests */,
 				TS00000009000099 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -291,7 +317,7 @@
 				TS00000002000018 /* StoreKitService.swift */,
 				TS00000002000019 /* WidgetDataService.swift */,
 				TS00000002000020 /* DebtService.swift */,
-				TS00000002000039 /* DevotionalContentLibrary.swift */,
+				TS00000002000041 /* DevotionalContentLibrary.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -324,11 +350,24 @@
 			path = TitheStewardWidgets;
 			sourceTree = "<group>";
 		};
+		TS00000009000011 /* TitheStewardTests */ = {
+			isa = PBXGroup;
+			children = (
+				TS00000002100001 /* TitheCalculatorServiceTests.swift */,
+				TS00000002100002 /* BudgetServiceTests.swift */,
+				TS00000002100003 /* DebtServiceTests.swift */,
+				TS00000002100004 /* DevotionalServiceTests.swift */,
+				TS00000002100005 /* GenerosityScoreTests.swift */,
+			);
+			path = TitheStewardTests;
+			sourceTree = "<group>";
+		};
 		TS00000009000099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				TS00000007000001 /* TitheSteward.app */,
 				TS00000007000002 /* TitheStewardWidgets.appex */,
+				TS00000007000003 /* TitheStewardTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -370,7 +409,32 @@
 			productReference = TS00000007000002 /* TitheStewardWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		TS00000005000003 /* TitheStewardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TS0000000A000004 /* Build configuration list for PBXNativeTarget "TitheStewardTests" */;
+			buildPhases = (
+				TS0000000B000003 /* Sources */,
+				TS00000008000003 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				TS0000000E000001 /* PBXTargetDependency */,
+			);
+			name = TitheStewardTests;
+			productName = TitheStewardTests;
+			productReference = TS00000007000003 /* TitheStewardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
+
+/* Begin PBXTargetDependency section */
+		TS0000000E000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = TS00000005000001 /* TitheSteward */;
+			targetProxy = TS00000003000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXProject section */
 		TS00000004000001 /* Project object */ = {
@@ -385,6 +449,10 @@
 					};
 					TS00000005000002 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					TS00000005000003 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = TS00000005000001;
 					};
 				};
 			};
@@ -403,6 +471,7 @@
 			targets = (
 				TS00000005000001 /* TitheSteward */,
 				TS00000005000002 /* TitheStewardWidgets */,
+				TS00000005000003 /* TitheStewardTests */,
 			);
 		};
 /* End PBXProject section */
@@ -444,7 +513,7 @@
 				TS00000001000018 /* StoreKitService.swift in Sources */,
 				TS00000001000019 /* WidgetDataService.swift in Sources */,
 				TS00000001000020 /* DebtService.swift in Sources */,
-				TS00000001000039 /* DevotionalContentLibrary.swift in Sources */,
+				TS00000001000041 /* DevotionalContentLibrary.swift in Sources */,
 				TS00000001000021 /* OnboardingViewModel.swift in Sources */,
 				TS00000001000022 /* DashboardViewModel.swift in Sources */,
 				TS00000001000023 /* TitheViewModel.swift in Sources */,
@@ -469,6 +538,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				TS00000001000050 /* TitheStewardWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TS0000000B000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TS00000001100001 /* TitheCalculatorServiceTests.swift in Sources */,
+				TS00000001100002 /* BudgetServiceTests.swift in Sources */,
+				TS00000001100003 /* DebtServiceTests.swift in Sources */,
+				TS00000001100004 /* DevotionalServiceTests.swift in Sources */,
+				TS00000001100005 /* GenerosityScoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +717,42 @@
 			};
 			name = Release;
 		};
+		TS0000000D000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tithesteward.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TitheSteward.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TitheSteward";
+			};
+			name = Debug;
+		};
+		TS0000000D000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tithesteward.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TitheSteward.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TitheSteward";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -662,6 +779,15 @@
 			buildConfigurations = (
 				TS0000000D000001 /* Debug */,
 				TS0000000D000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TS0000000A000004 /* Build configuration list for PBXNativeTarget "TitheStewardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TS0000000D000007 /* Debug */,
+				TS0000000D000008 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
