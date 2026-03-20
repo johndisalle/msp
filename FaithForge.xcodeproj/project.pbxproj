@@ -593,14 +593,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		AAD00002 /* FaithForgeShared */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
 			productName = FaithForgeShared;
 		};
 		AAD00003 /* FaithForgeShared */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
 			productName = FaithForgeShared;
 		};
 		AAD00004 /* FaithForgeShared */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
 			productName = FaithForgeShared;
 		};
 /* End XCSwiftPackageProductDependency section */
