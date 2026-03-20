@@ -10,6 +10,7 @@ struct NewJourneyView: View {
     @State private var selectedTheme: JourneyTheme = .knowingGod
     @State private var isGenerating = false
     @State private var showingPremiumSheet = false
+    @State private var saveError: String?
 
     private var profile: UserProfile? { profiles.first }
     private var isPremium: Bool { profile?.isPremium ?? false }
@@ -113,6 +114,14 @@ struct NewJourneyView: View {
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
             }
+            .alert("Save Failed", isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )) {
+                Button("OK") { saveError = nil }
+            } message: {
+                Text(saveError ?? "")
+            }
         }
     }
 
@@ -157,7 +166,13 @@ struct NewJourneyView: View {
         }
 
         modelContext.insert(newJourney)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to save your new journey. Please try again."
+            isGenerating = false
+            return
+        }
 
         isGenerating = false
         dismiss()

@@ -4,6 +4,7 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var profiles: [UserProfile]
+    @Query private var journeys: [Journey]
     @State private var showingPremiumSheet = false
     @State private var showingNewJourneySheet = false
 
@@ -42,6 +43,9 @@ struct SettingsView: View {
                     // Notifications
                     Section("Notifications") {
                         Toggle("Enable Notifications", isOn: Bindable(profile).notificationsEnabled)
+                            .onChange(of: profile.notificationsEnabled) { _, _ in
+                                rescheduleNotifications(for: profile)
+                            }
 
                         if profile.notificationsEnabled {
                             DatePicker(
@@ -49,12 +53,18 @@ struct SettingsView: View {
                                 selection: Bindable(profile).notificationMorningTime,
                                 displayedComponents: .hourAndMinute
                             )
+                            .onChange(of: profile.notificationMorningTime) { _, _ in
+                                rescheduleNotifications(for: profile)
+                            }
 
                             DatePicker(
                                 "Evening Check-In",
                                 selection: Bindable(profile).notificationEveningTime,
                                 displayedComponents: .hourAndMinute
                             )
+                            .onChange(of: profile.notificationEveningTime) { _, _ in
+                                rescheduleNotifications(for: profile)
+                            }
                         }
                     }
                 }
@@ -123,6 +133,28 @@ struct SettingsView: View {
                 NewJourneyView()
             }
         }
+    }
+    private func rescheduleNotifications(for profile: UserProfile) {
+        NotificationService.shared.cancelAllNotifications()
+        guard profile.notificationsEnabled,
+              let journey = journeys.first(where: { $0.isActive && !$0.isCompleted }),
+              let currentDay = journey.days
+                .sorted(by: { $0.dayNumber < $1.dayNumber })
+                .first(where: { !$0.isCompleted && $0.isUnlocked })
+                ?? journey.days
+                .sorted(by: { $0.dayNumber < $1.dayNumber })
+                .first(where: { !$0.isCompleted })
+        else { return }
+
+        NotificationService.shared.scheduleMorningReminder(
+            at: profile.notificationMorningTime,
+            dayNumber: currentDay.dayNumber,
+            verseSnippet: String(currentDay.scriptureText.prefix(60))
+        )
+        NotificationService.shared.scheduleEveningCheckIn(
+            at: profile.notificationEveningTime,
+            dayNumber: currentDay.dayNumber
+        )
     }
 }
 
