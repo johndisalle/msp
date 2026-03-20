@@ -64,7 +64,7 @@ final class SpeechRecognitionService {
             guard let self else { return }
             if let result {
                 Task { @MainActor in
-                    self.transcribedText = result.transcription.formattedString
+                    self.transcribedText = result.bestTranscription.formattedString
                 }
             }
             if error != nil || (result?.isFinal ?? false) {
