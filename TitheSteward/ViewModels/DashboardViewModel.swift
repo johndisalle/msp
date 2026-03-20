@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import WidgetKit
 
 @MainActor
 class DashboardViewModel: ObservableObject {
@@ -7,21 +8,28 @@ class DashboardViewModel: ObservableObject {
     @Published var generosityScore: GenerosityScore?
     @Published var todaysDevotional: Devotional?
     @Published var recentGifts: [TitheRecord] = []
+    @Published var isLoading = false
+    @Published var error: AppError?
 
     private var titheService: TitheCalculatorService?
     private var devotionalService: DevotionalService?
+    private var modelContext: ModelContext?
 
     func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
         self.titheService = TitheCalculatorService(modelContext: modelContext)
         self.devotionalService = DevotionalService(modelContext: modelContext)
         loadData(modelContext: modelContext)
     }
 
     func loadData(modelContext: ModelContext) {
+        isLoading = true
         loadProfile(modelContext: modelContext)
         loadDevotional()
         loadRecentGifts()
         calculateScore()
+        updateWidgets()
+        isLoading = false
     }
 
     private func loadProfile(modelContext: ModelContext) {
@@ -42,6 +50,33 @@ class DashboardViewModel: ObservableObject {
     private func calculateScore() {
         guard let profile = userProfile, let service = titheService else { return }
         generosityScore = service.calculateGenerosityScore(for: profile)
+    }
+
+    private func updateWidgets() {
+        guard let modelContext = modelContext,
+              let profile = userProfile,
+              let titheService = titheService,
+              let devotionalService = devotionalService else { return }
+
+        let debtService = DebtService(modelContext: modelContext)
+        let debts = debtService.fetchDebts()
+        let debtProgress = debtService.overallProgress(debts)
+
+        let score = titheService.calculateGenerosityScore(for: profile)
+        let devotional = devotionalService.todaysDevotional
+
+        let data = WidgetData(
+            titheProgressPercent: score.progressToTithe,
+            amountGivenThisMonth: NSDecimalNumber(decimal: score.totalGivenThisMonth).doubleValue,
+            titheGoal: NSDecimalNumber(decimal: score.monthlyTitheTarget).doubleValue,
+            generosityStreak: score.currentStreak,
+            generosityLevel: score.level.rawValue,
+            todaysVerse: devotional?.verse ?? "",
+            todaysVerseReference: devotional?.verseReference ?? "",
+            debtFreedomPercent: debtProgress
+        )
+        WidgetDataService.save(data)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // MARK: - Display Helpers

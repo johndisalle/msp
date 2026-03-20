@@ -11,6 +11,7 @@ class BudgetViewModel: ObservableObject {
     @Published var newAmount: String = ""
     @Published var newDescription: String = ""
     @Published var newNote: String = ""
+    @Published var error: AppError?
 
     private var budgetService: BudgetService?
     private var modelContext: ModelContext?
@@ -58,9 +59,15 @@ class BudgetViewModel: ObservableObject {
     }
 
     func addTransaction() {
-        guard let amount = Decimal(string: newAmount), amount > 0,
-              let category = selectedCategory,
-              let service = budgetService else { return }
+        guard let amount = Decimal(string: newAmount), amount > 0 else {
+            error = .invalidAmount
+            return
+        }
+        guard let category = selectedCategory,
+              let service = budgetService else {
+            error = .profileNotFound
+            return
+        }
 
         let transaction = BudgetTransaction(
             amount: amount,

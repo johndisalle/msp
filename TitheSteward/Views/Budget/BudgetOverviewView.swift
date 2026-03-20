@@ -110,6 +110,7 @@ struct BudgetOverviewView: View {
             .sheet(isPresented: $viewModel.showingAddTransaction) {
                 AddTransactionSheet(viewModel: viewModel)
             }
+            .errorAlert($viewModel.error)
         }
     }
 }

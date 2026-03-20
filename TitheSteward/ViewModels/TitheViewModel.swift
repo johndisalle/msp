@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import WidgetKit
 
 @MainActor
 class TitheViewModel: ObservableObject {
@@ -13,6 +14,7 @@ class TitheViewModel: ObservableObject {
     @Published var newNote: String = ""
     @Published var newIncomeSource: String = "Primary Income"
     @Published var newPaymentMethod: PaymentMethod = .manual
+    @Published var error: AppError?
 
     private var titheService: TitheCalculatorService?
     private var modelContext: ModelContext?
@@ -61,9 +63,15 @@ class TitheViewModel: ObservableObject {
     }
 
     func addRecord() {
-        guard let amount = Decimal(string: newAmount), amount > 0,
-              let profile = userProfile,
-              let service = titheService else { return }
+        guard let amount = Decimal(string: newAmount), amount > 0 else {
+            error = .invalidAmount
+            return
+        }
+        guard let profile = userProfile,
+              let service = titheService else {
+            error = .profileNotFound
+            return
+        }
 
         let record = TitheRecord(
             amount: amount,
@@ -77,11 +85,13 @@ class TitheViewModel: ObservableObject {
         service.addRecord(record, to: profile)
         clearForm()
         objectWillChange.send()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func deleteRecord(_ record: TitheRecord) {
         titheService?.deleteRecord(record)
         objectWillChange.send()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func clearForm() {

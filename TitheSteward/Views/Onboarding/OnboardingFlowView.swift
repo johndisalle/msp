@@ -48,17 +48,26 @@ struct OnboardingFlowView: View {
             HStack {
                 if viewModel.currentStep != .welcome {
                     Button("Back") {
-                        viewModel.previousStep()
+                        let generator = UIImpactFeedbackGenerator(style: .light)
+                        generator.impactOccurred()
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.previousStep()
+                        }
                     }
                     .foregroundColor(.secondary)
+                    .transition(.opacity)
                 }
 
                 Spacer()
 
                 if viewModel.currentStep == .complete {
                     Button("Begin Your Journey") {
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(.success)
                         viewModel.saveProfile()
-                        hasCompletedOnboarding = true
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            hasCompletedOnboarding = true
+                        }
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -66,9 +75,15 @@ struct OnboardingFlowView: View {
                     .padding(.vertical, 14)
                     .background(Color("AccentGold"))
                     .clipShape(Capsule())
+                    .scaleEffect(1.0)
+                    .shadow(color: Color("AccentGold").opacity(0.4), radius: 8, y: 4)
                 } else {
                     Button("Continue") {
-                        viewModel.nextStep()
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.impactOccurred()
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.nextStep()
+                        }
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -80,6 +95,7 @@ struct OnboardingFlowView: View {
                 }
             }
             .padding()
+            .animation(.easeInOut(duration: 0.3), value: viewModel.currentStep)
         }
         .background(Color("BackgroundPrimary"))
         .onAppear {
@@ -91,6 +107,12 @@ struct OnboardingFlowView: View {
 // MARK: - Step Views
 
 struct WelcomeStepView: View {
+    @State private var iconScale: CGFloat = 0.3
+    @State private var iconOpacity: Double = 0
+    @State private var titleOpacity: Double = 0
+    @State private var subtitleOpacity: Double = 0
+    @State private var verseOpacity: Double = 0
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
@@ -98,19 +120,24 @@ struct WelcomeStepView: View {
             Image(systemName: "heart.circle.fill")
                 .font(.system(size: 80))
                 .foregroundColor(Color("AccentGold"))
+                .scaleEffect(iconScale)
+                .opacity(iconOpacity)
 
             Text("Tithe Steward")
                 .font(.largeTitle.bold())
+                .opacity(titleOpacity)
 
             Text("Tithe First, Steward Faithfully")
                 .font(.title3)
                 .foregroundColor(.secondary)
+                .opacity(subtitleOpacity)
 
             Text("Turn Your Finances into Worship")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
+                .opacity(subtitleOpacity)
 
             Spacer()
 
@@ -119,14 +146,31 @@ struct WelcomeStepView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
+                .opacity(verseOpacity)
 
             Text("— Matthew 6:21")
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .opacity(verseOpacity)
 
             Spacer()
         }
         .padding()
+        .onAppear {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7).delay(0.2)) {
+                iconScale = 1.0
+                iconOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(0.5)) {
+                titleOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(0.8)) {
+                subtitleOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(1.1)) {
+                verseOpacity = 1.0
+            }
+        }
     }
 }
 
@@ -200,7 +244,11 @@ struct FaithQuizStepView: View {
 
             ForEach(TithingCommitment.allCases, id: \.self) { commitment in
                 Button {
-                    viewModel.tithingCommitment = commitment
+                    let generator = UISelectionFeedbackGenerator()
+                    generator.selectionChanged()
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        viewModel.tithingCommitment = commitment
+                    }
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -305,6 +353,7 @@ struct IncomeSetupStepView: View {
                 .padding()
                 .background(Color("AccentGold").opacity(0.1))
                 .cornerRadius(16)
+                .transition(.asymmetric(insertion: .scale(scale: 0.8).combined(with: .opacity), removal: .opacity))
             }
 
             Toggle("Do you currently carry any debt?", isOn: $viewModel.hasDebt)
@@ -313,6 +362,7 @@ struct IncomeSetupStepView: View {
             Spacer()
         }
         .padding(.horizontal)
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.monthlyIncome.isEmpty)
     }
 }
 
@@ -442,6 +492,9 @@ struct RemindersStepView: View {
 
 struct CompleteStepView: View {
     @ObservedObject var viewModel: OnboardingViewModel
+    @State private var sealScale: CGFloat = 0.3
+    @State private var sealOpacity: Double = 0
+    @State private var contentOpacity: Double = 0
 
     var body: some View {
         VStack(spacing: 24) {
@@ -450,13 +503,17 @@ struct CompleteStepView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 80))
                 .foregroundColor(Color("AccentGold"))
+                .scaleEffect(sealScale)
+                .opacity(sealOpacity)
 
             Text("You're Ready!")
                 .font(.largeTitle.bold())
+                .opacity(contentOpacity)
 
             Text("Your stewardship journey begins now")
                 .font(.title3)
                 .foregroundColor(.secondary)
+                .opacity(contentOpacity)
 
             VStack(alignment: .leading, spacing: 12) {
                 if !viewModel.displayName.isEmpty {
@@ -473,20 +530,34 @@ struct CompleteStepView: View {
             .padding()
             .background(Color(.systemGray6))
             .cornerRadius(16)
+            .opacity(contentOpacity)
 
             Spacer()
 
             Text("\"God loves a cheerful giver.\"")
                 .font(.callout.italic())
                 .foregroundColor(.secondary)
+                .opacity(contentOpacity)
 
             Text("— 2 Corinthians 9:7")
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .opacity(contentOpacity)
 
             Spacer()
         }
         .padding(.horizontal)
+        .onAppear {
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6).delay(0.1)) {
+                sealScale = 1.0
+                sealOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(0.4)) {
+                contentOpacity = 1.0
+            }
+        }
     }
 }
 

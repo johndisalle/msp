@@ -155,6 +155,7 @@ struct TitheTrackerView: View {
             .sheet(isPresented: $viewModel.showingAddRecord) {
                 AddTitheRecordSheet(viewModel: viewModel)
             }
+            .errorAlert($viewModel.error)
         }
     }
 }

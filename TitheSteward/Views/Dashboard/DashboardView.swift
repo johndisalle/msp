@@ -53,6 +53,14 @@ struct DashboardView: View {
             .refreshable {
                 viewModel.loadData(modelContext: modelContext)
             }
+            .overlay {
+                if viewModel.isLoading {
+                    ProgressView("Loading your stewardship data...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(.ultraThinMaterial)
+                }
+            }
+            .errorAlert($viewModel.error)
         }
     }
 }

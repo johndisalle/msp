@@ -45,6 +45,7 @@ struct WidgetDisplayData: Codable {
     var generosityLevel: String
     var todaysVerse: String
     var todaysVerseReference: String
+    var debtFreedomPercent: Double
 
     static var placeholder: WidgetDisplayData {
         WidgetDisplayData(
@@ -54,7 +55,8 @@ struct WidgetDisplayData: Codable {
             generosityStreak: 12,
             generosityLevel: "Joyful Tither",
             todaysVerse: "Honor the LORD with your wealth...",
-            todaysVerseReference: "Proverbs 3:9"
+            todaysVerseReference: "Proverbs 3:9",
+            debtFreedomPercent: 0.42
         )
     }
 }

@@ -44,6 +44,9 @@
 		TS00000001000035 /* DebtDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000035 /* DebtDashboardView.swift */; };
 		TS00000001000036 /* ProgressCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000036 /* ProgressCircleView.swift */; };
 		TS00000001000041 /* DevotionalContentLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000041 /* DevotionalContentLibrary.swift */; };
+		TS00000001000042 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000042 /* AppError.swift */; };
+		TS00000001000043 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000043 /* LaunchScreenView.swift */; };
+		TS00000001000044 /* AppIconGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000044 /* AppIconGenerator.swift */; };
 		TS00000001000037 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000037 /* Assets.xcassets */; };
 		TS00000001000038 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000040 /* Products.storekit */; };
 		TS00000001000050 /* TitheStewardWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000050 /* TitheStewardWidgets.swift */; };
@@ -106,6 +109,9 @@
 		TS00000002000019 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
 		TS00000002000020 /* DebtService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtService.swift; sourceTree = "<group>"; };
 		TS00000002000041 /* DevotionalContentLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionalContentLibrary.swift; sourceTree = "<group>"; };
+		TS00000002000042 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		TS00000002000043 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
+		TS00000002000044 /* AppIconGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconGenerator.swift; sourceTree = "<group>"; };
 		TS00000002000021 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000022 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000023 /* TitheViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitheViewModel.swift; sourceTree = "<group>"; };
@@ -183,6 +189,7 @@
 				TS00000009000006 /* Views */,
 				TS00000009000007 /* Services */,
 				TS00000009000008 /* Extensions */,
+				TS00000009000068 /* Utilities */,
 				TS00000009000009 /* Resources */,
 			);
 			path = TitheSteward;
@@ -302,6 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				TS00000002000036 /* ProgressCircleView.swift */,
+				TS00000002000043 /* LaunchScreenView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -318,6 +326,7 @@
 				TS00000002000019 /* WidgetDataService.swift */,
 				TS00000002000020 /* DebtService.swift */,
 				TS00000002000041 /* DevotionalContentLibrary.swift */,
+				TS00000002000042 /* AppError.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -329,6 +338,14 @@
 				TS00000002000005 /* View+Extensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		TS00000009000068 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				TS00000002000044 /* AppIconGenerator.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		TS00000009000009 /* Resources */ = {
@@ -530,6 +547,9 @@
 				TS00000001000034 /* PremiumPaywallView.swift in Sources */,
 				TS00000001000035 /* DebtDashboardView.swift in Sources */,
 				TS00000001000036 /* ProgressCircleView.swift in Sources */,
+				TS00000001000042 /* AppError.swift in Sources */,
+				TS00000001000043 /* LaunchScreenView.swift in Sources */,
+				TS00000001000044 /* AppIconGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
