@@ -44,10 +44,20 @@ final class StoreKitService {
         errorMessage = nil
 
         do {
-            products = try await Product.products(for: Self.allProductIDs)
-                .sorted { $0.price < $1.price }
+            let requestedIDs = Self.allProductIDs
+            print("[StoreKit] Requesting products for IDs: \(requestedIDs)")
+            let loadedProducts = try await Product.products(for: requestedIDs)
+            print("[StoreKit] Loaded \(loadedProducts.count) products:")
+            for product in loadedProducts {
+                print("[StoreKit]   - \(product.id): \(product.displayName) (\(product.displayPrice))")
+            }
+            if loadedProducts.isEmpty {
+                print("[StoreKit] WARNING: No products returned. Check that the StoreKit Configuration file is set in the scheme (Product → Scheme → Edit Scheme → Run → Options → StoreKit Configuration).")
+            }
+            products = loadedProducts.sorted { $0.price < $1.price }
             isLoading = false
         } catch {
+            print("[StoreKit] ERROR loading products: \(error)")
             errorMessage = "Failed to load products: \(error.localizedDescription)"
             isLoading = false
         }
