@@ -103,6 +103,7 @@ struct DailyExperienceView: View {
                 JournalEntrySheet(
                     journalText: $viewModel.journalText,
                     selectedMood: $viewModel.selectedMood,
+                    isVoiceEntry: $viewModel.isVoiceJournalEntry,
                     prompt: viewModel.currentDay?.reflectionPrompt ?? ""
                 )
             }

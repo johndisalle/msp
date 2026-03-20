@@ -2,35 +2,28 @@ import SwiftUI
 import SwiftData
 
 struct WatchHomeView: View {
-    @Query(filter: #Predicate<Journey> { $0.isActive }) private var journeys: [Journey]
+    @State private var sync = WatchSyncReceiver.shared
     @State private var showingPrayerTimer = false
     @State private var selectedTab = 0
 
-    private var activeJourney: Journey? { journeys.first }
-    private var currentDay: JourneyDay? {
-        activeJourney?.days
-            .sorted { $0.dayNumber < $1.dayNumber }
-            .first { !$0.isCompleted && $0.isUnlocked }
-    }
-
     var body: some View {
         NavigationStack {
-            if let journey = activeJourney, let day = currentDay {
+            if sync.hasData {
                 TabView(selection: $selectedTab) {
                     // Tab 1: Today's Overview
-                    WatchTodayTab(journey: journey, day: day, showingPrayerTimer: $showingPrayerTimer)
+                    WatchTodayTab(sync: sync, showingPrayerTimer: $showingPrayerTimer)
                         .tag(0)
 
                     // Tab 2: Scripture Detail
-                    WatchScriptureTab(day: day)
+                    WatchScriptureTab(sync: sync)
                         .tag(1)
 
                     // Tab 3: Devotional
-                    WatchDevotionalTab(day: day)
+                    WatchDevotionalTab(sync: sync)
                         .tag(2)
 
                     // Tab 4: Stats
-                    WatchStatsTab(journey: journey)
+                    WatchStatsTab(sync: sync)
                         .tag(3)
                 }
                 .tabViewStyle(.verticalPage)
@@ -52,8 +45,7 @@ struct WatchHomeView: View {
 // MARK: - Today Tab
 
 struct WatchTodayTab: View {
-    let journey: Journey
-    let day: JourneyDay
+    let sync: WatchSyncReceiver
     @Binding var showingPrayerTimer: Bool
 
     var body: some View {
@@ -61,14 +53,14 @@ struct WatchTodayTab: View {
             VStack(spacing: 12) {
                 // Day progress
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Day \(day.dayNumber)/\(journey.totalDays)")
+                    Text("Day \(sync.dayNumber)/\(sync.totalDays)")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
 
-                    Text(day.focusArea.rawValue)
+                    Text(sync.focusArea)
                         .font(.headline)
 
-                    ProgressView(value: journey.progress)
+                    ProgressView(value: sync.progress)
                         .tint(.accent)
                 }
                 .padding()
@@ -79,10 +71,10 @@ struct WatchTodayTab: View {
 
                 // Quick verse preview
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(day.scriptureReference)
+                    Text(sync.scriptureReference)
                         .font(.caption2.bold())
                         .foregroundStyle(.accent)
-                    Text(day.scriptureText)
+                    Text(sync.scriptureText)
                         .font(.caption)
                         .lineLimit(2)
                 }
@@ -117,7 +109,7 @@ struct WatchTodayTab: View {
 // MARK: - Scripture Tab
 
 struct WatchScriptureTab: View {
-    let day: JourneyDay
+    let sync: WatchSyncReceiver
 
     var body: some View {
         ScrollView {
@@ -129,11 +121,11 @@ struct WatchScriptureTab: View {
                         .font(.caption.bold())
                 }
 
-                Text(day.scriptureReference)
+                Text(sync.scriptureReference)
                     .font(.caption.bold())
                     .foregroundStyle(.accent)
 
-                Text(""\(day.scriptureText)"")
+                Text("\u{201C}\(sync.scriptureText)\u{201D}")
                     .font(.caption)
                     .italic()
                     .lineSpacing(3)
@@ -147,7 +139,7 @@ struct WatchScriptureTab: View {
 // MARK: - Devotional Tab
 
 struct WatchDevotionalTab: View {
-    let day: JourneyDay
+    let sync: WatchSyncReceiver
 
     var body: some View {
         ScrollView {
@@ -159,10 +151,10 @@ struct WatchDevotionalTab: View {
                         .font(.caption.bold())
                 }
 
-                Text(day.devotionalTitle)
+                Text(sync.devotionalTitle)
                     .font(.caption.bold())
 
-                Text(day.devotionalText)
+                Text(sync.devotionalText)
                     .font(.caption2)
                     .lineSpacing(3)
                     .fixedSize(horizontal: false, vertical: true)
@@ -176,7 +168,7 @@ struct WatchDevotionalTab: View {
                         Text("Reflect")
                             .font(.caption2.bold())
                     }
-                    Text(day.reflectionPrompt)
+                    Text(sync.reflectionPrompt)
                         .font(.caption2)
                         .italic()
                         .foregroundStyle(.secondary)
@@ -191,14 +183,10 @@ struct WatchDevotionalTab: View {
 // MARK: - Stats Tab
 
 struct WatchStatsTab: View {
-    let journey: Journey
-
-    private var streakInfo: StreakService.StreakInfo {
-        StreakService.shared.calculateStreak(for: journey)
-    }
+    let sync: WatchSyncReceiver
 
     private var completedDays: Int {
-        journey.days.filter { $0.isCompleted }.count
+        sync.currentDay
     }
 
     var body: some View {
@@ -214,14 +202,14 @@ struct WatchStatsTab: View {
                         .stroke(Color(.darkGray), lineWidth: 6)
                         .frame(width: 80, height: 80)
                     Circle()
-                        .trim(from: 0, to: journey.progress)
+                        .trim(from: 0, to: sync.progress)
                         .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                         .frame(width: 80, height: 80)
                         .rotationEffect(.degrees(-90))
                     VStack(spacing: 1) {
                         Text("\(completedDays)")
                             .font(.title3.bold())
-                        Text("of \(journey.totalDays)")
+                        Text("of \(sync.totalDays)")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -230,13 +218,13 @@ struct WatchStatsTab: View {
                 // Streak stats
                 HStack(spacing: 16) {
                     WatchStatItem(
-                        value: "\(streakInfo.currentStreak)",
+                        value: "\(sync.currentStreak)",
                         label: "Streak",
                         icon: "flame.fill",
                         color: .orange
                     )
                     WatchStatItem(
-                        value: "\(streakInfo.longestStreak)",
+                        value: "\(sync.longestStreak)",
                         label: "Best",
                         icon: "trophy.fill",
                         color: .yellow
@@ -370,5 +358,4 @@ struct WatchPrayerTimerView: View {
 
 #Preview {
     WatchHomeView()
-        .modelContainer(for: Journey.self, inMemory: true)
 }

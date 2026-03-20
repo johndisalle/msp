@@ -6,17 +6,14 @@ struct AbideJourneyWatchApp: App {
     let modelContainer: ModelContainer?
 
     init() {
+        // Initialize WatchConnectivity receiver early
+        _ = WatchSyncReceiver.shared
+
         do {
-            let schema = Schema([
-                UserProfile.self,
-                Journey.self,
-                JourneyDay.self,
-                PrayerSession.self
-            ])
+            let schema = Schema([PrayerSession.self])
             let config = ModelConfiguration(
                 schema: schema,
-                isStoredInMemoryOnly: false,
-                cloudKitDatabase: .automatic
+                isStoredInMemoryOnly: false
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {
@@ -30,11 +27,7 @@ struct AbideJourneyWatchApp: App {
                 WatchHomeView()
                     .modelContainer(modelContainer)
             } else {
-                ContentUnavailableView(
-                    "Unable to Load",
-                    systemImage: "exclamationmark.triangle.fill",
-                    description: Text("Please restart the app.")
-                )
+                WatchHomeView()
             }
         }
     }

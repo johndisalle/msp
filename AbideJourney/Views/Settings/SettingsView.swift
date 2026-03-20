@@ -168,6 +168,17 @@ struct SettingsView: View {
                     }
                 }
 
+                // Accountability (Premium)
+                if profile?.isPremium == true {
+                    Section("Accountability") {
+                        NavigationLink {
+                            AccountabilityView()
+                        } label: {
+                            Label("Accountability Partners", systemImage: "person.2.fill")
+                        }
+                    }
+                }
+
                 // Premium
                 Section("Premium") {
                     if profile?.isPremium == true {

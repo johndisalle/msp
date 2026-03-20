@@ -77,6 +77,24 @@ final class DailyExperienceViewModel {
                 verseReference: day.scriptureReference,
                 focusArea: day.focusArea.rawValue
             )
+
+            // Sync current day to Apple Watch
+            let streakInfo = StreakService.shared.calculateStreak(for: activeJourney)
+            WatchSyncService.shared.sync(
+                dayNumber: day.dayNumber,
+                totalDays: activeJourney.totalDays,
+                currentDay: activeJourney.currentDay,
+                focusArea: day.focusArea.rawValue,
+                scriptureReference: day.scriptureReference,
+                scriptureText: day.scriptureText,
+                devotionalTitle: day.devotionalTitle,
+                devotionalText: day.devotionalText,
+                reflectionPrompt: day.reflectionPrompt,
+                journeyTitle: activeJourney.title,
+                progress: activeJourney.progress,
+                currentStreak: streakInfo.currentStreak,
+                longestStreak: streakInfo.longestStreak
+            )
         }
 
         // Request HealthKit authorization on first load
@@ -122,12 +140,11 @@ final class DailyExperienceViewModel {
             journeyJustCompleted = true
         }
 
-        // Adapt upcoming content only when the current check-in warrants it
-        // (missed or tough), not based on stale history from the rolling window
-        if rating == .missed || rating == .tough {
-            let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
-            AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
-        }
+        // Adapt upcoming content based on rolling weekly sentiment analysis.
+        // The service handles all cases: grace for struggling, encouragement
+        // for needs-grace, bonus challenges for thriving, and no-op for steady.
+        let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
+        AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
 
         do {
             try context.save()

@@ -4,6 +4,7 @@ struct JournalEntrySheet: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var journalText: String
     @Binding var selectedMood: Mood?
+    @Binding var isVoiceEntry: Bool
     let prompt: String
     @FocusState private var isFocused: Bool
     @State private var speechService = SpeechRecognitionService()
@@ -180,6 +181,7 @@ struct JournalEntrySheet: View {
                         speechService.startRecording()
                     }
                     isVoiceMode = true
+                    isVoiceEntry = true
                 }
             }
         }
@@ -190,6 +192,7 @@ struct JournalEntrySheet: View {
     JournalEntrySheet(
         journalText: .constant(""),
         selectedMood: .constant(nil),
+        isVoiceEntry: .constant(false),
         prompt: "How has God shown His faithfulness to you this week?"
     )
 }
