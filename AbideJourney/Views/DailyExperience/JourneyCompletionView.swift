@@ -1,7 +1,9 @@
 import SwiftUI
+import StoreKit
 
 struct JourneyCompletionView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     let journey: Journey?
     let isPremium: Bool
     let onStartNewJourney: () -> Void
@@ -93,6 +95,10 @@ struct JourneyCompletionView: View {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
                     animateConfetti = true
                 }
+                // Ask for App Store review after a short delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    requestReview()
+                }
             }
         }
         .presentationDetents([.large])
@@ -155,7 +161,7 @@ struct JourneyCompletionView: View {
                 }
             } label: {
                 HStack {
-                    Text("Try Premium Free for 7 Days")
+                    Text("Try Premium Free for 3 Days")
                         .font(.subheadline.bold())
                     Image(systemName: "arrow.right")
                         .font(.caption)

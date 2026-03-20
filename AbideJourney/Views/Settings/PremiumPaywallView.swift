@@ -30,7 +30,7 @@ struct PremiumPaywallView: View {
         ("paintpalette.fill", "Custom Themes", "Anxiety, grief, leadership & more deep-dive journeys"),
         ("person.2.fill", "Accountability", "Connect with trusted friends for mutual encouragement"),
         ("square.and.arrow.up", "Export Journals", "Save your reflections as beautiful PDFs"),
-        ("xmark.circle", "Ad-Free", "Distraction-free devotional experience")
+        ("xmark.circle", "Ad-Free", "Distraction-free devotional experience — and we tithe our profits")
     ]
 
     // Premium-only journey themes to showcase
@@ -82,7 +82,7 @@ struct PremiumPaywallView: View {
                             return storeService.monthlyProduct?.displayPrice ?? "$4.99"
                         }
                     }()
-                    Text("7-day free trial, then \(priceText)/\(selectedPlan == .yearly ? "year" : "month"). Cancel anytime.")
+                    Text("3-day free trial, then \(priceText)/\(selectedPlan == .yearly ? "year" : "month"). Cancel anytime.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -142,7 +142,7 @@ struct PremiumPaywallView: View {
                 .padding(.top, 24)
                 .accessibilityHidden(true)
 
-            Text("Try Premium Free\nfor 7 Days")
+            Text("Try Premium Free\nfor 3 Days")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
 
@@ -317,7 +317,7 @@ struct PremiumPaywallView: View {
                     VStack(spacing: 2) {
                         Text("Start Your Free Trial")
                             .font(.headline)
-                        Text("No charge for 7 days")
+                        Text("No charge for 3 days")
                             .font(.caption)
                             .opacity(0.85)
                     }
