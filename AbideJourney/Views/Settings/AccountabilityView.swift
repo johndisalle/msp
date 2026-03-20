@@ -9,6 +9,7 @@ struct AccountabilityView: View {
     @State private var showingAddSheet = false
     @State private var showingShareSheet = false
     @State private var shareMessage = ""
+    @State private var saveError: String?
 
     private var activeJourney: Journey? {
         journeys.first(where: { $0.isActive && !$0.isCompleted })
@@ -121,27 +122,47 @@ struct AccountabilityView: View {
         .sheet(isPresented: $showingShareSheet) {
             ShareSheet(items: [shareMessage])
         }
+        .alert("Save Failed", isPresented: Binding(
+            get: { saveError != nil },
+            set: { if !$0 { saveError = nil } }
+        )) {
+            Button("OK") { saveError = nil }
+        } message: {
+            Text(saveError ?? "")
+        }
     }
 
     private func addPartner(name: String, email: String) {
         let partner = AccountabilityPartner(name: name, email: email)
         partner.user = profiles.first
         modelContext.insert(partner)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to add partner. Please try again."
+        }
     }
 
     private func deletePartners(at offsets: IndexSet) {
         for index in offsets {
             modelContext.delete(partners[index])
         }
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to remove partner. Please try again."
+        }
     }
 
     private func sendEncouragement(to partner: AccountabilityPartner) {
         let userName = profiles.first?.name ?? "Your friend"
         shareMessage = "Hey \(partner.name)! \(userName) is thinking of you and praying for you on the Abide Journey. Keep going strong! 🙏"
         partner.lastEncouragementSent = Date()
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to record encouragement. Please try again."
+        }
         showingShareSheet = true
     }
 

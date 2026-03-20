@@ -8,6 +8,7 @@ struct JournalListView: View {
     @State private var showingShareSheet = false
     @State private var exportedPDFURL: URL?
     @State private var isExporting = false
+    @State private var exportError: String?
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -90,6 +91,14 @@ struct JournalListView: View {
                     ShareSheet(items: [url])
                 }
             }
+            .alert("Export Failed", isPresented: Binding(
+                get: { exportError != nil },
+                set: { if !$0 { exportError = nil } }
+            )) {
+                Button("OK") { exportError = nil }
+            } message: {
+                Text(exportError ?? "")
+            }
         }
     }
 
@@ -106,7 +115,15 @@ struct JournalListView: View {
 
             let tempURL = FileManager.default.temporaryDirectory
                 .appendingPathComponent("AbideJourney-Journal.pdf")
-            try? pdfData.write(to: tempURL)
+            do {
+                try pdfData.write(to: tempURL)
+            } catch {
+                DispatchQueue.main.async {
+                    exportError = "Could not save the PDF for sharing. Please try again."
+                    isExporting = false
+                }
+                return
+            }
 
             DispatchQueue.main.async {
                 exportedPDFURL = tempURL

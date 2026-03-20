@@ -102,12 +102,16 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Link(destination: URL(string: "https://abidejourney.com/privacy")!) {
-                        Label("Privacy Policy", systemImage: "hand.raised")
+                    if let privacyURL = URL(string: "https://abidejourney.com/privacy") {
+                        Link(destination: privacyURL) {
+                            Label("Privacy Policy", systemImage: "hand.raised")
+                        }
                     }
 
-                    Link(destination: URL(string: "https://abidejourney.com/terms")!) {
-                        Label("Terms of Service", systemImage: "doc.text")
+                    if let termsURL = URL(string: "https://abidejourney.com/terms") {
+                        Link(destination: termsURL) {
+                            Label("Terms of Service", systemImage: "doc.text")
+                        }
                     }
                 }
             }

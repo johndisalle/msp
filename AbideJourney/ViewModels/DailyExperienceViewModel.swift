@@ -13,6 +13,7 @@ final class DailyExperienceViewModel {
     var showingPrayerTimer = false
     var journeyJustCompleted = false
     var actionSteps: [ActionStep] = []
+    var saveError: String?
 
     let prayerTimer = PrayerTimerService()
     let audioPlayer = AudioPlayerService.shared
@@ -100,7 +101,11 @@ final class DailyExperienceViewModel {
         let analysis = AdaptiveJourneyService.shared.analyzeRecentWeek(journey: journey)
         AdaptiveJourneyService.shared.adaptUpcomingContent(journey: journey, analysis: analysis)
 
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            saveError = "Failed to save your progress. Please try again."
+        }
 
         // Schedule next day's notifications
         if let profile = journey.user, let nextDay = journey.days.first(where: { $0.dayNumber == nextDayNumber }) {
@@ -134,7 +139,11 @@ final class DailyExperienceViewModel {
         )
         checkIn.journeyDay = day
         context.insert(checkIn)
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            saveError = "Failed to save your check-in. Please try again."
+        }
 
         showingCheckInSheet = false
     }
@@ -159,7 +168,11 @@ final class DailyExperienceViewModel {
             type: .devotional
         )
         context.insert(session)
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            saveError = "Failed to save your prayer session. Please try again."
+        }
 
         // Save to HealthKit as Mindfulness session
         if let startDate = prayerTimer.sessionStartDate {

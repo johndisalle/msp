@@ -15,7 +15,6 @@ final class NotificationService {
             let granted = try await center.requestAuthorization(options: [.alert, .badge, .sound])
             return granted
         } catch {
-            print("Notification authorization error: \(error)")
             return false
         }
     }

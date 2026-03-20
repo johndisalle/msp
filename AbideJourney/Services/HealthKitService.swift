@@ -25,7 +25,6 @@ final class HealthKitService {
             try await healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead)
             return true
         } catch {
-            print("HealthKit authorization failed: \(error)")
             return false
         }
     }

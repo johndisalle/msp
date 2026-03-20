@@ -67,7 +67,6 @@ final class LiveActivityService {
                 pushType: nil
             )
         } catch {
-            print("Failed to start Live Activity: \(error)")
         }
     }
 

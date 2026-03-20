@@ -94,7 +94,11 @@ struct PremiumPaywallView: View {
                             if storeService.isPremium {
                                 if let profile = profiles.first {
                                     profile.isPremium = true
-                                    try? modelContext.save()
+                                    do {
+                                        try modelContext.save()
+                                    } catch {
+                                        purchaseError = "Purchase restored but profile could not be updated."
+                                    }
                                 }
                                 dismiss()
                             }
@@ -115,7 +119,11 @@ struct PremiumPaywallView: View {
                 if storeService.isPremium {
                     if let profile = profiles.first {
                         profile.isPremium = true
-                        try? modelContext.save()
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            purchaseError = "Premium status could not be saved. Please restart the app."
+                        }
                     }
                 }
             }
@@ -344,7 +352,11 @@ struct PremiumPaywallView: View {
                 // Purchase successful
                 if let profile = profiles.first {
                     profile.isPremium = true
-                    try? modelContext.save()
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        purchaseError = "Purchase succeeded but profile could not be updated. Please restart the app."
+                    }
                 }
                 dismiss()
             }
