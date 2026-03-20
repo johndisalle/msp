@@ -9,6 +9,8 @@ struct SettingsView: View {
     @State private var showingBadges = false
     @State private var showingReports = false
     @State private var showingTaxSummary = false
+    @State private var showingGivingPlan = false
+    @State private var showingTaxPrep = false
 
     var body: some View {
         NavigationStack {
@@ -90,6 +92,34 @@ struct SettingsView: View {
                         }
                     } label: {
                         PremiumToolRow(label: "Tax Summary & Export", icon: "doc.text.fill", isPremium: appState.isPremium)
+                    }
+
+                    Button {
+                        if appState.isPremium {
+                            showingGivingPlan = true
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
+                        PremiumToolRow(label: "Personalized Giving Plan", icon: "map.fill", isPremium: appState.isPremium)
+                    }
+
+                    Button {
+                        if appState.isPremium {
+                            showingTaxPrep = true
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
+                        PremiumToolRow(label: "Tax Prep & CPA Letter", icon: "doc.text.magnifyingglass", isPremium: appState.isPremium)
+                    }
+                }
+
+                Section("Connections") {
+                    NavigationLink {
+                        BankConnectionView()
+                    } label: {
+                        Label("Bank Connection", systemImage: "building.columns.circle.fill")
                     }
                 }
 
@@ -174,6 +204,16 @@ struct SettingsView: View {
             .sheet(isPresented: $showingTaxSummary) {
                 NavigationStack {
                     TaxSummaryView()
+                }
+            }
+            .sheet(isPresented: $showingGivingPlan) {
+                NavigationStack {
+                    GivingPlanView()
+                }
+            }
+            .sheet(isPresented: $showingTaxPrep) {
+                NavigationStack {
+                    TaxPrepView()
                 }
             }
         }

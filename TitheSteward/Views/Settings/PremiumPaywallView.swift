@@ -36,6 +36,9 @@ struct PremiumPaywallView: View {
                         PremiumFeatureRow(icon: "trophy.fill", title: "Generosity Badges", description: "Celebrate milestones with shareable achievements")
                         PremiumFeatureRow(icon: "arrow.triangle.2.circlepath", title: "Recurring Giving", description: "Schedule automatic Apple Pay donations")
                         PremiumFeatureRow(icon: "chart.bar.fill", title: "Advanced Reports", description: "Trends, projections, and Scripture overlays")
+                        PremiumFeatureRow(icon: "map.fill", title: "Personalized Giving Plan", description: "AI-powered phased plan to reach your tithe goal")
+                        PremiumFeatureRow(icon: "doc.text.magnifyingglass", title: "Tax Prep Export", description: "TurboTax CSV, CPA letters, and PDF reports")
+                        PremiumFeatureRow(icon: "building.columns.circle.fill", title: "Smart Tithe Calculator", description: "Auto-detect income and calculate tithe instantly")
                         PremiumFeatureRow(icon: "rectangle.3.group.fill", title: "Premium Widgets", description: "Generosity streak & debt freedom progress")
                     }
                     .padding(.horizontal)

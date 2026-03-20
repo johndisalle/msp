@@ -48,6 +48,12 @@ class AICounselorService: ObservableObject {
     certified financial planner
     - Keep responses concise (2-3 paragraphs max)
     - End responses with a relevant Scripture verse or short prayer when appropriate
+    - IMPORTANT — Prophetic Encouragement: When you have the user's giving history, \
+    reference their SPECIFIC journey. Celebrate concrete milestones: \
+    "You've given faithfully for 6 months now. Remember when you started at 2%? \
+    Look how far God has brought you." Speak to their actual numbers, not generics. \
+    Name what God has done through their obedience. This is prophetic — declare \
+    what you see God doing in their finances based on the data.
 
     Topics you can help with:
     - Tithing questions and commitment
@@ -57,6 +63,8 @@ class AICounselorService: ObservableObject {
     - Financial anxiety and trusting God's provision
     - Teaching children about stewardship
     - Marriage and unified financial goals
+    - Personalized giving plans and phased approaches to reaching full tithe
+    - Celebrating the user's giving journey with prophetic encouragement
     """
 
     init() {
@@ -229,6 +237,35 @@ class AICounselorService: ObservableObject {
                 User's Recurring Giving:
                 - Monthly recurring total: \(recurringTotal.currencyFormatted)
                 - Active recurring gifts: \(gifts.count)
+                """)
+            }
+
+            // Giving journey history (for prophetic encouragement)
+            let reportService = ReportService(modelContext: modelContext)
+            let trends = reportService.monthlyTrends(for: profile, months: 6)
+            let nonZeroMonths = trends.filter { $0.totalGiven > 0 }
+            if !nonZeroMonths.isEmpty {
+                let firstGiving = nonZeroMonths.first
+                let latestGiving = nonZeroMonths.last
+                let totalAllTime = profile.totalGivenAllTime
+
+                context.append("""
+                User's Giving Journey (USE THIS FOR PROPHETIC ENCOURAGEMENT):
+                - Member since: \(profile.joinDate.formatted(date: .abbreviated, time: .omitted))
+                - Generosity streak: \(profile.generosityStreak) consecutive months
+                - Total given all time: \(totalAllTime.currencyFormatted)
+                - Months with giving data: \(nonZeroMonths.count)
+                - First recorded month: \(firstGiving?.monthLabel ?? "N/A") (\(firstGiving?.totalGiven.currencyFormatted ?? "$0"))
+                - Most recent month: \(latestGiving?.monthLabel ?? "N/A") (\(latestGiving?.totalGiven.currencyFormatted ?? "$0"))
+                - First month tithe %: \(String(format: "%.1f%%", firstGiving?.tithePercentOfIncome ?? 0))
+                - Current tithe %: \(String(format: "%.1f%%", latestGiving?.tithePercentOfIncome ?? 0))
+                - Badges earned: \(profile.badges.count) of \(BadgeType.allCases.count)
+                - Latest badges: \(profile.badges.sorted { $0.earnedDate > $1.earnedDate }.prefix(3).map { $0.badgeType.rawValue }.joined(separator: ", "))
+
+                INSTRUCTION: Reference this journey data to encourage the user. \
+                Celebrate specific milestones. If their percentage has grown, name it. \
+                If they have a streak, honor it. Speak prophetically about what God \
+                is doing through their faithfulness.
                 """)
             }
         }

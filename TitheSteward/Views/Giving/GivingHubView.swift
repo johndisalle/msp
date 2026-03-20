@@ -4,11 +4,35 @@ import SwiftData
 struct GivingHubView: View {
     @StateObject private var viewModel = GivingViewModel()
     @Environment(\.modelContext) private var modelContext
+    @State private var showingGiveNow = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    // Give Now CTA
+                    Button {
+                        showingGiveNow = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "heart.circle.fill")
+                                .font(.title2)
+                            VStack(alignment: .leading) {
+                                Text("Give Now")
+                                    .font(.headline)
+                                Text("Send a gift directly to a church or ministry")
+                                    .font(.caption)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color("AccentGold"))
+                        .cornerRadius(16)
+                    }
+                    .padding(.horizontal)
+
                     // Quick Give Section
                     VStack(spacing: 12) {
                         HStack {
@@ -224,6 +248,9 @@ struct GivingHubView: View {
             }
             .sheet(isPresented: $viewModel.showingAddRecurring) {
                 AddRecurringGiftSheet(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingGiveNow) {
+                GiveNowView(recipient: viewModel.selectedRecipient)
             }
         }
     }
