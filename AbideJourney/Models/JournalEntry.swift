@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
@@ -49,6 +50,28 @@ enum Mood: String, Codable, CaseIterable {
         case .reflective: return "\u{1F914}"   // thinking face
         case .struggling: return "\u{1F614}"   // pensive face
         case .hopeful: return "\u{1F31F}"      // glowing star
+        }
+    }
+
+    var sfSymbol: String {
+        switch self {
+        case .joyful: return "sun.max.fill"
+        case .peaceful: return "leaf.fill"
+        case .grateful: return "heart.fill"
+        case .reflective: return "text.bubble.fill"
+        case .struggling: return "cloud.heavyrain.fill"
+        case .hopeful: return "sparkles"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .joyful: return .yellow
+        case .peaceful: return .green
+        case .grateful: return .orange
+        case .reflective: return .blue
+        case .struggling: return .purple
+        case .hopeful: return .yellow
         }
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
@@ -54,6 +55,26 @@ enum CheckInRating: String, Codable, CaseIterable {
         case .okay: return "\u{1F610}"          // neutral face
         case .tough: return "\u{1F613}"         // downcast face
         case .missed: return "\u{23ED}\u{FE0F}" // skip forward
+        }
+    }
+
+    var sfSymbol: String {
+        switch self {
+        case .great: return "flame.fill"
+        case .good: return "hand.thumbsup.fill"
+        case .okay: return "equal.circle.fill"
+        case .tough: return "cloud.rain.fill"
+        case .missed: return "forward.end.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .great: return .orange
+        case .good: return .green
+        case .okay: return .blue
+        case .tough: return .purple
+        case .missed: return .gray
         }
     }
 }

@@ -151,7 +151,8 @@ struct JournalEntryRow: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 if let mood = entry.mood {
-                    Text(mood.icon)
+                    Image(systemName: mood.sfSymbol)
+                        .foregroundStyle(mood.color)
                 }
                 if entry.isVoiceEntry {
                     Image(systemName: "mic.fill")

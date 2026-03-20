@@ -24,8 +24,10 @@ struct CheckInSheet: View {
                             UISelectionFeedbackGenerator().selectionChanged()
                         } label: {
                             VStack(spacing: 6) {
-                                Text(rating.icon)
-                                    .font(.system(size: selectedRating == rating ? 44 : 32))
+                                Image(systemName: rating.sfSymbol)
+                                    .font(.system(size: selectedRating == rating ? 36 : 26))
+                                    .foregroundStyle(rating.color)
+                                    .frame(height: selectedRating == rating ? 44 : 32)
                                 Text(rating.label)
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)

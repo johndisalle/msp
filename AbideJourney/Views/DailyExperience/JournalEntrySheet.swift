@@ -38,8 +38,9 @@ struct JournalEntrySheet: View {
                                     selectedMood = mood
                                 } label: {
                                     VStack(spacing: 4) {
-                                        Text(mood.icon)
-                                            .font(.title)
+                                        Image(systemName: mood.sfSymbol)
+                                            .font(.title2)
+                                            .foregroundStyle(mood.color)
                                         Text(mood.label)
                                             .font(.caption2)
                                             .foregroundStyle(.secondary)
