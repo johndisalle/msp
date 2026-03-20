@@ -71,14 +71,6 @@ struct PremiumPaywallView: View {
                             .padding(.horizontal)
                     }
 
-                    // Debug: product load status
-                    #if DEBUG
-                    Text("Products loaded: \(storeService.products.count) | IDs: \(storeService.products.map(\.id).joined(separator: ", "))")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal)
-                    #endif
-
                     // Subscribe button
                     subscribeButton
 
