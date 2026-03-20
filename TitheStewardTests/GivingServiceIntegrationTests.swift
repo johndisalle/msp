@@ -57,7 +57,7 @@ final class GivingServiceIntegrationTests: XCTestCase {
 
         let total = service.monthlyRecurringTotal()
         // 100 * 4.33 = 433
-        XCTAssertEqual(total, 433, accuracy: 1)
+        XCTAssertEqual(total.doubleValue, 433, accuracy: 1)
     }
 
     func testMonthlyRecurringTotalBiweekly() {
@@ -69,7 +69,7 @@ final class GivingServiceIntegrationTests: XCTestCase {
 
         let total = service.monthlyRecurringTotal()
         // 200 * 2.17 = 434
-        XCTAssertEqual(total, 434, accuracy: 1)
+        XCTAssertEqual(total.doubleValue, 434, accuracy: 1)
     }
 
     func testMonthlyRecurringTotalQuarterly() {

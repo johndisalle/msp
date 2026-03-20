@@ -5,6 +5,7 @@ struct SettingsView: View {
     @State private var showingPaywall = false
     @State private var showingDebtTools = false
     @State private var showingDevotionals = false
+    @State private var showingCounselor = false
 
     var body: some View {
         NavigationStack {
@@ -48,13 +49,18 @@ struct SettingsView: View {
                         Label("Debt Freedom Tools", systemImage: "lock.open.fill")
                     }
 
-                    NavigationLink {
-                        AICounselorChatView()
+                    Button {
+                        if appState.isPremium {
+                            showingCounselor = true
+                        } else {
+                            showingPaywall = true
+                        }
                     } label: {
                         HStack {
                             Label("AI Counselor", systemImage: "bubble.left.and.bubble.right.fill")
+                                .foregroundColor(.primary)
+                            Spacer()
                             if !appState.isPremium {
-                                Spacer()
                                 Text("Premium")
                                     .font(.caption2.bold())
                                     .foregroundColor(.white)
@@ -62,6 +68,10 @@ struct SettingsView: View {
                                     .padding(.vertical, 2)
                                     .background(Color("AccentGold"))
                                     .clipShape(Capsule())
+                            } else {
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -121,6 +131,11 @@ struct SettingsView: View {
             .navigationTitle("More")
             .sheet(isPresented: $showingPaywall) {
                 PremiumPaywallView()
+            }
+            .sheet(isPresented: $showingCounselor) {
+                NavigationStack {
+                    AICounselorChatView()
+                }
             }
         }
     }
