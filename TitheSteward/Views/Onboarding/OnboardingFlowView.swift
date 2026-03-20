@@ -65,8 +65,12 @@ struct OnboardingFlowView: View {
                         let generator = UINotificationFeedbackGenerator()
                         generator.notificationOccurred(.success)
                         viewModel.saveProfile()
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            hasCompletedOnboarding = true
+                        if viewModel.shouldSuggestRecurring {
+                            viewModel.showingRecurringSuggestion = true
+                        } else {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                hasCompletedOnboarding = true
+                            }
                         }
                     }
                     .font(.headline)
@@ -100,6 +104,21 @@ struct OnboardingFlowView: View {
         .background(Color("BackgroundPrimary"))
         .onAppear {
             viewModel.configure(modelContext: modelContext)
+        }
+        .alert("Set Up Recurring Tithe?", isPresented: $viewModel.showingRecurringSuggestion) {
+            Button("Yes, Set It Up") {
+                viewModel.setupRecurringTithe()
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    hasCompletedOnboarding = true
+                }
+            }
+            Button("Maybe Later", role: .cancel) {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    hasCompletedOnboarding = true
+                }
+            }
+        } message: {
+            Text("Would you like to automatically give \(viewModel.suggestedTithe.currencyWhole) to \(viewModel.primaryChurch) each month? You can change this anytime.")
         }
     }
 }

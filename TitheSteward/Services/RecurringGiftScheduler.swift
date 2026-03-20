@@ -21,7 +21,14 @@ class RecurringGiftScheduler {
         let created = givingService.processDueRecurringGifts(for: profile)
 
         if !created.isEmpty {
-            // Refresh widgets since tithe data changed
+            // Update widget data with new tithe records, then refresh widgets
+            let titheService = TitheCalculatorService(modelContext: modelContext)
+            let devotionalService = DevotionalService(modelContext: modelContext)
+            WidgetDataService.updateFromServices(
+                titheService: titheService,
+                devotionalService: devotionalService,
+                profile: profile
+            )
             WidgetCenter.shared.reloadAllTimelines()
         }
 

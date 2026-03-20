@@ -62,6 +62,7 @@
 		TS00000001100005 /* GenerosityScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100005 /* GenerosityScoreTests.swift */; };
 		TS00000001100006 /* ViewModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100006 /* ViewModelIntegrationTests.swift */; };
 		TS00000001100007 /* GivingServiceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100007 /* GivingServiceIntegrationTests.swift */; };
+		TS00000001100008 /* CounselorServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002100008 /* CounselorServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,7 @@
 		TS00000002000049 /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
 		TS00000002100006 /* ViewModelIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelIntegrationTests.swift; sourceTree = "<group>"; };
 		TS00000002100007 /* GivingServiceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GivingServiceIntegrationTests.swift; sourceTree = "<group>"; };
+		TS00000002100008 /* CounselorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounselorServiceTests.swift; sourceTree = "<group>"; };
 		TS00000002000021 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000022 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000023 /* TitheViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitheViewModel.swift; sourceTree = "<group>"; };
@@ -404,6 +406,7 @@
 				TS00000002100005 /* GenerosityScoreTests.swift */,
 				TS00000002100006 /* ViewModelIntegrationTests.swift */,
 				TS00000002100007 /* GivingServiceIntegrationTests.swift */,
+				TS00000002100008 /* CounselorServiceTests.swift */,
 			);
 			path = TitheStewardTests;
 			sourceTree = "<group>";
@@ -606,6 +609,7 @@
 				TS00000001100005 /* GenerosityScoreTests.swift in Sources */,
 				TS00000001100006 /* ViewModelIntegrationTests.swift in Sources */,
 				TS00000001100007 /* GivingServiceIntegrationTests.swift in Sources */,
+				TS00000001100008 /* CounselorServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

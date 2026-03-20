@@ -12,7 +12,7 @@ final class DevotionalServiceTests: XCTestCase {
         let schema = Schema([
             UserProfile.self, TitheRecord.self, BudgetCategory.self,
             BudgetTransaction.self, DebtItem.self, DebtPayment.self,
-            DevotionalCompletion.self, GivingRecipient.self, RecurringGift.self,
+            DevotionalCompletion.self, GivingRecipient.self, RecurringGift.self, ChatSession.self,
         ])
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [config])

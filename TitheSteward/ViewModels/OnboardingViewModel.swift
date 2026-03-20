@@ -13,6 +13,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var primaryChurch: String = ""
     @Published var paydayDays: [Int] = [1, 15]
     @Published var enableReminders: Bool = true
+    @Published var showingRecurringSuggestion = false
 
     private var modelContext: ModelContext?
 
@@ -99,6 +100,10 @@ class OnboardingViewModel: ObservableObject {
         currentStep = prev
     }
 
+    var shouldSuggestRecurring: Bool {
+        !monthlyIncome.isEmpty && !primaryChurch.isEmpty
+    }
+
     var suggestedTithe: Decimal {
         let income = Decimal(string: monthlyIncome) ?? 0
         return income * Decimal(string: "0.10")!
@@ -129,5 +134,47 @@ class OnboardingViewModel: ObservableObject {
 
         try? modelContext.save()
         UserDefaults.standard.set("local", forKey: "appleUserId")
+    }
+
+    func setupRecurringTithe() {
+        guard let modelContext = modelContext,
+              let income = Decimal(string: monthlyIncome),
+              income > 0 else { return }
+
+        let titheAmount = income * Decimal(string: "0.10")!
+
+        // Find or create the church recipient
+        let descriptor = FetchDescriptor<UserProfile>()
+        guard let profile = (try? modelContext.fetch(descriptor))?.first else { return }
+
+        let recipient = GivingRecipient(name: primaryChurch, type: .church)
+        recipient.userProfile = profile
+        profile.recipients.append(recipient)
+        recipient.isFavorite = true
+        modelContext.insert(recipient)
+
+        // Create monthly recurring gift starting next month 1st
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month], from: Date())
+        components.month! += 1
+        components.day = 1
+        let startDate = calendar.date(from: components) ?? Date()
+
+        let gift = RecurringGift(
+            amount: titheAmount,
+            frequency: .monthly,
+            category: .tithe,
+            nextDate: startDate
+        )
+        gift.recipient = recipient
+        recipient.recurringGifts.append(gift)
+        modelContext.insert(gift)
+
+        try? modelContext.save()
+
+        // Request notification permission
+        Task {
+            _ = await NotificationService.shared.requestPermission()
+        }
     }
 }
