@@ -115,6 +115,9 @@ struct SettingsView: View {
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
             }
+            .sheet(isPresented: $showingNewJourneySheet) {
+                NewJourneyView()
+            }
         }
     }
 }

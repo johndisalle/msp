@@ -124,22 +124,7 @@ final class JourneyGenerationService {
     }
 
     private func generateSubtitle(for theme: JourneyTheme, maturity: SpiritualMaturity) -> String {
-        switch theme {
-        case .knowingGod:
-            return "Discover the heart of God through His Word"
-        case .obeyingGod:
-            return "Move from knowledge to faithful action"
-        case .sharingFaith:
-            return "Grow in confidence to share your story"
-        case .bearingFruit:
-            return "Live out the fullness of God's purpose"
-        case .overcomingDoubt:
-            return "Build an unshakeable foundation of faith"
-        case .findingPeace:
-            return "Rest in God's presence through every storm"
-        case .spiritualGrowth:
-            return "Deepen every area of your walk with God"
-        }
+        return theme.subtitle
     }
 
     // MARK: - Day Generation
