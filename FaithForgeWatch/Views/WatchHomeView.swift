@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import FaithForgeShared
 
 struct WatchHomeView: View {
     @Environment(\.modelContext) private var modelContext

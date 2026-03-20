@@ -5,18 +5,14 @@
 
 import SwiftUI
 import SwiftData
+import FaithForgeShared
 
 @main
 struct FaithForgeWatchApp: App {
     let modelContainer: ModelContainer
 
     init() {
-        let schema = Schema([
-            UserProfile.self,
-            DailyQuest.self,
-            Badge.self,
-            FaithRingProgress.self,
-        ])
+        let schema = SharedSchema.schema()
         let config = ModelConfiguration(isStoredInMemoryOnly: false)
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])

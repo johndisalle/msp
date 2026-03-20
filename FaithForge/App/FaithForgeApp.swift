@@ -35,6 +35,9 @@ struct FaithForgeApp: App {
 
         // TODO: Firebase — call FirebaseApp.configure() here when adding real Firebase SDK
         // TODO: RevenueCat — call Purchases.configure(withAPIKey:) here
+
+        // Register notification categories
+        NotificationService.shared.registerCategories()
     }
 
     var body: some Scene {
@@ -42,6 +45,10 @@ struct FaithForgeApp: App {
             RootView()
                 .environment(authService)
                 .environment(healthKitManager)
+                .task {
+                    // Request notification permission on first launch
+                    await NotificationService.shared.requestAuthorization()
+                }
         }
         .modelContainer(modelContainer)
     }

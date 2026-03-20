@@ -62,6 +62,22 @@ struct SettingsView: View {
                     Text("Personalize your daily quests with AI based on your faith journey.")
                 }
 
+                // Sound & Haptics
+                Section("Sound & Haptics") {
+                    Toggle(isOn: Binding(
+                        get: { SoundManager.shared.isEnabled },
+                        set: { SoundManager.shared.isEnabled = $0 }
+                    )) {
+                        Label("Sound Effects", systemImage: "speaker.wave.2.fill")
+                    }
+
+                    NavigationLink {
+                        NotificationSettingsView(profile: profile)
+                    } label: {
+                        Label("Notifications", systemImage: "bell.badge.fill")
+                    }
+                }
+
                 // Account
                 Section("Account") {
                     HStack {

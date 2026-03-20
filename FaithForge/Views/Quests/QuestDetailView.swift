@@ -16,7 +16,11 @@ struct QuestDetailView: View {
     @State private var timerRemaining: Int = 0
     @State private var timerActive: Bool = false
     @State private var showCompletion: Bool = false
+    @State private var showConfetti: Bool = false
+    @State private var showLevelUp: Bool = false
+    @State private var showRingClosed: RingCategory?
     @State private var xpEarned: Int = 0
+    @State private var previousLevel: FaithLevel = .novice
 
     var body: some View {
         NavigationStack {
@@ -42,14 +46,30 @@ struct QuestDetailView: View {
                     Button("Done") { dismiss() }
                 }
             }
+            .confetti(isActive: $showConfetti)
             .overlay {
                 if showCompletion {
                     completionOverlay
                 }
             }
+            .overlay {
+                if showLevelUp {
+                    LevelUpCelebrationView(newLevel: profile.level) {
+                        showLevelUp = false
+                    }
+                }
+            }
+            .overlay {
+                if let ring = showRingClosed {
+                    RingClosedCelebrationView(ringCategory: ring) {
+                        showRingClosed = nil
+                    }
+                }
+            }
             .onAppear {
                 timerRemaining = quest.timerDuration
                 reflectionText = quest.reflectionText
+                previousLevel = profile.level
             }
         }
     }
@@ -190,8 +210,15 @@ struct QuestDetailView: View {
                 try? await Task.sleep(for: .seconds(1))
                 if timerActive {
                     timerRemaining -= 1
+                    // Tick sound for last 5 seconds
+                    if timerRemaining <= 5 && timerRemaining > 0 {
+                        SoundManager.shared.playTimerTick()
+                        HapticManager.shared.lightTap()
+                    }
                     if timerRemaining <= 0 {
                         timerActive = false
+                        SoundManager.shared.playTimerDone()
+                        HapticManager.shared.questTimerComplete()
                     }
                 }
             }
@@ -346,11 +373,42 @@ struct QuestDetailView: View {
     // MARK: - Complete Quest Action
 
     private func completeQuest() {
+        let levelBefore = profile.level
         let xp = questManager.completeQuest(quest, reflectionText: reflectionText)
         xpManager.awardXP(amount: xp, questCategory: quest.category, profile: profile)
         xpEarned = xp
+
+        // Haptics + Sound
+        HapticManager.shared.questCompleted()
+        SoundManager.shared.playQuestComplete()
+        if xp >= 50 {
+            HapticManager.shared.xpCelebration()
+        }
+
+        // Cancel streak-at-risk notification since user completed a quest
+        NotificationService.shared.cancelStreakAtRiskAlert()
+
         withAnimation {
             showCompletion = true
+            showConfetti = true
+        }
+
+        // Check for level-up
+        if profile.level != levelBefore {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                showCompletion = false
+                showLevelUp = true
+            }
+        }
+
+        // Check for ring closure
+        if let ringCat = quest.category.ringCategory {
+            let ring = xpManager.ringProgress(for: ringCat)
+            if ring.fillFraction >= 1.0 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + (profile.level != levelBefore ? 4.0 : 1.5)) {
+                    showRingClosed = ringCat
+                }
+            }
         }
     }
 

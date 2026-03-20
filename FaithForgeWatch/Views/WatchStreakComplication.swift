@@ -5,6 +5,7 @@
 
 import WidgetKit
 import SwiftUI
+import FaithForgeShared
 
 // MARK: - Timeline Provider
 
