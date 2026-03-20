@@ -43,6 +43,7 @@
 		A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000034 /* SettingsView.swift */; };
 		A1B2C3D4E5F60001000054 /* AccountabilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000054 /* AccountabilityView.swift */; };
 		A1B2C3D4E5F60001000090 /* AccountabilityPartner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */; };
+		A1B2C3D4E5F60001000091 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000091 /* PDFExportService.swift */; };
 		A1B2C3D4E5F60001000055 /* NewJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000055 /* NewJourneyView.swift */; };
 		A1B2C3D4E5F60001000056 /* ContentThemes_Batch1.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000056 /* ContentThemes_Batch1.swift */; };
 		A1B2C3D4E5F60001000057 /* ContentThemes_Batch2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000057 /* ContentThemes_Batch2.swift */; };
@@ -105,6 +106,7 @@
 		A1B2C3D4E5F60101000034 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000054 /* AccountabilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityPartner.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000091 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000055 /* NewJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000056 /* ContentThemes_Batch1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch1.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000057 /* ContentThemes_Batch2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch2.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				A1B2C3D4E5F60101000018 /* NotificationService.swift */,
 				A1B2C3D4E5F60101000019 /* PrayerTimerService.swift */,
 				A1B2C3D4E5F60101000020 /* StoreKitService.swift */,
+				A1B2C3D4E5F60101000091 /* PDFExportService.swift */,
 				A1B2C3D4E5F60101000021 /* StreakService.swift */,
 				A1B2C3D4E5F60101000052 /* WidgetDataService.swift */,
 			);
@@ -514,6 +517,7 @@
 				A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */,
 				A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */,
 				A1B2C3D4E5F60001000090 /* AccountabilityPartner.swift in Sources */,
+				A1B2C3D4E5F60001000091 /* PDFExportService.swift in Sources */,
 				A1B2C3D4E5F60001000054 /* AccountabilityView.swift in Sources */,
 				A1B2C3D4E5F60001000055 /* NewJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */,
