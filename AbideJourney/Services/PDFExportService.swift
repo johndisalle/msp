@@ -73,9 +73,6 @@ final class PDFExportService {
 
                 // Mood
                 if let mood = entry.mood {
-                    let moodAttrs: [NSAttributedString.Key: Any] = [
-                        .font: UIFont.systemFont(ofSize: 20)
-                    ]
                     let moodLabel: [NSAttributedString.Key: Any] = [
                         .font: UIFont.systemFont(ofSize: 13, weight: .medium),
                         .foregroundColor: UIColor.secondaryLabel
