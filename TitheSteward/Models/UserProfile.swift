@@ -1,36 +1,53 @@
 import Foundation
+import SwiftData
 
-struct UserProfile: Codable, Identifiable {
-    let id: UUID
+@Model
+final class UserProfile {
     var displayName: String
     var email: String?
     var appleUserId: String?
 
     // Onboarding responses
-    var tithingCommitment: TithingCommitment
-    var incomeFrequency: IncomeFrequency
-    var monthlyIncome: Double
+    var tithingCommitmentRaw: String
+    var incomeFrequencyRaw: String
+    var monthlyIncome: Decimal
     var hasDebt: Bool
     var primaryChurch: String?
 
     // Preferences
     var devotionalReminderTime: Date?
     var titheReminderEnabled: Bool
-    var paydayReminderDays: [Int] // Days of month (e.g., [1, 15])
+    var paydayReminderDays: [Int]
 
     // Stats
     var joinDate: Date
     var generosityStreak: Int
-    var totalGivenAllTime: Double
+    var totalGivenAllTime: Decimal
+
+    // Relationships
+    @Relationship(deleteRule: .cascade) var titheRecords: [TitheRecord]
+    @Relationship(deleteRule: .cascade) var budgetCategories: [BudgetCategory]
+    @Relationship(deleteRule: .cascade) var debts: [DebtItem]
+    @Relationship(deleteRule: .cascade) var recipients: [GivingRecipient]
+    @Relationship(deleteRule: .cascade) var devotionalCompletions: [DevotionalCompletion]
+
+    var tithingCommitment: TithingCommitment {
+        get { TithingCommitment(rawValue: tithingCommitmentRaw) ?? .exploring }
+        set { tithingCommitmentRaw = newValue.rawValue }
+    }
+
+    var incomeFrequency: IncomeFrequency {
+        get { IncomeFrequency(rawValue: incomeFrequencyRaw) ?? .monthly }
+        set { incomeFrequencyRaw = newValue.rawValue }
+    }
 
     init(
-        id: UUID = UUID(),
         displayName: String = "",
         email: String? = nil,
         appleUserId: String? = nil,
         tithingCommitment: TithingCommitment = .exploring,
         incomeFrequency: IncomeFrequency = .monthly,
-        monthlyIncome: Double = 0,
+        monthlyIncome: Decimal = 0,
         hasDebt: Bool = false,
         primaryChurch: String? = nil,
         devotionalReminderTime: Date? = nil,
@@ -38,14 +55,13 @@ struct UserProfile: Codable, Identifiable {
         paydayReminderDays: [Int] = [1, 15],
         joinDate: Date = Date(),
         generosityStreak: Int = 0,
-        totalGivenAllTime: Double = 0
+        totalGivenAllTime: Decimal = 0
     ) {
-        self.id = id
         self.displayName = displayName
         self.email = email
         self.appleUserId = appleUserId
-        self.tithingCommitment = tithingCommitment
-        self.incomeFrequency = incomeFrequency
+        self.tithingCommitmentRaw = tithingCommitment.rawValue
+        self.incomeFrequencyRaw = incomeFrequency.rawValue
         self.monthlyIncome = monthlyIncome
         self.hasDebt = hasDebt
         self.primaryChurch = primaryChurch
@@ -55,6 +71,11 @@ struct UserProfile: Codable, Identifiable {
         self.joinDate = joinDate
         self.generosityStreak = generosityStreak
         self.totalGivenAllTime = totalGivenAllTime
+        self.titheRecords = []
+        self.budgetCategories = []
+        self.debts = []
+        self.recipients = []
+        self.devotionalCompletions = []
     }
 }
 

@@ -1,6 +1,8 @@
 import Foundation
+import SwiftData
 import AuthenticationServices
 
+@MainActor
 class OnboardingViewModel: ObservableObject {
     @Published var currentStep: OnboardingStep = .welcome
     @Published var displayName: String = ""
@@ -11,6 +13,12 @@ class OnboardingViewModel: ObservableObject {
     @Published var primaryChurch: String = ""
     @Published var paydayDays: [Int] = [1, 15]
     @Published var enableReminders: Bool = true
+
+    private var modelContext: ModelContext?
+
+    func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
 
     enum OnboardingStep: Int, CaseIterable {
         case welcome = 0
@@ -69,17 +77,16 @@ class OnboardingViewModel: ObservableObject {
     var canProceed: Bool {
         switch currentStep {
         case .welcome, .signIn, .complete: return true
-        case .faithQuiz: return true // always has a default
+        case .faithQuiz: return true
         case .incomeSetup: return !monthlyIncome.isEmpty
         case .debtOverview: return true
-        case .churchSetup: return true // optional
+        case .churchSetup: return true
         case .reminders: return true
         }
     }
 
     func nextStep() {
         guard let next = OnboardingStep(rawValue: currentStep.rawValue + 1) else { return }
-        // Skip debt overview if user has no debt
         if next == .debtOverview && !hasDebt {
             currentStep = .churchSetup
         } else {
@@ -92,29 +99,35 @@ class OnboardingViewModel: ObservableObject {
         currentStep = prev
     }
 
-    var suggestedTithe: Double {
-        let income = Double(monthlyIncome) ?? 0
-        return income * 0.10
+    var suggestedTithe: Decimal {
+        let income = Decimal(string: monthlyIncome) ?? 0
+        return income * Decimal(string: "0.10")!
     }
 
-    func buildUserProfile() -> UserProfile {
-        UserProfile(
+    func saveProfile() {
+        guard let modelContext = modelContext else { return }
+
+        let profile = UserProfile(
             displayName: displayName,
             tithingCommitment: tithingCommitment,
             incomeFrequency: incomeFrequency,
-            monthlyIncome: Double(monthlyIncome) ?? 0,
+            monthlyIncome: Decimal(string: monthlyIncome) ?? 0,
             hasDebt: hasDebt,
             primaryChurch: primaryChurch.isEmpty ? nil : primaryChurch,
             titheReminderEnabled: enableReminders,
             paydayReminderDays: paydayDays
         )
-    }
 
-    func saveProfile() {
-        let profile = buildUserProfile()
-        if let data = try? JSONEncoder().encode(profile) {
-            UserDefaults.standard.set(data, forKey: "user_profile")
-            UserDefaults.standard.set(profile.id.uuidString, forKey: "userId")
+        modelContext.insert(profile)
+
+        // Create default budget categories
+        for category in BudgetCategory.defaults() {
+            category.userProfile = profile
+            profile.budgetCategories.append(category)
+            modelContext.insert(category)
         }
+
+        try? modelContext.save()
+        UserDefaults.standard.set("local", forKey: "appleUserId")
     }
 }

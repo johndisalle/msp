@@ -1,7 +1,8 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class GivingViewModel: ObservableObject {
-    @Published var givingService = GivingService()
     @Published var showingAddRecipient = false
     @Published var showingQuickGive = false
     @Published var selectedRecipient: GivingRecipient?
@@ -15,20 +16,34 @@ class GivingViewModel: ObservableObject {
     @Published var quickGiveAmount: String = ""
     @Published var quickGiveCategory: GivingCategory = .tithe
 
+    private var givingService: GivingService?
+    private var modelContext: ModelContext?
+
+    func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        self.givingService = GivingService(modelContext: modelContext)
+    }
+
+    var userProfile: UserProfile? {
+        guard let modelContext = modelContext else { return nil }
+        let descriptor = FetchDescriptor<UserProfile>()
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+
     var recipients: [GivingRecipient] {
-        givingService.recipients.sorted { $0.isFavorite && !$1.isFavorite }
+        (givingService?.fetchRecipients() ?? []).sorted { $0.isFavorite && !$1.isFavorite }
     }
 
     var favoriteRecipients: [GivingRecipient] {
-        givingService.favoriteRecipients()
+        givingService?.favoriteRecipients() ?? []
     }
 
     var recurringGifts: [RecurringGift] {
-        givingService.recurringGifts
+        givingService?.fetchRecurringGifts() ?? []
     }
 
-    var monthlyRecurringTotal: Double {
-        givingService.monthlyRecurringTotal()
+    var monthlyRecurringTotal: Decimal {
+        givingService?.monthlyRecurringTotal() ?? 0
     }
 
     var isApplePayAvailable: Bool {
@@ -36,7 +51,9 @@ class GivingViewModel: ObservableObject {
     }
 
     func addRecipient() {
-        guard !newRecipientName.isEmpty else { return }
+        guard !newRecipientName.isEmpty,
+              let profile = userProfile,
+              let service = givingService else { return }
 
         let recipient = GivingRecipient(
             name: newRecipientName,
@@ -44,26 +61,25 @@ class GivingViewModel: ObservableObject {
             website: newRecipientWebsite.isEmpty ? nil : newRecipientWebsite
         )
 
-        givingService.addRecipient(recipient)
+        service.addRecipient(recipient, to: profile)
         clearRecipientForm()
+        objectWillChange.send()
     }
 
     func toggleFavorite(_ recipient: GivingRecipient) {
-        var updated = recipient
-        updated.isFavorite.toggle()
-        givingService.updateRecipient(updated)
+        recipient.isFavorite.toggle()
+        givingService?.save()
+        objectWillChange.send()
     }
 
-    func deleteRecipient(id: UUID) {
-        givingService.deleteRecipient(id: id)
+    func deleteRecipient(_ recipient: GivingRecipient) {
+        givingService?.deleteRecipient(recipient)
+        objectWillChange.send()
     }
 
-    func toggleRecurring(id: UUID) {
-        givingService.toggleRecurringGift(id: id)
-    }
-
-    func deleteRecurring(id: UUID) {
-        givingService.deleteRecurringGift(id: id)
+    func deleteRecurring(_ gift: RecurringGift) {
+        givingService?.deleteRecurringGift(gift)
+        objectWillChange.send()
     }
 
     private func clearRecipientForm() {
@@ -71,12 +87,5 @@ class GivingViewModel: ObservableObject {
         newRecipientType = .church
         newRecipientWebsite = ""
         showingAddRecipient = false
-    }
-
-    func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
 }

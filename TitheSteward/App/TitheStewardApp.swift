@@ -1,38 +1,59 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct TitheStewardApp: App {
     @StateObject private var appState = AppState()
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            UserProfile.self,
+            TitheRecord.self,
+            BudgetCategory.self,
+            BudgetTransaction.self,
+            DebtItem.self,
+            DebtPayment.self,
+            DevotionalCompletion.self,
+            GivingRecipient.self,
+            RecurringGift.self,
+        ])
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .automatic
+        )
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(appState)
         }
+        .modelContainer(sharedModelContainer)
     }
 }
 
 class AppState: ObservableObject {
     @Published var isAuthenticated = false
     @Published var isPremium = false
-    @Published var currentUser: UserProfile?
 
     init() {
-        // Check authentication state on launch
         checkAuthState()
     }
 
     func checkAuthState() {
-        // Check Keychain for existing session
-        if let _ = UserDefaults.standard.string(forKey: "userId") {
+        if let _ = UserDefaults.standard.string(forKey: "appleUserId") {
             isAuthenticated = true
         }
     }
 
     func signOut() {
         isAuthenticated = false
-        currentUser = nil
-        UserDefaults.standard.removeObject(forKey: "userId")
+        UserDefaults.standard.removeObject(forKey: "appleUserId")
     }
 }

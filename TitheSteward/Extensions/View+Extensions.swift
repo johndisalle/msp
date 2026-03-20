@@ -24,6 +24,30 @@ extension View {
     }
 }
 
+extension Decimal {
+    var currencyFormatted: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: self as NSDecimalNumber) ?? "$0.00"
+    }
+
+    var currencyWhole: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: self as NSDecimalNumber) ?? "$0"
+    }
+
+    var doubleValue: Double {
+        NSDecimalNumber(decimal: self).doubleValue
+    }
+
+    var percentFormatted: String {
+        String(format: "%.1f%%", doubleValue)
+    }
+}
+
 extension Double {
     var currencyFormatted: String {
         let formatter = NumberFormatter()

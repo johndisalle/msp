@@ -1,30 +1,38 @@
 import Foundation
+import SwiftData
 
-struct GivingRecipient: Codable, Identifiable {
-    let id: UUID
+@Model
+final class GivingRecipient {
     var name: String
-    var type: RecipientType
+    var typeRaw: String
     var website: String?
     var applePayMerchantId: String?
     var isFavorite: Bool
-    var totalGiven: Double
+    var totalGiven: Decimal
+
+    var userProfile: UserProfile?
+    @Relationship(deleteRule: .cascade) var recurringGifts: [RecurringGift]
+
+    var type: RecipientType {
+        get { RecipientType(rawValue: typeRaw) ?? .church }
+        set { typeRaw = newValue.rawValue }
+    }
 
     init(
-        id: UUID = UUID(),
         name: String,
         type: RecipientType = .church,
         website: String? = nil,
         applePayMerchantId: String? = nil,
         isFavorite: Bool = false,
-        totalGiven: Double = 0
+        totalGiven: Decimal = 0
     ) {
-        self.id = id
         self.name = name
-        self.type = type
+        self.typeRaw = type.rawValue
         self.website = website
         self.applePayMerchantId = applePayMerchantId
         self.isFavorite = isFavorite
         self.totalGiven = totalGiven
+        self.recurringGifts = []
     }
 }
 
@@ -48,31 +56,38 @@ enum RecipientType: String, Codable, CaseIterable {
     }
 }
 
-struct RecurringGift: Codable, Identifiable {
-    let id: UUID
-    var recipientId: UUID
-    var amount: Double
-    var frequency: GiftFrequency
-    var category: GivingCategory
+@Model
+final class RecurringGift {
+    var amount: Decimal
+    var frequencyRaw: String
+    var categoryRaw: String
     var nextDate: Date
     var isActive: Bool
     var note: String?
 
+    var recipient: GivingRecipient?
+
+    var frequency: GiftFrequency {
+        get { GiftFrequency(rawValue: frequencyRaw) ?? .monthly }
+        set { frequencyRaw = newValue.rawValue }
+    }
+
+    var category: GivingCategory {
+        get { GivingCategory(rawValue: categoryRaw) ?? .tithe }
+        set { categoryRaw = newValue.rawValue }
+    }
+
     init(
-        id: UUID = UUID(),
-        recipientId: UUID,
-        amount: Double,
+        amount: Decimal,
         frequency: GiftFrequency = .monthly,
         category: GivingCategory = .tithe,
         nextDate: Date = Date(),
         isActive: Bool = true,
         note: String? = nil
     ) {
-        self.id = id
-        self.recipientId = recipientId
         self.amount = amount
-        self.frequency = frequency
-        self.category = category
+        self.frequencyRaw = frequency.rawValue
+        self.categoryRaw = category.rawValue
         self.nextDate = nextDate
         self.isActive = isActive
         self.note = note

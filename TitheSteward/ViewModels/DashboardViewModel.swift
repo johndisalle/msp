@@ -1,47 +1,47 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class DashboardViewModel: ObservableObject {
     @Published var userProfile: UserProfile?
     @Published var generosityScore: GenerosityScore?
     @Published var todaysDevotional: Devotional?
     @Published var recentGifts: [TitheRecord] = []
 
-    private let titheService: TitheCalculatorService
-    private let devotionalService: DevotionalService
+    private var titheService: TitheCalculatorService?
+    private var devotionalService: DevotionalService?
 
-    init(titheService: TitheCalculatorService = TitheCalculatorService(),
-         devotionalService: DevotionalService = DevotionalService()) {
-        self.titheService = titheService
-        self.devotionalService = devotionalService
-        loadData()
+    func configure(modelContext: ModelContext) {
+        self.titheService = TitheCalculatorService(modelContext: modelContext)
+        self.devotionalService = DevotionalService(modelContext: modelContext)
+        loadData(modelContext: modelContext)
     }
 
-    func loadData() {
-        loadProfile()
+    func loadData(modelContext: ModelContext) {
+        loadProfile(modelContext: modelContext)
         loadDevotional()
         loadRecentGifts()
         calculateScore()
     }
 
-    private func loadProfile() {
-        if let data = UserDefaults.standard.data(forKey: "user_profile"),
-           let profile = try? JSONDecoder().decode(UserProfile.self, from: data) {
-            userProfile = profile
-        }
+    private func loadProfile(modelContext: ModelContext) {
+        let descriptor = FetchDescriptor<UserProfile>()
+        userProfile = (try? modelContext.fetch(descriptor))?.first
     }
 
     private func loadDevotional() {
-        devotionalService.loadTodaysDevotional()
-        todaysDevotional = devotionalService.todaysDevotional
+        devotionalService?.loadTodaysDevotional()
+        todaysDevotional = devotionalService?.todaysDevotional
     }
 
     private func loadRecentGifts() {
-        recentGifts = Array(titheService.recordsForMonth().sorted { $0.date > $1.date }.prefix(5))
+        guard let service = titheService else { return }
+        recentGifts = Array(service.fetchRecords().prefix(5))
     }
 
     private func calculateScore() {
-        guard let profile = userProfile else { return }
-        generosityScore = titheService.calculateGenerosityScore(for: profile)
+        guard let profile = userProfile, let service = titheService else { return }
+        generosityScore = service.calculateGenerosityScore(for: profile)
     }
 
     // MARK: - Display Helpers
@@ -52,14 +52,12 @@ class DashboardViewModel: ObservableObject {
 
     var titheProgressText: String {
         guard let score = generosityScore else { return "$0 of $0" }
-        let given = formatCurrency(score.totalGivenThisMonth)
-        let goal = formatCurrency(score.monthlyTitheTarget)
-        return "\(given) of \(goal)"
+        return "\(score.totalGivenThisMonth.currencyWhole) of \(score.monthlyTitheTarget.currencyWhole)"
     }
 
     var remainingToTithe: String {
         guard let score = generosityScore else { return "$0" }
-        return formatCurrency(score.remainingToTithe)
+        return score.remainingToTithe.currencyWhole
     }
 
     var streakText: String {
@@ -84,12 +82,5 @@ class DashboardViewModel: ObservableObject {
         case 12..<17: return "Good afternoon, \(name)"
         default: return "Good evening, \(name)"
         }
-    }
-
-    private func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0"
     }
 }

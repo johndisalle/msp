@@ -1,85 +1,88 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class BudgetViewModel: ObservableObject {
-    @Published var budgetService = BudgetService()
     @Published var showingAddTransaction = false
     @Published var selectedMonth: Date = Date()
-    @Published var selectedCategoryId: UUID?
+    @Published var selectedCategory: BudgetCategory?
 
     // Add transaction form
     @Published var newAmount: String = ""
     @Published var newDescription: String = ""
     @Published var newNote: String = ""
 
+    private var budgetService: BudgetService?
+    private var modelContext: ModelContext?
+
+    func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        self.budgetService = BudgetService(modelContext: modelContext)
+
+        // Ensure defaults exist
+        if let profile = userProfile {
+            budgetService?.ensureDefaultCategories(for: profile)
+        }
+    }
+
+    var userProfile: UserProfile? {
+        guard let modelContext = modelContext else { return nil }
+        let descriptor = FetchDescriptor<UserProfile>()
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+
     var categories: [BudgetCategory] {
-        budgetService.categories.sorted { $0.sortOrder < $1.sortOrder }
+        userProfile?.budgetCategories.sorted { $0.sortOrder < $1.sortOrder } ?? []
     }
 
-    var categoryBreakdown: [(category: BudgetCategory, spent: Double, budgeted: Double)] {
-        budgetService.categoryBreakdown(for: selectedMonth)
+    var categoryBreakdown: [(category: BudgetCategory, spent: Decimal, budgeted: Decimal)] {
+        budgetService?.categoryBreakdown(categories: categories, for: selectedMonth) ?? []
     }
 
-    var totalBudgeted: Double {
-        budgetService.totalBudgeted()
+    var totalBudgeted: Decimal {
+        budgetService?.totalBudgeted(categories) ?? 0
     }
 
-    var totalSpent: Double {
-        budgetService.totalSpentThisMonth(selectedMonth)
+    var totalSpent: Decimal {
+        budgetService?.totalSpentThisMonth(selectedMonth) ?? 0
     }
 
-    var remainingBudget: Double {
-        budgetService.remainingBudget(for: selectedMonth)
+    var remainingBudget: Decimal {
+        totalBudgeted - totalSpent
     }
 
     var spendingPercentage: Double {
         guard totalBudgeted > 0 else { return 0 }
-        return min(1.0, totalSpent / totalBudgeted)
-    }
-
-    func transactionsForCategory(_ categoryId: UUID) -> [BudgetTransaction] {
-        budgetService.transactionsForMonth(selectedMonth)
-            .filter { $0.categoryId == categoryId }
-            .sorted { $0.date > $1.date }
+        let ratio = totalSpent / totalBudgeted
+        return min(1.0, NSDecimalNumber(decimal: ratio).doubleValue)
     }
 
     func addTransaction() {
-        guard let amount = Double(newAmount), amount > 0,
-              let categoryId = selectedCategoryId else { return }
+        guard let amount = Decimal(string: newAmount), amount > 0,
+              let category = selectedCategory,
+              let service = budgetService else { return }
 
         let transaction = BudgetTransaction(
             amount: amount,
-            categoryId: categoryId,
-            description: newDescription,
+            descriptionText: newDescription,
             note: newNote.isEmpty ? nil : newNote
         )
 
-        budgetService.addTransaction(transaction)
+        service.addTransaction(transaction, to: category)
         clearForm()
+        objectWillChange.send()
     }
 
-    func deleteTransaction(id: UUID) {
-        budgetService.deleteTransaction(id: id)
-    }
-
-    func updateCategoryBudget(_ categoryId: UUID, amount: Double) {
-        if var category = budgetService.categories.first(where: { $0.id == categoryId }) {
-            category.budgetedAmount = amount
-            budgetService.updateCategory(category)
-        }
+    func deleteTransaction(_ transaction: BudgetTransaction) {
+        budgetService?.deleteTransaction(transaction)
+        objectWillChange.send()
     }
 
     private func clearForm() {
         newAmount = ""
         newDescription = ""
         newNote = ""
-        selectedCategoryId = nil
+        selectedCategory = nil
         showingAddTransaction = false
-    }
-
-    func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0"
     }
 }

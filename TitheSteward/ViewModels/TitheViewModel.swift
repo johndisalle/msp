@@ -1,7 +1,8 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class TitheViewModel: ObservableObject {
-    @Published var titheService = TitheCalculatorService()
     @Published var showingAddRecord = false
     @Published var selectedCategory: GivingCategory = .tithe
     @Published var selectedMonth: Date = Date()
@@ -13,38 +14,46 @@ class TitheViewModel: ObservableObject {
     @Published var newIncomeSource: String = "Primary Income"
     @Published var newPaymentMethod: PaymentMethod = .manual
 
+    private var titheService: TitheCalculatorService?
+    private var modelContext: ModelContext?
+
+    func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        self.titheService = TitheCalculatorService(modelContext: modelContext)
+    }
+
     var userProfile: UserProfile? {
-        if let data = UserDefaults.standard.data(forKey: "user_profile"),
-           let profile = try? JSONDecoder().decode(UserProfile.self, from: data) {
-            return profile
-        }
-        return nil
+        guard let modelContext = modelContext else { return nil }
+        let descriptor = FetchDescriptor<UserProfile>()
+        return (try? modelContext.fetch(descriptor))?.first
     }
 
     var monthlyRecords: [TitheRecord] {
-        titheService.recordsForMonth(selectedMonth).sorted { $0.date > $1.date }
+        titheService?.fetchRecords(for: selectedMonth) ?? []
     }
 
-    var totalGivenThisMonth: Double {
-        titheService.totalGivenThisMonth(selectedMonth)
+    var totalGivenThisMonth: Decimal {
+        titheService?.totalGivenThisMonth(selectedMonth) ?? 0
     }
 
-    var suggestedTithe: Double {
+    var suggestedTithe: Decimal {
         guard let profile = userProfile else { return 0 }
-        return titheService.suggestedTithe(for: profile)
+        return titheService?.suggestedTithe(for: profile) ?? 0
     }
 
     var titheProgress: Double {
         guard suggestedTithe > 0 else { return 0 }
-        return min(1.0, totalGivenThisMonth / suggestedTithe)
+        let ratio = totalGivenThisMonth / suggestedTithe
+        return min(1.0, NSDecimalNumber(decimal: ratio).doubleValue)
     }
 
-    var remainingToTithe: Double {
+    var remainingToTithe: Decimal {
         max(0, suggestedTithe - totalGivenThisMonth)
     }
 
-    var categoryTotals: [(category: GivingCategory, total: Double)] {
-        let totals = titheService.totalByCategory(for: selectedMonth)
+    var categoryTotals: [(category: GivingCategory, total: Decimal)] {
+        guard let service = titheService else { return [] }
+        let totals = service.totalByCategory(for: selectedMonth)
         return GivingCategory.allCases.compactMap { category in
             guard let total = totals[category], total > 0 else { return nil }
             return (category: category, total: total)
@@ -52,7 +61,9 @@ class TitheViewModel: ObservableObject {
     }
 
     func addRecord() {
-        guard let amount = Double(newAmount), amount > 0 else { return }
+        guard let amount = Decimal(string: newAmount), amount > 0,
+              let profile = userProfile,
+              let service = titheService else { return }
 
         let record = TitheRecord(
             amount: amount,
@@ -63,12 +74,14 @@ class TitheViewModel: ObservableObject {
             paymentMethod: newPaymentMethod
         )
 
-        titheService.addRecord(record)
+        service.addRecord(record, to: profile)
         clearForm()
+        objectWillChange.send()
     }
 
-    func deleteRecord(id: UUID) {
-        titheService.deleteRecord(id: id)
+    func deleteRecord(_ record: TitheRecord) {
+        titheService?.deleteRecord(record)
+        objectWillChange.send()
     }
 
     private func clearForm() {
@@ -79,12 +92,5 @@ class TitheViewModel: ObservableObject {
         selectedCategory = .tithe
         newPaymentMethod = .manual
         showingAddRecord = false
-    }
-
-    func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
 }

@@ -1,68 +1,79 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class TitheCalculatorService: ObservableObject {
-    @Published var titheRecords: [TitheRecord] = []
+    private var modelContext: ModelContext
 
-    private let storageKey = "tithe_records"
-
-    init() {
-        loadRecords()
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
     // MARK: - Tithe Calculation
 
-    func calculateTithe(income: Double, percentage: Double = 10.0) -> Double {
-        return income * (percentage / 100.0)
+    func calculateTithe(income: Decimal, percentage: Decimal = Decimal(string: "0.10")!) -> Decimal {
+        return income * percentage
     }
 
-    func suggestedTithe(for profile: UserProfile) -> Double {
+    func suggestedTithe(for profile: UserProfile) -> Decimal {
         return calculateTithe(income: profile.monthlyIncome)
     }
 
-    func annualTitheGoal(for profile: UserProfile) -> Double {
-        let periodsPerYear = Double(profile.incomeFrequency.periodsPerYear)
-        let incomePerPeriod = profile.monthlyIncome
-        // monthlyIncome is already monthly, so multiply by 12
-        return calculateTithe(income: incomePerPeriod * 12)
+    func annualTitheGoal(for profile: UserProfile) -> Decimal {
+        return calculateTithe(income: profile.monthlyIncome * 12)
     }
 
     // MARK: - Tracking
 
-    func addRecord(_ record: TitheRecord) {
-        titheRecords.append(record)
-        saveRecords()
+    func addRecord(_ record: TitheRecord, to profile: UserProfile) {
+        profile.titheRecords.append(record)
+        modelContext.insert(record)
+        try? modelContext.save()
     }
 
-    func deleteRecord(id: UUID) {
-        titheRecords.removeAll { $0.id == id }
-        saveRecords()
+    func deleteRecord(_ record: TitheRecord) {
+        modelContext.delete(record)
+        try? modelContext.save()
     }
 
-    func recordsForMonth(_ date: Date = Date()) -> [TitheRecord] {
+    func fetchRecords(for month: Date = Date()) -> [TitheRecord] {
         let calendar = Calendar.current
-        return titheRecords.filter {
-            calendar.isDate($0.date, equalTo: date, toGranularity: .month)
-        }
+        let startOfMonth = calendar.dateInterval(of: .month, for: month)?.start ?? month
+        let endOfMonth = calendar.dateInterval(of: .month, for: month)?.end ?? month
+
+        let descriptor = FetchDescriptor<TitheRecord>(
+            predicate: #Predicate { record in
+                record.date >= startOfMonth && record.date < endOfMonth
+            },
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
-    func recordsForYear(_ date: Date = Date()) -> [TitheRecord] {
+    func fetchRecordsForYear(_ date: Date = Date()) -> [TitheRecord] {
         let calendar = Calendar.current
-        return titheRecords.filter {
-            calendar.isDate($0.date, equalTo: date, toGranularity: .year)
-        }
+        let startOfYear = calendar.dateInterval(of: .year, for: date)?.start ?? date
+        let endOfYear = calendar.dateInterval(of: .year, for: date)?.end ?? date
+
+        let descriptor = FetchDescriptor<TitheRecord>(
+            predicate: #Predicate { record in
+                record.date >= startOfYear && record.date < endOfYear
+            }
+        )
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
-    func totalGivenThisMonth(_ date: Date = Date()) -> Double {
-        recordsForMonth(date).reduce(0) { $0 + $1.amount }
+    func totalGivenThisMonth(_ date: Date = Date()) -> Decimal {
+        fetchRecords(for: date).reduce(Decimal.zero) { $0 + $1.amount }
     }
 
-    func totalGivenThisYear(_ date: Date = Date()) -> Double {
-        recordsForYear(date).reduce(0) { $0 + $1.amount }
+    func totalGivenThisYear(_ date: Date = Date()) -> Decimal {
+        fetchRecordsForYear(date).reduce(Decimal.zero) { $0 + $1.amount }
     }
 
-    func totalByCategory(for month: Date = Date()) -> [GivingCategory: Double] {
-        var totals: [GivingCategory: Double] = [:]
-        for record in recordsForMonth(month) {
+    func totalByCategory(for month: Date = Date()) -> [GivingCategory: Decimal] {
+        var totals: [GivingCategory: Decimal] = [:]
+        for record in fetchRecords(for: month) {
             totals[record.category, default: 0] += record.amount
         }
         return totals
@@ -78,20 +89,5 @@ class TitheCalculatorService: ObservableObject {
             totalGivenThisYear: totalGivenThisYear(),
             annualIncome: profile.monthlyIncome * 12
         )
-    }
-
-    // MARK: - Persistence
-
-    private func saveRecords() {
-        if let data = try? JSONEncoder().encode(titheRecords) {
-            UserDefaults.standard.set(data, forKey: storageKey)
-        }
-    }
-
-    private func loadRecords() {
-        if let data = UserDefaults.standard.data(forKey: storageKey),
-           let records = try? JSONDecoder().decode([TitheRecord].self, from: data) {
-            titheRecords = records
-        }
     }
 }

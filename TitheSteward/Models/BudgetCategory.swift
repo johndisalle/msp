@@ -1,33 +1,41 @@
 import Foundation
+import SwiftData
 
-struct BudgetCategory: Codable, Identifiable {
-    let id: UUID
+@Model
+final class BudgetCategory {
     var name: String
-    var type: BudgetCategoryType
-    var budgetedAmount: Double
+    var typeRaw: String
+    var budgetedAmount: Decimal
     var icon: String
     var colorName: String
     var sortOrder: Int
 
+    var userProfile: UserProfile?
+    @Relationship(deleteRule: .cascade) var transactions: [BudgetTransaction]
+
+    var type: BudgetCategoryType {
+        get { BudgetCategoryType(rawValue: typeRaw) ?? .discretionary }
+        set { typeRaw = newValue.rawValue }
+    }
+
     init(
-        id: UUID = UUID(),
         name: String,
         type: BudgetCategoryType,
-        budgetedAmount: Double = 0,
+        budgetedAmount: Decimal = 0,
         icon: String = "folder.fill",
         colorName: String = "AccentGold",
         sortOrder: Int = 0
     ) {
-        self.id = id
         self.name = name
-        self.type = type
+        self.typeRaw = type.rawValue
         self.budgetedAmount = budgetedAmount
         self.icon = icon
         self.colorName = colorName
         self.sortOrder = sortOrder
+        self.transactions = []
     }
 
-    static var defaults: [BudgetCategory] {
+    static func defaults() -> [BudgetCategory] {
         [
             BudgetCategory(name: "Tithe & Giving", type: .giving, icon: "heart.fill", colorName: "TitheGold", sortOrder: 0),
             BudgetCategory(name: "Housing", type: .necessity, icon: "house.fill", colorName: "NecessityBlue", sortOrder: 1),
@@ -71,27 +79,24 @@ enum BudgetCategoryType: String, Codable, CaseIterable {
     }
 }
 
-struct BudgetTransaction: Codable, Identifiable {
-    let id: UUID
+@Model
+final class BudgetTransaction {
     var date: Date
-    var amount: Double
-    var categoryId: UUID
-    var description: String
+    var amount: Decimal
+    var descriptionText: String
     var note: String?
 
+    var category: BudgetCategory?
+
     init(
-        id: UUID = UUID(),
         date: Date = Date(),
-        amount: Double,
-        categoryId: UUID,
-        description: String,
+        amount: Decimal,
+        descriptionText: String,
         note: String? = nil
     ) {
-        self.id = id
         self.date = date
         self.amount = amount
-        self.categoryId = categoryId
-        self.description = description
+        self.descriptionText = descriptionText
         self.note = note
     }
 }

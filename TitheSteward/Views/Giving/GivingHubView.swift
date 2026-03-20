@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct GivingHubView: View {
     @StateObject private var viewModel = GivingViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -78,7 +80,7 @@ struct GivingHubView: View {
                                 Text("Recurring Gifts")
                                     .font(.headline)
                                 Spacer()
-                                Text(viewModel.formatCurrency(viewModel.monthlyRecurringTotal) + "/mo")
+                                Text(viewModel.monthlyRecurringTotal.currencyWhole + "/mo")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -98,7 +100,7 @@ struct GivingHubView: View {
 
                                     Spacer()
 
-                                    Text(viewModel.formatCurrency(gift.amount))
+                                    Text(gift.amount.currencyFormatted)
                                         .font(.subheadline.bold())
                                 }
                             }
@@ -174,6 +176,9 @@ struct GivingHubView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Giving")
+            .onAppear {
+                viewModel.configure(modelContext: modelContext)
+            }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {

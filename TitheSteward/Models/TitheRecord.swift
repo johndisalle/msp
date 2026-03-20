@@ -1,39 +1,50 @@
 import Foundation
+import SwiftData
 
-struct TitheRecord: Codable, Identifiable {
-    let id: UUID
+@Model
+final class TitheRecord {
     var date: Date
-    var amount: Double
+    var amount: Decimal
     var incomeSource: String
-    var incomeAmount: Double
-    var category: GivingCategory
+    var incomeAmount: Decimal
+    var categoryRaw: String
     var recipient: String
     var note: String?
     var isRecurring: Bool
-    var paymentMethod: PaymentMethod
+    var paymentMethodRaw: String
+
+    var userProfile: UserProfile?
+
+    var category: GivingCategory {
+        get { GivingCategory(rawValue: categoryRaw) ?? .tithe }
+        set { categoryRaw = newValue.rawValue }
+    }
+
+    var paymentMethod: PaymentMethod {
+        get { PaymentMethod(rawValue: paymentMethodRaw) ?? .manual }
+        set { paymentMethodRaw = newValue.rawValue }
+    }
 
     init(
-        id: UUID = UUID(),
         date: Date = Date(),
-        amount: Double,
+        amount: Decimal,
         incomeSource: String = "Primary Income",
-        incomeAmount: Double = 0,
+        incomeAmount: Decimal = 0,
         category: GivingCategory = .tithe,
         recipient: String = "",
         note: String? = nil,
         isRecurring: Bool = false,
         paymentMethod: PaymentMethod = .manual
     ) {
-        self.id = id
         self.date = date
         self.amount = amount
         self.incomeSource = incomeSource
         self.incomeAmount = incomeAmount
-        self.category = category
+        self.categoryRaw = category.rawValue
         self.recipient = recipient
         self.note = note
         self.isRecurring = isRecurring
-        self.paymentMethod = paymentMethod
+        self.paymentMethodRaw = paymentMethod.rawValue
     }
 }
 

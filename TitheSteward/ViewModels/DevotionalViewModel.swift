@@ -1,21 +1,38 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class DevotionalViewModel: ObservableObject {
-    @Published var devotionalService = DevotionalService()
     @Published var showingPrayerSheet = false
     @Published var personalNote: String = ""
     @Published var didPray = false
 
+    private var devotionalService: DevotionalService?
+    private var modelContext: ModelContext?
+
+    func configure(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        self.devotionalService = DevotionalService(modelContext: modelContext)
+    }
+
+    var userProfile: UserProfile? {
+        guard let modelContext = modelContext else { return nil }
+        let descriptor = FetchDescriptor<UserProfile>()
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+
     var todaysDevotional: Devotional? {
-        devotionalService.todaysDevotional
+        devotionalService?.todaysDevotional
     }
 
     var isCompletedToday: Bool {
-        devotionalService.isCompletedToday()
+        guard let profile = userProfile, let service = devotionalService else { return false }
+        return service.isCompletedToday(profile: profile)
     }
 
     var devotionalStreak: Int {
-        devotionalService.devotionalStreak()
+        guard let profile = userProfile, let service = devotionalService else { return 0 }
+        return service.devotionalStreak(profile: profile)
     }
 
     var streakText: String {
@@ -25,22 +42,22 @@ class DevotionalViewModel: ObservableObject {
     }
 
     var allDevotionals: [Devotional] {
-        devotionalService.devotionals
+        devotionalService?.allDevotionals ?? DevotionalContentLibrary.devotionals
     }
 
     func markComplete() {
-        guard let devotional = todaysDevotional else { return }
-        devotionalService.markComplete(
-            devotionalId: devotional.id,
+        guard let devotional = todaysDevotional,
+              let profile = userProfile,
+              let service = devotionalService else { return }
+        service.markComplete(
+            devotionalDay: devotional.dayOfCycle,
             didPray: didPray,
-            note: personalNote.isEmpty ? nil : personalNote
+            note: personalNote.isEmpty ? nil : personalNote,
+            profile: profile
         )
         showingPrayerSheet = false
         personalNote = ""
         didPray = false
-    }
-
-    func recentCompletions(limit: Int = 7) -> [DevotionalCompletion] {
-        Array(devotionalService.completions.sorted { $0.date > $1.date }.prefix(limit))
+        objectWillChange.send()
     }
 }

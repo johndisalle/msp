@@ -44,6 +44,7 @@ class WidgetDataService {
         return widgetData
     }
 
+    @MainActor
     static func updateFromServices(
         titheService: TitheCalculatorService,
         devotionalService: DevotionalService,
@@ -54,8 +55,8 @@ class WidgetDataService {
 
         let data = WidgetData(
             titheProgressPercent: score.progressToTithe,
-            amountGivenThisMonth: score.totalGivenThisMonth,
-            titheGoal: score.monthlyTitheTarget,
+            amountGivenThisMonth: NSDecimalNumber(decimal: score.totalGivenThisMonth).doubleValue,
+            titheGoal: NSDecimalNumber(decimal: score.monthlyTitheTarget).doubleValue,
             generosityStreak: score.currentStreak,
             generosityLevel: score.level.rawValue,
             todaysVerse: devotional?.verse ?? "",

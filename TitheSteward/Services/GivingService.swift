@@ -1,15 +1,13 @@
 import Foundation
 import PassKit
+import SwiftData
 
+@MainActor
 class GivingService: ObservableObject {
-    @Published var recipients: [GivingRecipient] = []
-    @Published var recurringGifts: [RecurringGift] = []
+    private var modelContext: ModelContext
 
-    private let recipientsKey = "giving_recipients"
-    private let recurringKey = "recurring_gifts"
-
-    init() {
-        loadData()
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
     // MARK: - Apple Pay Support
@@ -22,7 +20,7 @@ class GivingService: ObservableObject {
         PKPaymentAuthorizationController.canMakePayments(usingNetworks: [.visa, .masterCard, .amex, .discover])
     }
 
-    func createPaymentRequest(amount: Double, recipient: GivingRecipient) -> PKPaymentRequest {
+    func createPaymentRequest(amount: Decimal, recipient: GivingRecipient) -> PKPaymentRequest {
         let request = PKPaymentRequest()
         request.merchantIdentifier = "merchant.com.tithesteward.app"
         request.supportedNetworks = [.visa, .masterCard, .amex, .discover]
@@ -30,64 +28,60 @@ class GivingService: ObservableObject {
         request.countryCode = "US"
         request.currencyCode = "USD"
         request.paymentSummaryItems = [
-            PKPaymentSummaryItem(label: "Gift to \(recipient.name)", amount: NSDecimalNumber(value: amount))
+            PKPaymentSummaryItem(label: "Gift to \(recipient.name)", amount: NSDecimalNumber(decimal: amount))
         ]
         return request
     }
 
     // MARK: - Recipients
 
-    func addRecipient(_ recipient: GivingRecipient) {
-        recipients.append(recipient)
-        saveRecipients()
+    func fetchRecipients() -> [GivingRecipient] {
+        let descriptor = FetchDescriptor<GivingRecipient>(
+            sortBy: [SortDescriptor(\.name)]
+        )
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
-    func updateRecipient(_ recipient: GivingRecipient) {
-        if let index = recipients.firstIndex(where: { $0.id == recipient.id }) {
-            recipients[index] = recipient
-            saveRecipients()
-        }
+    func addRecipient(_ recipient: GivingRecipient, to profile: UserProfile) {
+        recipient.userProfile = profile
+        profile.recipients.append(recipient)
+        modelContext.insert(recipient)
+        try? modelContext.save()
     }
 
-    func deleteRecipient(id: UUID) {
-        recipients.removeAll { $0.id == id }
-        recurringGifts.removeAll { $0.recipientId == id }
-        saveRecipients()
-        saveRecurring()
+    func deleteRecipient(_ recipient: GivingRecipient) {
+        modelContext.delete(recipient)
+        try? modelContext.save()
     }
 
     func favoriteRecipients() -> [GivingRecipient] {
-        recipients.filter { $0.isFavorite }
+        fetchRecipients().filter { $0.isFavorite }
     }
 
     // MARK: - Recurring Gifts
 
-    func addRecurringGift(_ gift: RecurringGift) {
-        recurringGifts.append(gift)
-        saveRecurring()
+    func fetchRecurringGifts() -> [RecurringGift] {
+        let descriptor = FetchDescriptor<RecurringGift>()
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
-    func toggleRecurringGift(id: UUID) {
-        if let index = recurringGifts.firstIndex(where: { $0.id == id }) {
-            recurringGifts[index].isActive.toggle()
-            saveRecurring()
-        }
+    func addRecurringGift(_ gift: RecurringGift, to recipient: GivingRecipient) {
+        gift.recipient = recipient
+        recipient.recurringGifts.append(gift)
+        modelContext.insert(gift)
+        try? modelContext.save()
     }
 
-    func deleteRecurringGift(id: UUID) {
-        recurringGifts.removeAll { $0.id == id }
-        saveRecurring()
+    func deleteRecurringGift(_ gift: RecurringGift) {
+        modelContext.delete(gift)
+        try? modelContext.save()
     }
 
-    func activeRecurringGifts() -> [RecurringGift] {
-        recurringGifts.filter { $0.isActive }
-    }
-
-    func monthlyRecurringTotal() -> Double {
-        activeRecurringGifts().reduce(0) { total, gift in
+    func monthlyRecurringTotal() -> Decimal {
+        fetchRecurringGifts().filter { $0.isActive }.reduce(Decimal.zero) { total, gift in
             switch gift.frequency {
-            case .weekly: return total + (gift.amount * 4.33)
-            case .biweekly: return total + (gift.amount * 2.17)
+            case .weekly: return total + (gift.amount * Decimal(string: "4.33")!)
+            case .biweekly: return total + (gift.amount * Decimal(string: "2.17")!)
             case .monthly: return total + gift.amount
             case .quarterly: return total + (gift.amount / 3)
             case .annually: return total + (gift.amount / 12)
@@ -95,28 +89,7 @@ class GivingService: ObservableObject {
         }
     }
 
-    // MARK: - Persistence
-
-    private func saveRecipients() {
-        if let data = try? JSONEncoder().encode(recipients) {
-            UserDefaults.standard.set(data, forKey: recipientsKey)
-        }
-    }
-
-    private func saveRecurring() {
-        if let data = try? JSONEncoder().encode(recurringGifts) {
-            UserDefaults.standard.set(data, forKey: recurringKey)
-        }
-    }
-
-    private func loadData() {
-        if let data = UserDefaults.standard.data(forKey: recipientsKey),
-           let items = try? JSONDecoder().decode([GivingRecipient].self, from: data) {
-            recipients = items
-        }
-        if let data = UserDefaults.standard.data(forKey: recurringKey),
-           let items = try? JSONDecoder().decode([RecurringGift].self, from: data) {
-            recurringGifts = items
-        }
+    func save() {
+        try? modelContext.save()
     }
 }

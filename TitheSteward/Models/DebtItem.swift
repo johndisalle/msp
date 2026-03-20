@@ -1,41 +1,50 @@
 import Foundation
+import SwiftData
 
-struct DebtItem: Codable, Identifiable {
-    let id: UUID
+@Model
+final class DebtItem {
     var name: String
-    var originalBalance: Double
-    var currentBalance: Double
+    var originalBalance: Decimal
+    var currentBalance: Decimal
     var interestRate: Double
-    var minimumPayment: Double
-    var type: DebtType
+    var minimumPayment: Decimal
+    var typeRaw: String
     var startDate: Date
     var note: String?
 
+    var userProfile: UserProfile?
+    @Relationship(deleteRule: .cascade) var payments: [DebtPayment]
+
+    var type: DebtType {
+        get { DebtType(rawValue: typeRaw) ?? .other }
+        set { typeRaw = newValue.rawValue }
+    }
+
+    var percentPaid: Double {
+        guard originalBalance > 0 else { return 0 }
+        let ratio = (originalBalance - currentBalance) / originalBalance
+        return max(0, min(1, NSDecimalNumber(decimal: ratio).doubleValue))
+    }
+
     init(
-        id: UUID = UUID(),
         name: String,
-        originalBalance: Double,
-        currentBalance: Double,
+        originalBalance: Decimal,
+        currentBalance: Decimal,
         interestRate: Double = 0,
-        minimumPayment: Double = 0,
+        minimumPayment: Decimal = 0,
         type: DebtType = .other,
         startDate: Date = Date(),
         note: String? = nil
     ) {
-        self.id = id
         self.name = name
         self.originalBalance = originalBalance
         self.currentBalance = currentBalance
         self.interestRate = interestRate
         self.minimumPayment = minimumPayment
-        self.type = type
+        self.typeRaw = type.rawValue
         self.startDate = startDate
         self.note = note
-    }
-
-    var percentPaid: Double {
-        guard originalBalance > 0 else { return 0 }
-        return max(0, min(1, 1 - (currentBalance / originalBalance)))
+        self.payments = []
     }
 }
 
@@ -73,16 +82,15 @@ enum DebtType: String, Codable, CaseIterable {
     }
 }
 
-struct DebtPayment: Codable, Identifiable {
-    let id: UUID
-    var debtId: UUID
+@Model
+final class DebtPayment {
     var date: Date
-    var amount: Double
+    var amount: Decimal
     var note: String?
 
-    init(id: UUID = UUID(), debtId: UUID, date: Date = Date(), amount: Double, note: String? = nil) {
-        self.id = id
-        self.debtId = debtId
+    var debt: DebtItem?
+
+    init(date: Date = Date(), amount: Decimal, note: String? = nil) {
         self.date = date
         self.amount = amount
         self.note = note

@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -45,8 +47,11 @@ struct DashboardView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Dashboard")
+            .onAppear {
+                viewModel.configure(modelContext: modelContext)
+            }
             .refreshable {
-                viewModel.loadData()
+                viewModel.loadData(modelContext: modelContext)
             }
         }
     }
@@ -228,7 +233,7 @@ struct RecentGivingCard: View {
 
                     Spacer()
 
-                    Text(formatCurrency(gift.amount))
+                    Text(gift.amount.currencyFormatted)
                         .font(.subheadline.bold())
                 }
             }
@@ -237,13 +242,6 @@ struct RecentGivingCard: View {
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
-    }
-
-    private func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
 }
 

@@ -1,113 +1,73 @@
 import Foundation
+import SwiftData
 
+@MainActor
 class DebtService: ObservableObject {
-    @Published var debts: [DebtItem] = []
-    @Published var payments: [DebtPayment] = []
+    private var modelContext: ModelContext
 
-    private let debtsKey = "debt_items"
-    private let paymentsKey = "debt_payments"
-
-    init() {
-        loadData()
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
     // MARK: - Debts
 
-    func addDebt(_ debt: DebtItem) {
-        debts.append(debt)
-        saveDebts()
+    func fetchDebts() -> [DebtItem] {
+        let descriptor = FetchDescriptor<DebtItem>(
+            sortBy: [SortDescriptor(\.currentBalance)]
+        )
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
-    func updateDebt(_ debt: DebtItem) {
-        if let index = debts.firstIndex(where: { $0.id == debt.id }) {
-            debts[index] = debt
-            saveDebts()
-        }
+    func addDebt(_ debt: DebtItem, to profile: UserProfile) {
+        debt.userProfile = profile
+        profile.debts.append(debt)
+        modelContext.insert(debt)
+        try? modelContext.save()
     }
 
-    func deleteDebt(id: UUID) {
-        debts.removeAll { $0.id == id }
-        payments.removeAll { $0.debtId == id }
-        saveDebts()
-        savePayments()
+    func deleteDebt(_ debt: DebtItem) {
+        modelContext.delete(debt)
+        try? modelContext.save()
     }
 
     // MARK: - Payments
 
-    func addPayment(_ payment: DebtPayment) {
-        payments.append(payment)
-        // Update current balance
-        if let index = debts.firstIndex(where: { $0.id == payment.debtId }) {
-            debts[index].currentBalance = max(0, debts[index].currentBalance - payment.amount)
-            saveDebts()
-        }
-        savePayments()
-    }
-
-    func paymentsForDebt(_ debtId: UUID) -> [DebtPayment] {
-        payments.filter { $0.debtId == debtId }.sorted { $0.date > $1.date }
+    func addPayment(_ payment: DebtPayment, to debt: DebtItem) {
+        payment.debt = debt
+        debt.payments.append(payment)
+        debt.currentBalance = max(0, debt.currentBalance - payment.amount)
+        modelContext.insert(payment)
+        try? modelContext.save()
     }
 
     // MARK: - Snowball Calculator
 
-    /// Returns debts ordered by the debt snowball method (smallest balance first)
-    func snowballOrder() -> [DebtItem] {
+    func snowballOrder(_ debts: [DebtItem]) -> [DebtItem] {
         debts.filter { $0.currentBalance > 0 }
             .sorted { $0.currentBalance < $1.currentBalance }
     }
 
-    /// Returns debts ordered by the avalanche method (highest interest first)
-    func avalancheOrder() -> [DebtItem] {
+    func avalancheOrder(_ debts: [DebtItem]) -> [DebtItem] {
         debts.filter { $0.currentBalance > 0 }
             .sorted { $0.interestRate > $1.interestRate }
     }
 
-    var totalDebt: Double {
-        debts.reduce(0) { $0 + $1.currentBalance }
+    func totalDebt(_ debts: [DebtItem]) -> Decimal {
+        debts.reduce(Decimal.zero) { $0 + $1.currentBalance }
     }
 
-    var totalOriginalDebt: Double {
-        debts.reduce(0) { $0 + $1.originalBalance }
+    func totalOriginalDebt(_ debts: [DebtItem]) -> Decimal {
+        debts.reduce(Decimal.zero) { $0 + $1.originalBalance }
     }
 
-    var overallProgress: Double {
-        guard totalOriginalDebt > 0 else { return 0 }
-        return 1 - (totalDebt / totalOriginalDebt)
+    func overallProgress(_ debts: [DebtItem]) -> Double {
+        let original = totalOriginalDebt(debts)
+        guard original > 0 else { return 0 }
+        let ratio = (original - totalDebt(debts)) / original
+        return NSDecimalNumber(decimal: ratio).doubleValue
     }
 
-    var totalMinimumPayments: Double {
-        debts.reduce(0) { $0 + $1.minimumPayment }
-    }
-
-    func totalPaidThisMonth(_ date: Date = Date()) -> Double {
-        let calendar = Calendar.current
-        return payments
-            .filter { calendar.isDate($0.date, equalTo: date, toGranularity: .month) }
-            .reduce(0) { $0 + $1.amount }
-    }
-
-    // MARK: - Persistence
-
-    private func saveDebts() {
-        if let data = try? JSONEncoder().encode(debts) {
-            UserDefaults.standard.set(data, forKey: debtsKey)
-        }
-    }
-
-    private func savePayments() {
-        if let data = try? JSONEncoder().encode(payments) {
-            UserDefaults.standard.set(data, forKey: paymentsKey)
-        }
-    }
-
-    private func loadData() {
-        if let data = UserDefaults.standard.data(forKey: debtsKey),
-           let items = try? JSONDecoder().decode([DebtItem].self, from: data) {
-            debts = items
-        }
-        if let data = UserDefaults.standard.data(forKey: paymentsKey),
-           let items = try? JSONDecoder().decode([DebtPayment].self, from: data) {
-            payments = items
-        }
+    func totalMinimumPayments(_ debts: [DebtItem]) -> Decimal {
+        debts.reduce(Decimal.zero) { $0 + $1.minimumPayment }
     }
 }

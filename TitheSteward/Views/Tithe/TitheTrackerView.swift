@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct TitheTrackerView: View {
     @StateObject private var viewModel = TitheViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -32,21 +34,21 @@ struct TitheTrackerView: View {
 
                         HStack(spacing: 24) {
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.totalGivenThisMonth))
+                                Text(viewModel.totalGivenThisMonth.currencyFormatted)
                                     .font(.headline)
                                 Text("Given")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.suggestedTithe))
+                                Text(viewModel.suggestedTithe.currencyFormatted)
                                     .font(.headline)
                                 Text("Goal")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.remainingToTithe))
+                                Text(viewModel.remainingToTithe.currencyFormatted)
                                     .font(.headline)
                                 Text("Remaining")
                                     .font(.caption)
@@ -74,7 +76,7 @@ struct TitheTrackerView: View {
                                     Text(item.category.rawValue)
                                         .font(.subheadline)
                                     Spacer()
-                                    Text(viewModel.formatCurrency(item.total))
+                                    Text(item.total.currencyFormatted)
                                         .font(.subheadline.bold())
                                 }
                             }
@@ -122,7 +124,7 @@ struct TitheTrackerView: View {
 
                                     Spacer()
 
-                                    Text(viewModel.formatCurrency(record.amount))
+                                    Text(record.amount.currencyFormatted)
                                         .font(.subheadline.bold())
                                 }
                             }
@@ -137,6 +139,9 @@ struct TitheTrackerView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Tithe Tracker")
+            .onAppear {
+                viewModel.configure(modelContext: modelContext)
+            }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {

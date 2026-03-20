@@ -1,20 +1,23 @@
 import Foundation
 
+/// Computed value object — not persisted. Calculated from user data on the fly.
 struct GenerosityScore {
-    var totalGivenThisMonth: Double
-    var monthlyIncome: Double
-    var currentStreak: Int // consecutive months meeting tithe goal
-    var totalGivenThisYear: Double
-    var annualIncome: Double
+    var totalGivenThisMonth: Decimal
+    var monthlyIncome: Decimal
+    var currentStreak: Int
+    var totalGivenThisYear: Decimal
+    var annualIncome: Decimal
 
     var monthlyPercentage: Double {
         guard monthlyIncome > 0 else { return 0 }
-        return (totalGivenThisMonth / monthlyIncome) * 100
+        let ratio = totalGivenThisMonth / monthlyIncome * 100
+        return NSDecimalNumber(decimal: ratio).doubleValue
     }
 
     var annualPercentage: Double {
         guard annualIncome > 0 else { return 0 }
-        return (totalGivenThisYear / annualIncome) * 100
+        let ratio = totalGivenThisYear / annualIncome * 100
+        return NSDecimalNumber(decimal: ratio).doubleValue
     }
 
     var titheGoalMet: Bool {
@@ -32,18 +35,19 @@ struct GenerosityScore {
         }
     }
 
-    var remainingToTithe: Double {
-        let titheTarget = monthlyIncome * 0.10
+    var remainingToTithe: Decimal {
+        let titheTarget = monthlyIncome * Decimal(string: "0.10")!
         return max(0, titheTarget - totalGivenThisMonth)
     }
 
-    var monthlyTitheTarget: Double {
-        monthlyIncome * 0.10
+    var monthlyTitheTarget: Decimal {
+        monthlyIncome * Decimal(string: "0.10")!
     }
 
     var progressToTithe: Double {
         guard monthlyTitheTarget > 0 else { return 0 }
-        return min(1.0, totalGivenThisMonth / monthlyTitheTarget)
+        let ratio = totalGivenThisMonth / monthlyTitheTarget
+        return min(1.0, NSDecimalNumber(decimal: ratio).doubleValue)
     }
 }
 

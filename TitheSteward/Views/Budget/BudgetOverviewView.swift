@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct BudgetOverviewView: View {
     @StateObject private var viewModel = BudgetViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -17,14 +19,14 @@ struct BudgetOverviewView: View {
 
                         HStack(spacing: 24) {
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.totalBudgeted))
+                                Text(viewModel.totalBudgeted.currencyWhole)
                                     .font(.title3.bold())
                                 Text("Budgeted")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.totalSpent))
+                                Text(viewModel.totalSpent.currencyWhole)
                                     .font(.title3.bold())
                                     .foregroundColor(viewModel.totalSpent > viewModel.totalBudgeted ? .red : .primary)
                                 Text("Spent")
@@ -32,7 +34,7 @@ struct BudgetOverviewView: View {
                                     .foregroundColor(.secondary)
                             }
                             VStack {
-                                Text(viewModel.formatCurrency(viewModel.remainingBudget))
+                                Text(viewModel.remainingBudget.currencyWhole)
                                     .font(.title3.bold())
                                     .foregroundColor(viewModel.remainingBudget < 0 ? .red : .green)
                                 Text("Remaining")
@@ -72,8 +74,7 @@ struct BudgetOverviewView: View {
                             BudgetCategoryRow(
                                 category: item.category,
                                 spent: item.spent,
-                                budgeted: item.budgeted,
-                                formatCurrency: viewModel.formatCurrency
+                                budgeted: item.budgeted
                             )
                         }
                     }
@@ -93,6 +94,9 @@ struct BudgetOverviewView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Budget")
+            .onAppear {
+                viewModel.configure(modelContext: modelContext)
+            }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -112,13 +116,13 @@ struct BudgetOverviewView: View {
 
 struct BudgetCategoryRow: View {
     let category: BudgetCategory
-    let spent: Double
-    let budgeted: Double
-    let formatCurrency: (Double) -> String
+    let spent: Decimal
+    let budgeted: Decimal
 
     var progress: Double {
         guard budgeted > 0 else { return 0 }
-        return min(1.0, spent / budgeted)
+        let ratio = spent / budgeted
+        return min(1.0, NSDecimalNumber(decimal: ratio).doubleValue)
     }
 
     var body: some View {
@@ -133,7 +137,7 @@ struct BudgetCategoryRow: View {
 
                 Spacer()
 
-                Text("\(formatCurrency(spent)) / \(formatCurrency(budgeted))")
+                Text("\(spent.currencyWhole) / \(budgeted.currencyWhole)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -171,11 +175,11 @@ struct AddTransactionSheet: View {
                 }
 
                 Section("Category") {
-                    Picker("Category", selection: $viewModel.selectedCategoryId) {
-                        Text("Select a category").tag(nil as UUID?)
+                    Picker("Category", selection: $viewModel.selectedCategory) {
+                        Text("Select a category").tag(nil as BudgetCategory?)
                         ForEach(viewModel.categories) { category in
                             Label(category.name, systemImage: category.icon)
-                                .tag(category.id as UUID?)
+                                .tag(category as BudgetCategory?)
                         }
                     }
                 }
@@ -196,7 +200,7 @@ struct AddTransactionSheet: View {
                         viewModel.addTransaction()
                         dismiss()
                     }
-                    .disabled(viewModel.newAmount.isEmpty || viewModel.selectedCategoryId == nil)
+                    .disabled(viewModel.newAmount.isEmpty || viewModel.selectedCategory == nil)
                 }
             }
         }

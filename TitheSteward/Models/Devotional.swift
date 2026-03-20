@@ -1,6 +1,9 @@
 import Foundation
+import SwiftData
 
-struct Devotional: Codable, Identifiable {
+/// Static devotional content — not persisted in SwiftData.
+/// These are loaded from DevotionalContentLibrary.
+struct Devotional: Identifiable {
     let id: UUID
     var title: String
     var verse: String
@@ -53,16 +56,18 @@ enum DevotionalCategory: String, Codable, CaseIterable {
     }
 }
 
-struct DevotionalCompletion: Codable, Identifiable {
-    let id: UUID
-    var devotionalId: UUID
+/// Persisted in SwiftData — tracks which devotionals the user has completed.
+@Model
+final class DevotionalCompletion {
+    var devotionalDay: Int
     var date: Date
     var didPray: Bool
     var personalNote: String?
 
-    init(id: UUID = UUID(), devotionalId: UUID, date: Date = Date(), didPray: Bool = false, personalNote: String? = nil) {
-        self.id = id
-        self.devotionalId = devotionalId
+    var userProfile: UserProfile?
+
+    init(devotionalDay: Int, date: Date = Date(), didPray: Bool = false, personalNote: String? = nil) {
+        self.devotionalDay = devotionalDay
         self.date = date
         self.didPray = didPray
         self.personalNote = personalNote

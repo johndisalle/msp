@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct DevotionalFeedView: View {
     @StateObject private var viewModel = DevotionalViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -37,7 +39,7 @@ struct DevotionalFeedView: View {
 
                     // Today's Devotional
                     if let devotional = viewModel.todaysDevotional {
-                        DevotionalDetailView(devotional: devotional)
+                        DevotionalDetailView(devotional: devotional, viewModel: viewModel)
                             .padding(.horizontal)
                     }
 
@@ -48,7 +50,7 @@ struct DevotionalFeedView: View {
                             .padding(.horizontal)
 
                         ForEach(viewModel.allDevotionals) { devotional in
-                            NavigationLink(destination: DevotionalDetailView(devotional: devotional)) {
+                            NavigationLink(destination: DevotionalDetailView(devotional: devotional, viewModel: viewModel)) {
                                 HStack {
                                     Image(systemName: devotional.category.icon)
                                         .foregroundColor(Color("AccentGold"))
@@ -80,12 +82,16 @@ struct DevotionalFeedView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Devotional")
+            .onAppear {
+                viewModel.configure(modelContext: modelContext)
+            }
         }
     }
 }
 
 struct DevotionalDetailView: View {
     let devotional: Devotional
+    var viewModel: DevotionalViewModel?
     @State private var showingPrayerSheet = false
     @State private var personalNote = ""
     @State private var didPray = false
@@ -151,16 +157,18 @@ struct DevotionalDetailView: View {
             .cornerRadius(12)
 
             // Mark Complete Button
-            Button {
-                showingPrayerSheet = true
-            } label: {
-                Label("I've Read & Prayed", systemImage: "checkmark.circle.fill")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color("AccentGold"))
-                    .cornerRadius(12)
+            if viewModel != nil {
+                Button {
+                    showingPrayerSheet = true
+                } label: {
+                    Label("I've Read & Prayed", systemImage: "checkmark.circle.fill")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color("AccentGold"))
+                        .cornerRadius(12)
+                }
             }
         }
         .padding()
@@ -183,6 +191,11 @@ struct DevotionalDetailView: View {
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") {
+                            if let vm = viewModel {
+                                vm.didPray = didPray
+                                vm.personalNote = personalNote
+                                vm.markComplete()
+                            }
                             showingPrayerSheet = false
                         }
                     }

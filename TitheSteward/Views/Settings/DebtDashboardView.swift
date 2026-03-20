@@ -1,8 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct DebtDashboardView: View {
-    @StateObject private var debtService = DebtService()
+    @Environment(\.modelContext) private var modelContext
     @State private var showingAddDebt = false
+    @State private var debts: [DebtItem] = []
+
+    private var debtService: DebtService? {
+        DebtService(modelContext: modelContext)
+    }
 
     var body: some View {
         ScrollView {
@@ -15,7 +21,7 @@ struct DebtDashboardView: View {
                         Spacer()
                     }
 
-                    if debtService.debts.isEmpty {
+                    if debts.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "lock.open.fill")
                                 .font(.system(size: 40))
@@ -32,6 +38,8 @@ struct DebtDashboardView: View {
                         }
                         .padding(.vertical, 24)
                     } else {
+                        let progress = debtService?.overallProgress(debts) ?? 0
+
                         // Progress circle
                         ZStack {
                             Circle()
@@ -39,13 +47,13 @@ struct DebtDashboardView: View {
                                 .frame(width: 120, height: 120)
 
                             Circle()
-                                .trim(from: 0, to: debtService.overallProgress)
+                                .trim(from: 0, to: progress)
                                 .stroke(Color.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                                 .frame(width: 120, height: 120)
                                 .rotationEffect(.degrees(-90))
 
                             VStack {
-                                Text("\(Int(debtService.overallProgress * 100))%")
+                                Text("\(Int(progress * 100))%")
                                     .font(.title2.bold())
                                 Text("Free")
                                     .font(.caption2)
@@ -55,7 +63,7 @@ struct DebtDashboardView: View {
 
                         HStack(spacing: 20) {
                             VStack {
-                                Text(formatCurrency(debtService.totalDebt))
+                                Text((debtService?.totalDebt(debts) ?? 0).currencyWhole)
                                     .font(.headline)
                                     .foregroundColor(.red)
                                 Text("Remaining")
@@ -63,7 +71,7 @@ struct DebtDashboardView: View {
                                     .foregroundColor(.secondary)
                             }
                             VStack {
-                                Text(formatCurrency(debtService.totalMinimumPayments))
+                                Text((debtService?.totalMinimumPayments(debts) ?? 0).currencyWhole)
                                     .font(.headline)
                                 Text("Min/Month")
                                     .font(.caption)
@@ -79,7 +87,9 @@ struct DebtDashboardView: View {
                 .padding(.horizontal)
 
                 // Snowball Order
-                if !debtService.debts.isEmpty {
+                if !debts.isEmpty {
+                    let snowball = debtService?.snowballOrder(debts) ?? []
+
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Debt Snowball Order")
@@ -93,7 +103,7 @@ struct DebtDashboardView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        ForEach(Array(debtService.snowballOrder().enumerated()), id: \.element.id) { index, debt in
+                        ForEach(Array(snowball.enumerated()), id: \.element.id) { index, debt in
                             HStack {
                                 Text("#\(index + 1)")
                                     .font(.caption.bold())
@@ -108,7 +118,7 @@ struct DebtDashboardView: View {
                                 VStack(alignment: .leading) {
                                     Text(debt.name)
                                         .font(.subheadline)
-                                    Text(formatCurrency(debt.currentBalance))
+                                    Text(debt.currentBalance.currencyWhole)
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
@@ -168,6 +178,9 @@ struct DebtDashboardView: View {
             .padding(.vertical)
         }
         .navigationTitle("Debt Freedom")
+        .onAppear {
+            loadDebts()
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -178,21 +191,18 @@ struct DebtDashboardView: View {
                 }
             }
         }
-        .sheet(isPresented: $showingAddDebt) {
-            AddDebtSheet(debtService: debtService)
+        .sheet(isPresented: $showingAddDebt, onDismiss: loadDebts) {
+            AddDebtSheet(modelContext: modelContext)
         }
     }
 
-    private func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0"
+    private func loadDebts() {
+        debts = debtService?.fetchDebts() ?? []
     }
 }
 
 struct AddDebtSheet: View {
-    @ObservedObject var debtService: DebtService
+    let modelContext: ModelContext
     @Environment(\.dismiss) var dismiss
     @State private var name = ""
     @State private var balance = ""
@@ -245,16 +255,20 @@ struct AddDebtSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        let bal = Double(balance) ?? 0
+                        let bal = Decimal(string: balance) ?? 0
                         let debt = DebtItem(
                             name: name,
                             originalBalance: bal,
                             currentBalance: bal,
                             interestRate: Double(interestRate) ?? 0,
-                            minimumPayment: Double(minimumPayment) ?? 0,
+                            minimumPayment: Decimal(string: minimumPayment) ?? 0,
                             type: type
                         )
-                        debtService.addDebt(debt)
+                        let service = DebtService(modelContext: modelContext)
+                        let descriptor = FetchDescriptor<UserProfile>()
+                        if let profile = (try? modelContext.fetch(descriptor))?.first {
+                            service.addDebt(debt, to: profile)
+                        }
                         dismiss()
                     }
                     .disabled(name.isEmpty || balance.isEmpty)

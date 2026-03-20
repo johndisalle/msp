@@ -1,9 +1,11 @@
 import SwiftUI
+import SwiftData
 import AuthenticationServices
 
 struct OnboardingFlowView: View {
     @StateObject private var viewModel = OnboardingViewModel()
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         VStack(spacing: 0) {
@@ -80,6 +82,9 @@ struct OnboardingFlowView: View {
             .padding()
         }
         .background(Color("BackgroundPrimary"))
+        .onAppear {
+            viewModel.configure(modelContext: modelContext)
+        }
     }
 }
 
@@ -289,7 +294,7 @@ struct IncomeSetupStepView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
-                    Text("$\(viewModel.suggestedTithe, specifier: "%.0f")")
+                    Text(viewModel.suggestedTithe.currencyWhole)
                         .font(.system(size: 36, weight: .bold))
                         .foregroundColor(Color("AccentGold"))
 
@@ -459,7 +464,7 @@ struct CompleteStepView: View {
                 }
                 SummaryRow(label: "Commitment", value: viewModel.tithingCommitment.rawValue)
                 if !viewModel.monthlyIncome.isEmpty {
-                    SummaryRow(label: "Monthly Tithe Goal", value: "$\(viewModel.suggestedTithe, specifier: "%.0f")")
+                    SummaryRow(label: "Monthly Tithe Goal", value: viewModel.suggestedTithe.currencyWhole)
                 }
                 if !viewModel.primaryChurch.isEmpty {
                     SummaryRow(label: "Church", value: viewModel.primaryChurch)
