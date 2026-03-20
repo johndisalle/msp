@@ -514,7 +514,7 @@ struct ReadyStepView: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 80))
                 .foregroundStyle(.green)
-                .symbolEffect(.bounce)
+                .symbolEffect(.bounce, options: .nonRepeating)
                 .accessibilityHidden(true)
 
             VStack(spacing: 12) {

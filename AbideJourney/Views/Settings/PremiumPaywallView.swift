@@ -139,7 +139,7 @@ struct PremiumPaywallView: View {
             Image(systemName: "crown.fill")
                 .font(.system(size: 44))
                 .foregroundStyle(.orange)
-                .symbolEffect(.bounce)
+                .symbolEffect(.bounce, options: .nonRepeating)
                 .padding(.top, 24)
                 .accessibilityHidden(true)
 

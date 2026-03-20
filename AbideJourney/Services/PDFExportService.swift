@@ -113,7 +113,7 @@ final class PDFExportService {
                     .paragraphStyle: bodyParagraph()
                 ]
                 let bodyText = entry.text as NSString
-                let bodyBounds = bodyText.boundingRect(
+                let _ = bodyText.boundingRect(
                     with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
                     options: [.usesLineFragmentOrigin, .usesFontLeading],
                     attributes: bodyAttrs,
