@@ -95,9 +95,32 @@ class GivingViewModel: ObservableObject {
             nextDate: startDate
         )
         service.addRecurringGift(gift, to: recipient)
+
+        // Request notification permission on first recurring gift
+        let activeGifts = service.fetchRecurringGifts().filter { $0.isActive }
+        if activeGifts.count == 1 {
+            Task {
+                let granted = await NotificationService.shared.requestPermission()
+                if granted {
+                    scheduleGiftReminder(gift, recipientName: recipient.name)
+                }
+            }
+        } else {
+            scheduleGiftReminder(gift, recipientName: recipient.name)
+        }
+
         showingAddRecurring = false
         selectedRecipient = nil
         objectWillChange.send()
+    }
+
+    private func scheduleGiftReminder(_ gift: RecurringGift, recipientName: String) {
+        NotificationService.shared.scheduleRecurringGiftReminder(
+            giftId: gift.persistentModelID.hashValue.description,
+            recipientName: recipientName,
+            amount: gift.amount,
+            nextDate: gift.nextDate
+        )
     }
 
     private func clearRecipientForm() {

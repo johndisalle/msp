@@ -1,9 +1,15 @@
 import Foundation
+import SwiftData
 
 @MainActor
 class CounselorViewModel: ObservableObject {
     @Published var inputText = ""
     @Published var counselorService = AICounselorService()
+    @Published var showingHistory = false
+
+    func configure(modelContext: ModelContext) {
+        counselorService.configure(modelContext: modelContext)
+    }
 
     var messages: [ChatMessage] {
         counselorService.messages
@@ -11,6 +17,14 @@ class CounselorViewModel: ObservableObject {
 
     var isLoading: Bool {
         counselorService.isLoading
+    }
+
+    var sessions: [ChatSession] {
+        counselorService.sessions
+    }
+
+    var hasHistory: Bool {
+        !sessions.isEmpty
     }
 
     var suggestedQuestions: [String] {
@@ -29,14 +43,33 @@ class CounselorViewModel: ObservableObject {
         guard !text.isEmpty else { return }
         inputText = ""
         await counselorService.sendMessage(text)
+        objectWillChange.send()
     }
 
     func sendSuggestedQuestion(_ question: String) async {
         inputText = ""
         await counselorService.sendMessage(question)
+        objectWillChange.send()
+    }
+
+    func startNewChat() {
+        counselorService.startNewSession()
+        objectWillChange.send()
+    }
+
+    func loadSession(_ session: ChatSession) {
+        counselorService.loadSession(session)
+        showingHistory = false
+        objectWillChange.send()
+    }
+
+    func deleteSession(_ session: ChatSession) {
+        counselorService.deleteSession(session)
+        objectWillChange.send()
     }
 
     func clearChat() {
         counselorService.clearChat()
+        objectWillChange.send()
     }
 }

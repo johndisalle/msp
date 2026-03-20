@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct AICounselorChatView: View {
     @StateObject private var viewModel = CounselorViewModel()
+    @Environment(\.modelContext) private var modelContext
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -73,16 +75,40 @@ struct AICounselorChatView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button(role: .destructive) {
-                        viewModel.clearChat()
+                    Button {
+                        viewModel.startNewChat()
                     } label: {
-                        Label("Clear Chat", systemImage: "trash")
+                        Label("New Chat", systemImage: "plus.bubble")
+                    }
+
+                    if viewModel.hasHistory {
+                        Button {
+                            viewModel.showingHistory = true
+                        } label: {
+                            Label("Chat History", systemImage: "clock.arrow.circlepath")
+                        }
+                    }
+
+                    if !viewModel.messages.isEmpty {
+                        Divider()
+
+                        Button(role: .destructive) {
+                            viewModel.clearChat()
+                        } label: {
+                            Label("Delete Chat", systemImage: "trash")
+                        }
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                         .foregroundColor(Color("AccentGold"))
                 }
             }
+        }
+        .onAppear {
+            viewModel.configure(modelContext: modelContext)
+        }
+        .sheet(isPresented: $viewModel.showingHistory) {
+            ChatHistorySheet(viewModel: viewModel)
         }
     }
 
@@ -107,9 +133,23 @@ struct AICounselorChatView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
 
-            Text("-- James 1:5")
+            Text("— James 1:5")
                 .font(.caption2)
                 .foregroundColor(.secondary)
+
+            if viewModel.hasHistory {
+                Button {
+                    viewModel.showingHistory = true
+                } label: {
+                    Label("View Past Conversations", systemImage: "clock.arrow.circlepath")
+                        .font(.caption)
+                        .foregroundColor(Color("AccentGold"))
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color("AccentGold").opacity(0.1))
+                        .cornerRadius(16)
+                }
+            }
         }
         .padding(.vertical, 24)
     }
@@ -141,6 +181,62 @@ struct AICounselorChatView: View {
             }
         }
         .padding(.bottom, 8)
+    }
+}
+
+// MARK: - Chat History Sheet
+
+struct ChatHistorySheet: View {
+    @ObservedObject var viewModel: CounselorViewModel
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if viewModel.sessions.isEmpty {
+                    ContentUnavailableView(
+                        "No Conversations Yet",
+                        systemImage: "bubble.left.and.bubble.right",
+                        description: Text("Your chat history will appear here.")
+                    )
+                } else {
+                    ForEach(viewModel.sessions) { session in
+                        Button {
+                            viewModel.loadSession(session)
+                            dismiss()
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(session.title)
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                    .lineLimit(1)
+
+                                HStack {
+                                    Text(session.updatedAt, style: .relative)
+                                    Text("·")
+                                    Text("\(session.messages.count) messages")
+                                }
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            viewModel.deleteSession(viewModel.sessions[index])
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Chat History")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
     }
 }
 
