@@ -5,7 +5,6 @@
 
 import SwiftUI
 import SwiftData
-import FaithForgeShared
 
 @main
 struct FaithForgeWatchApp: App {

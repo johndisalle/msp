@@ -7,16 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AAD00005 /* FaithForgeShared in Frameworks */ = {isa = PBXBuildFile; productRef = AAD00002 /* FaithForgeShared */; };
-		AAD00006 /* FaithForgeShared in Frameworks */ = {isa = PBXBuildFile; productRef = AAD00003 /* FaithForgeShared */; };
-		AAD00007 /* FaithForgeShared in Frameworks */ = {isa = PBXBuildFile; productRef = AAD00004 /* FaithForgeShared */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AA000001 /* FaithForge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaithForge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000002 /* FaithForgeWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FaithForgeWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000003 /* FaithForgeWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaithForgeWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AAD00008 /* FaithForgeShared */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FaithForgeShared; path = FaithForgeShared; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,7 +40,6 @@
 				AA100001 /* FaithForge */,
 				AA100002 /* FaithForgeWidgets */,
 				AA100003 /* FaithForgeWatch */,
-				AAD00008 /* FaithForgeShared */,
 				AA200002 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,7 +77,6 @@
 			);
 			name = FaithForge;
 			packageProductDependencies = (
-				AAD00004 /* FaithForgeShared */,
 			);
 			productName = FaithForge;
 			productReference = AA000001 /* FaithForge.app */;
@@ -104,9 +98,6 @@
 				AA100002 /* FaithForgeWidgets */,
 			);
 			name = FaithForgeWidgets;
-			packageProductDependencies = (
-				AAD00003 /* FaithForgeShared */,
-			);
 			productName = FaithForgeWidgets;
 			productReference = AA000002 /* FaithForgeWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -127,9 +118,6 @@
 				AA100003 /* FaithForgeWatch */,
 			);
 			name = FaithForgeWatch;
-			packageProductDependencies = (
-				AAD00002 /* FaithForgeShared */,
-			);
 			productName = FaithForgeWatch;
 			productReference = AA000003 /* FaithForgeWatch.app */;
 			productType = "com.apple.product-type.application";
@@ -164,9 +152,6 @@
 			);
 			mainGroup = AA200001 /* Root */;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AA200002 /* Products */;
 			projectDirPath = "";
@@ -208,7 +193,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AAD00007 /* FaithForgeShared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +200,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AAD00006 /* FaithForgeShared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +207,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AAD00005 /* FaithForgeShared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,31 +564,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = FaithForgeShared;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		AAD00002 /* FaithForgeShared */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
-			productName = FaithForgeShared;
-		};
-		AAD00003 /* FaithForgeShared */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
-			productName = FaithForgeShared;
-		};
-		AAD00004 /* FaithForgeShared */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AAD00001 /* XCLocalSwiftPackageReference "FaithForgeShared" */;
-			productName = FaithForgeShared;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA600001 /* Project object */;
 }
