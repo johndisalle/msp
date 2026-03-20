@@ -194,6 +194,47 @@ final class GivingServiceIntegrationTests: XCTestCase {
 
     // MARK: - Favorites
 
+    // MARK: - Widget Data Refresh After Processing
+
+    func testProcessDueGiftsUpdatesWidgetData() {
+        let recipient = GivingRecipient(name: "My Church", type: .church)
+        service.addRecipient(recipient, to: profile)
+
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let gift = RecurringGift(amount: 500, frequency: .monthly, category: .tithe, nextDate: yesterday)
+        service.addRecurringGift(gift, to: recipient)
+
+        // Process via the scheduler (which should update widget data)
+        RecurringGiftScheduler.shared.processAndSchedule(modelContext: modelContext)
+
+        // Verify widget data was updated with the new tithe record
+        let widgetData = WidgetDataService.load()
+        XCTAssertGreaterThan(widgetData.amountGivenThisMonth, 0,
+            "Widget data should reflect the auto-created tithe record")
+        XCTAssertEqual(widgetData.amountGivenThisMonth, 500, accuracy: 0.01,
+            "Widget should show $500 given this month")
+        XCTAssertGreaterThan(widgetData.titheProgressPercent, 0,
+            "Widget should show tithe progress > 0")
+    }
+
+    func testProcessNoDueGiftsDoesNotUpdateWidgetData() {
+        let recipient = GivingRecipient(name: "Church", type: .church)
+        service.addRecipient(recipient, to: profile)
+
+        // Gift with future date — nothing due
+        let futureDate = Calendar.current.date(byAdding: .day, value: 30, to: Date())!
+        let gift = RecurringGift(amount: 500, frequency: .monthly, category: .tithe, nextDate: futureDate)
+        service.addRecurringGift(gift, to: recipient)
+
+        RecurringGiftScheduler.shared.processAndSchedule(modelContext: modelContext)
+
+        let widgetData = WidgetDataService.load()
+        XCTAssertEqual(widgetData.amountGivenThisMonth, 0, accuracy: 0.01,
+            "Widget should not show any giving when no gifts are due")
+    }
+
+    // MARK: - Favorites
+
     func testFavoriteRecipients() {
         let r1 = GivingRecipient(name: "Church A", type: .church)
         let r2 = GivingRecipient(name: "Charity B", type: .charity)

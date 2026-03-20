@@ -319,6 +319,105 @@ final class ViewModelIntegrationTests: XCTestCase {
         XCTAssertEqual(dashVM.generosityScore?.monthlyTitheTarget, 600) // 10% of 6000
     }
 
+    // MARK: - Onboarding → Recurring Tithe Suggestion
+
+    func testShouldSuggestRecurringWhenIncomeAndChurch() {
+        let vm = OnboardingViewModel()
+        vm.monthlyIncome = "5000"
+        vm.primaryChurch = "Grace Chapel"
+
+        XCTAssertTrue(vm.shouldSuggestRecurring)
+    }
+
+    func testShouldNotSuggestRecurringWithoutChurch() {
+        let vm = OnboardingViewModel()
+        vm.monthlyIncome = "5000"
+        vm.primaryChurch = ""
+
+        XCTAssertFalse(vm.shouldSuggestRecurring)
+    }
+
+    func testShouldNotSuggestRecurringWithoutIncome() {
+        let vm = OnboardingViewModel()
+        vm.monthlyIncome = ""
+        vm.primaryChurch = "Grace Chapel"
+
+        XCTAssertFalse(vm.shouldSuggestRecurring)
+    }
+
+    func testSetupRecurringTitheCreatesRecipientAndGift() {
+        // Delete pre-made profile, simulate onboarding from scratch
+        modelContext.delete(profile)
+        try? modelContext.save()
+
+        let vm = OnboardingViewModel()
+        vm.configure(modelContext: modelContext)
+
+        vm.displayName = "Jane Doe"
+        vm.monthlyIncome = "4000"
+        vm.primaryChurch = "First Baptist"
+        vm.saveProfile()
+
+        vm.setupRecurringTithe()
+
+        // Verify recipient was created
+        let recipientDescriptor = FetchDescriptor<GivingRecipient>()
+        let recipients = (try? modelContext.fetch(recipientDescriptor)) ?? []
+        XCTAssertEqual(recipients.count, 1)
+        XCTAssertEqual(recipients.first?.name, "First Baptist")
+        XCTAssertEqual(recipients.first?.type, .church)
+        XCTAssertTrue(recipients.first?.isFavorite ?? false, "Church recipient should be favorited")
+
+        // Verify recurring gift was created
+        let giftDescriptor = FetchDescriptor<RecurringGift>()
+        let gifts = (try? modelContext.fetch(giftDescriptor)) ?? []
+        XCTAssertEqual(gifts.count, 1)
+        XCTAssertEqual(gifts.first?.amount, 400) // 10% of 4000
+        XCTAssertEqual(gifts.first?.frequency, .monthly)
+        XCTAssertEqual(gifts.first?.category, .tithe)
+        XCTAssertTrue(gifts.first?.isActive ?? false)
+        XCTAssertEqual(gifts.first?.recipient?.name, "First Baptist")
+
+        // Verify next date is 1st of next month
+        let calendar = Calendar.current
+        let nextMonth = calendar.date(byAdding: .month, value: 1, from: Date())!
+        let expectedDay = 1
+        let expectedMonth = calendar.component(.month, from: nextMonth)
+        XCTAssertEqual(calendar.component(.day, from: gifts.first!.nextDate), expectedDay)
+        XCTAssertEqual(calendar.component(.month, from: gifts.first!.nextDate), expectedMonth)
+    }
+
+    func testSetupRecurringTitheDoesNothingWithoutIncome() {
+        let vm = OnboardingViewModel()
+        vm.configure(modelContext: modelContext)
+        vm.monthlyIncome = ""
+        vm.primaryChurch = "Church"
+
+        vm.setupRecurringTithe()
+
+        let giftDescriptor = FetchDescriptor<RecurringGift>()
+        let gifts = (try? modelContext.fetch(giftDescriptor)) ?? []
+        XCTAssertTrue(gifts.isEmpty, "Should not create gift without valid income")
+    }
+
+    func testSetupRecurringTitheDoesNothingWithZeroIncome() {
+        modelContext.delete(profile)
+        try? modelContext.save()
+
+        let vm = OnboardingViewModel()
+        vm.configure(modelContext: modelContext)
+        vm.displayName = "Test"
+        vm.monthlyIncome = "0"
+        vm.primaryChurch = "Church"
+        vm.saveProfile()
+
+        vm.setupRecurringTithe()
+
+        let giftDescriptor = FetchDescriptor<RecurringGift>()
+        let gifts = (try? modelContext.fetch(giftDescriptor)) ?? []
+        XCTAssertTrue(gifts.isEmpty, "Should not create gift with zero income")
+    }
+
     func testAddTitheThenDashboardReflects() {
         // Add a tithe record
         let titheVM = TitheViewModel()
