@@ -7,13 +7,9 @@
 
   ],
   "settings" : {
-    "_applicationInternalID" : "app_001",
-    "_developerTeamID" : "",
     "_failTransactionsEnabled" : false,
-    "_lastVerificationError" : "",
     "_locale" : "en_US",
     "_storefront" : "USA",
-    "_storeKitEnabled" : true,
     "_storeKitErrors" : [
       {
         "current" : null,
@@ -136,7 +132,7 @@
     }
   ],
   "version" : {
-    "major" : 3,
+    "major" : 4,
     "minor" : 0
   }
 }
