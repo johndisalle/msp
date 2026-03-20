@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>FaithForge reads your sleep and mindfulness data to track "Rest in God" quests and help you build healthy spiritual rhythms.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>FaithForge may log mindful sessions when you complete prayer or meditation quests.</string>
+</dict>
+</plist>
