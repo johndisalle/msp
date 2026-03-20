@@ -33,7 +33,7 @@ struct FaithForgeApp: App {
             fatalError("Failed to create ModelContainer: \(error)")
         }
 
-        // TODO: Firebase — call FirebaseApp.configure() here when adding real Firebase SDK
+        FirebaseService.configure()
         // TODO: RevenueCat — call Purchases.configure(withAPIKey:) here
 
         // Register notification categories

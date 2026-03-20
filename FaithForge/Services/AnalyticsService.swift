@@ -11,8 +11,7 @@
 
 import Foundation
 
-// Uncomment when Firebase SDK is added:
-// import FirebaseAnalytics
+import FirebaseAnalytics
 
 enum AnalyticsService {
 
@@ -179,8 +178,7 @@ enum AnalyticsService {
     // MARK: - Private Logger
 
     private static func log(_ event: String, parameters: [String: Any]? = nil) {
-        // Uncomment when Firebase SDK is added:
-        // Analytics.logEvent(event, parameters: parameters)
+        Analytics.logEvent(event, parameters: parameters)
 
         #if DEBUG
         if let parameters {
