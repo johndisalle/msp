@@ -55,6 +55,17 @@
 		A1B2C3D4E5F60001000093 /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */; };
 		A1B2C3D4E5F60001000094 /* TextToSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */; };
 		A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */; };
+		A1B2C3D4E5F60001000100 /* WatchSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000100 /* WatchSyncService.swift */; };
+		A1B2C3D4E5F60001000101 /* MilestoneCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */; };
+		A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000102 /* FaithMapView.swift */; };
+		A1B2C3D4E5F60001000103 /* FaithReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000103 /* FaithReportService.swift */; };
+		A1B2C3D4E5F60001000104 /* FaithReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000104 /* FaithReportView.swift */; };
+		A1B2C3D4E5F60001000105 /* SpiritualDirectorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */; };
+		A1B2C3D4E5F60001000106 /* SpiritualDirectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */; };
+		A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */; };
+		A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */; };
+		A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */; };
+		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
 		A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */; };
@@ -121,6 +132,17 @@
 		A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToSpeechService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyCompletionView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000100 /* WatchSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneCelebrationView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000102 /* FaithMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithMapView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000103 /* FaithReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000104 /* FaithReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiritualDirectorService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiritualDirectorView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftJourneyView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouplesJourneyView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicJourneyView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncReceiver.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60301000031 /* App */,
+				A1B2C3D4E5F60301000033 /* Services */,
 				A1B2C3D4E5F60301000032 /* Views */,
 			);
 			path = AbideJourneyWatch;
@@ -300,6 +323,9 @@
 				A1B2C3D4E5F60101000052 /* WidgetDataService.swift */,
 				A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */,
 				A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */,
+				A1B2C3D4E5F60101000100 /* WatchSyncService.swift */,
+				A1B2C3D4E5F60101000103 /* FaithReportService.swift */,
+				A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -319,9 +345,11 @@
 			children = (
 				A1B2C3D4E5F60301000009 /* Components */,
 				A1B2C3D4E5F60301000010 /* DailyExperience */,
+				A1B2C3D4E5F60301000014 /* Milestones */,
 				A1B2C3D4E5F60301000011 /* Onboarding */,
 				A1B2C3D4E5F60301000012 /* Progress */,
 				A1B2C3D4E5F60301000013 /* Settings */,
+				A1B2C3D4E5F60301000015 /* SpiritualDirector */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -359,6 +387,7 @@
 			children = (
 				A1B2C3D4E5F60101000031 /* JournalListView.swift */,
 				A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */,
+				A1B2C3D4E5F60101000102 /* FaithMapView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -370,8 +399,36 @@
 				A1B2C3D4E5F60101000034 /* SettingsView.swift */,
 				A1B2C3D4E5F60101000054 /* AccountabilityView.swift */,
 				A1B2C3D4E5F60101000055 /* NewJourneyView.swift */,
+				A1B2C3D4E5F60101000104 /* FaithReportView.swift */,
+				A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */,
+				A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */,
+				A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000014 /* Milestones */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */,
+			);
+			path = Milestones;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000015 /* SpiritualDirector */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */,
+			);
+			path = SpiritualDirector;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000033 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		A1B2C3D4E5F60301000019 /* Resources */ = {
@@ -540,6 +597,16 @@
 				A1B2C3D4E5F60001000057 /* ContentThemes_Batch2.swift in Sources */,
 				A1B2C3D4E5F60001000058 /* ContentThemes_Batch3.swift in Sources */,
 				A1B2C3D4E5F60001000059 /* ContentThemes_Batch4.swift in Sources */,
+				A1B2C3D4E5F60001000100 /* WatchSyncService.swift in Sources */,
+				A1B2C3D4E5F60001000101 /* MilestoneCelebrationView.swift in Sources */,
+				A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */,
+				A1B2C3D4E5F60001000103 /* FaithReportService.swift in Sources */,
+				A1B2C3D4E5F60001000104 /* FaithReportView.swift in Sources */,
+				A1B2C3D4E5F60001000105 /* SpiritualDirectorService.swift in Sources */,
+				A1B2C3D4E5F60001000106 /* SpiritualDirectorView.swift in Sources */,
+				A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */,
+				A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */,
+				A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +616,7 @@
 			files = (
 				A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */,
 				A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */,
+				A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
