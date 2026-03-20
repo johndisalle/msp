@@ -62,20 +62,26 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            // Complete day button
-                            Button {
-                                viewModel.showingCheckInSheet = true
-                            } label: {
-                                Text("Complete Day \(day.dayNumber)")
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.accentColor)
-                                    .foregroundColor(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                            // Complete day button or daily limit message
+                            if viewModel.dailyLimitReached {
+                                DailyLimitReachedCard(isPremium: isPremium)
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 32)
+                            } else {
+                                Button {
+                                    viewModel.showingCheckInSheet = true
+                                } label: {
+                                    Text("Complete Day \(day.dayNumber)")
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.accentColor)
+                                        .foregroundColor(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                }
+                                .padding(.horizontal)
+                                .padding(.bottom, 32)
                             }
-                            .padding(.horizontal)
-                            .padding(.bottom, 32)
                         }
                     }
                 } else {
@@ -89,6 +95,7 @@ struct DailyExperienceView: View {
             .navigationTitle("Today")
             .onAppear {
                 viewModel.loadCurrentDay(from: journeys)
+                viewModel.checkDailyLimit(isPremium: isPremium)
             }
             .sheet(isPresented: $viewModel.showingJournalSheet) {
                 JournalEntrySheet(
@@ -100,7 +107,7 @@ struct DailyExperienceView: View {
             .sheet(isPresented: $viewModel.showingCheckInSheet) {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
-                    viewModel.completeDay(rating: rating, context: modelContext)
+                    viewModel.completeDay(rating: rating, isPremium: isPremium, context: modelContext)
                 }
             }
             .sheet(isPresented: $viewModel.showingPrayerTimer) {
@@ -482,6 +489,41 @@ struct PrayerCardView: View {
                 .fill(Color(.systemGray6))
         )
         .padding(.horizontal)
+    }
+}
+
+// MARK: - Daily Limit Reached Card
+
+struct DailyLimitReachedCard: View {
+    let isPremium: Bool
+
+    var body: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 36))
+                .foregroundStyle(.indigo)
+
+            Text("You've done great today!")
+                .font(.headline)
+
+            Text("This journey is meant to be savored — one day at a time. Come back tomorrow and pick up right where you left off.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .lineSpacing(3)
+
+            if !isPremium {
+                Text("Premium members can complete up to 3 days per day.")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.indigo.opacity(0.08))
+        )
     }
 }
 

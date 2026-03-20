@@ -15,8 +15,31 @@ final class DailyExperienceViewModel {
     var actionSteps: [ActionStep] = []
     var saveError: String?
 
+    var dailyLimitReached = false
+
     let prayerTimer = PrayerTimerService()
     let audioPlayer = AudioPlayerService.shared
+
+    /// Free users: 1 day per calendar day. Premium: 3 days per calendar day.
+    private func dailyCompletionLimit(isPremium: Bool) -> Int {
+        isPremium ? 3 : 1
+    }
+
+    private func completionsToday(in journey: Journey) -> Int {
+        let calendar = Calendar.current
+        return journey.days.filter { day in
+            guard day.isCompleted, let date = day.date else { return false }
+            return calendar.isDateInToday(date)
+        }.count
+    }
+
+    func checkDailyLimit(isPremium: Bool) {
+        guard let journey else {
+            dailyLimitReached = false
+            return
+        }
+        dailyLimitReached = completionsToday(in: journey) >= dailyCompletionLimit(isPremium: isPremium)
+    }
 
     func loadCurrentDay(from journeys: [Journey]) {
         guard let activeJourney = journeys.first(where: { $0.isActive && !$0.isCompleted }) else {
@@ -67,7 +90,7 @@ final class DailyExperienceViewModel {
         currentDay?.actionSteps = actionSteps
     }
 
-    func completeDay(rating: CheckInRating, context: ModelContext) {
+    func completeDay(rating: CheckInRating, isPremium: Bool, context: ModelContext) {
         guard let day = currentDay, let journey = journey else { return }
 
         day.isCompleted = true
@@ -127,6 +150,7 @@ final class DailyExperienceViewModel {
         journalText = ""
         selectedMood = nil
         loadCurrentDay(from: [journey])
+        checkDailyLimit(isPremium: isPremium)
     }
 
     func submitCheckIn(rating: CheckInRating, note: String?, context: ModelContext) {
