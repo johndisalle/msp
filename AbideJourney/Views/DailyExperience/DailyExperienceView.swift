@@ -147,6 +147,7 @@ struct DayHeaderView: View {
                         .font(.largeTitle.bold())
                     HStack(spacing: 6) {
                         Image(systemName: focusArea.icon)
+                            .accessibilityHidden(true)
                         Text(focusArea.rawValue)
                     }
                     .font(.subheadline)
@@ -232,6 +233,7 @@ struct DevotionalCardView: View {
             HStack {
                 Image(systemName: "heart.text.square.fill")
                     .foregroundStyle(.orange)
+                    .accessibilityHidden(true)
                 Text("Devotional")
                     .font(.headline)
                 Spacer()
@@ -273,6 +275,7 @@ struct ActionStepsCardView: View {
             HStack {
                 Image(systemName: "checklist")
                     .foregroundStyle(.green)
+                    .accessibilityHidden(true)
                 Text("Action Steps")
                     .font(.headline)
                 Spacer()
@@ -326,6 +329,7 @@ struct ReflectionCardView: View {
             HStack {
                 Image(systemName: "pencil.and.outline")
                     .foregroundStyle(.purple)
+                    .accessibilityHidden(true)
                 Text("Reflection")
                     .font(.headline)
                 Spacer()
@@ -341,6 +345,7 @@ struct ReflectionCardView: View {
             } label: {
                 HStack {
                     Image(systemName: "square.and.pencil")
+                        .accessibilityHidden(true)
                     Text("Write in Journal")
                 }
                 .font(.subheadline.bold())
@@ -373,11 +378,13 @@ struct PrayerCardView: View {
             HStack {
                 Image(systemName: "hands.sparkles.fill")
                     .foregroundStyle(.yellow)
+                    .accessibilityHidden(true)
                 Text("Prayer")
                     .font(.headline)
                 Spacer()
                 Image(systemName: "timer")
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
             }
 
             // Encouraging message
@@ -396,6 +403,7 @@ struct PrayerCardView: View {
                     Image(systemName: "lightbulb.fill")
                         .font(.caption)
                         .foregroundStyle(.yellow)
+                        .accessibilityHidden(true)
                     Text("Not sure what to say? Here's a simple guide")
                         .font(.subheadline.bold())
                         .foregroundStyle(.primary)
@@ -403,6 +411,7 @@ struct PrayerCardView: View {
                     Image(systemName: showingSteps ? "chevron.up" : "chevron.down")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
@@ -438,6 +447,7 @@ struct PrayerCardView: View {
                         Image(systemName: "text.book.closed.fill")
                             .font(.caption)
                             .foregroundStyle(.accent)
+                            .accessibilityHidden(true)
                         Text("Try praying today's scripture back to God: \(scriptureReference)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -455,6 +465,7 @@ struct PrayerCardView: View {
                 HStack {
                     Image(systemName: "play.fill")
                         .font(.caption)
+                        .accessibilityHidden(true)
                     Text("Start Prayer Timer")
                 }
                 .font(.subheadline.bold())

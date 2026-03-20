@@ -101,6 +101,8 @@ struct PremiumPaywallView: View {
                                     }
                                 }
                                 dismiss()
+                            } else {
+                                purchaseError = storeService.errorMessage ?? "No purchases found for this Apple ID."
                             }
                         }
                     }
@@ -139,6 +141,7 @@ struct PremiumPaywallView: View {
                 .foregroundStyle(.orange)
                 .symbolEffect(.bounce)
                 .padding(.top, 24)
+                .accessibilityHidden(true)
 
             Text("Try Premium Free\nfor 7 Days")
                 .font(.largeTitle.bold())
@@ -162,6 +165,8 @@ struct PremiumPaywallView: View {
                         .foregroundStyle(.yellow)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("5 star rating")
 
             Text("\"I used to feel like I was just going through the motions. This app taught me how to actually connect with God every single day.\"")
                 .font(.subheadline)

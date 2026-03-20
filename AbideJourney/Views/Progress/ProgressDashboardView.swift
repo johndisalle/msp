@@ -93,6 +93,7 @@ struct PremiumThemesTeaser: View {
                         Image(systemName: theme.icon)
                             .font(.title3)
                             .foregroundStyle(theme.color)
+                            .accessibilityHidden(true)
 
                         Text(theme.name)
                             .font(.caption2)
@@ -115,6 +116,7 @@ struct PremiumThemesTeaser: View {
                         .font(.subheadline.bold())
                     Image(systemName: "arrow.right")
                         .font(.caption)
+                        .accessibilityHidden(true)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)

@@ -20,6 +20,7 @@ struct SettingsView: View {
                             Image(systemName: "person.circle.fill")
                                 .font(.title)
                                 .foregroundStyle(.accent)
+                                .accessibilityHidden(true)
                             VStack(alignment: .leading) {
                                 Text(profile.name)
                                     .font(.headline)
@@ -87,6 +88,7 @@ struct SettingsView: View {
                             Spacer()
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
+                                .accessibilityHidden(true)
                         }
                     } else {
                         Button {

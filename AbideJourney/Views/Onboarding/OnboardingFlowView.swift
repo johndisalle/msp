@@ -67,6 +67,7 @@ struct WelcomeStepView: View {
                 .font(.system(size: 80))
                 .foregroundStyle(.accent)
                 .symbolEffect(.pulse)
+                .accessibilityHidden(true)
 
             VStack(spacing: 12) {
                 Text("Abide Journey")
@@ -112,6 +113,7 @@ struct NameEntryStepView: View {
                 Image(systemName: "person.circle")
                     .font(.system(size: 48))
                     .foregroundStyle(.accent)
+                    .accessibilityHidden(true)
 
                 Text("What's your name?")
                     .font(.title2.bold())
@@ -337,6 +339,7 @@ struct MultiSelectQuizView: View {
                         Spacer()
                         Image(systemName: selected.contains(option) ? "checkmark.circle.fill" : "circle")
                             .foregroundStyle(selected.contains(option) ? .accent : .secondary)
+                            .accessibilityHidden(true)
                     }
                     .padding()
                     .background(
@@ -345,6 +348,7 @@ struct MultiSelectQuizView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(selected.contains(option) ? .isSelected : [])
             }
 
             Button("Continue") {
@@ -371,6 +375,7 @@ struct TranslationStepView: View {
                 Image(systemName: "text.book.closed.fill")
                     .font(.system(size: 48))
                     .foregroundStyle(.accent)
+                    .accessibilityHidden(true)
 
                 Text("Choose Your Bible Translation")
                     .font(.title2.bold())
@@ -396,6 +401,7 @@ struct TranslationStepView: View {
                             if viewModel.selectedTranslation == translation {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(.accent)
+                                    .accessibilityHidden(true)
                             }
                         }
                         .padding()
@@ -447,6 +453,7 @@ struct GeneratingStepView: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 64))
                     .foregroundStyle(.orange)
+                    .accessibilityHidden(true)
 
                 Text("Something went wrong")
                     .font(.title3.bold())
@@ -473,6 +480,7 @@ struct GeneratingStepView: View {
                     .font(.system(size: 64))
                     .foregroundStyle(.accent)
                     .symbolEffect(.variableColor)
+                    .accessibilityHidden(true)
 
                 Text("Ready to generate your\npersonalized 40-day journey")
                     .font(.title3)
@@ -507,6 +515,7 @@ struct ReadyStepView: View {
                 .font(.system(size: 80))
                 .foregroundStyle(.green)
                 .symbolEffect(.bounce)
+                .accessibilityHidden(true)
 
             VStack(spacing: 12) {
                 Text("Your Journey Awaits!")

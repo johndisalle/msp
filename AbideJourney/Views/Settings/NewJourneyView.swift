@@ -54,6 +54,7 @@ struct NewJourneyView: View {
                             Image(systemName: "crown.fill")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
+                                .accessibilityHidden(true)
                         }
                         .padding(.horizontal)
 

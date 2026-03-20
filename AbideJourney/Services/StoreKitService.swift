@@ -79,7 +79,11 @@ final class StoreKitService {
     // MARK: - Restore Purchases
 
     func restorePurchases() async {
-        try? await AppStore.sync()
+        do {
+            try await AppStore.sync()
+        } catch {
+            errorMessage = "Restore failed: \(error.localizedDescription)"
+        }
         await updatePurchasedProducts()
     }
 
