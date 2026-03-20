@@ -338,6 +338,11 @@ struct PremiumPaywallView: View {
         isPurchasing = true
         purchaseError = nil
 
+        // If products haven't loaded yet, retry before giving up
+        if storeService.products.isEmpty {
+            await storeService.loadProducts()
+        }
+
         let product: Product?
         switch selectedPlan {
         case .monthly:
@@ -347,7 +352,7 @@ struct PremiumPaywallView: View {
         }
 
         guard let product else {
-            purchaseError = "Product not available. Please try again."
+            purchaseError = "Product not available. Please close and reopen this screen, or restart the app."
             isPurchasing = false
             return
         }
