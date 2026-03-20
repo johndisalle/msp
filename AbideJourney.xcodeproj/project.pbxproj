@@ -42,6 +42,14 @@
 		A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */; };
 		A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000034 /* SettingsView.swift */; };
 		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
+		A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */; };
+		A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000052 /* WidgetDataService.swift */; };
+		A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */; };
+		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
+		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
+		A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */; };
+		A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000045 /* WidgetKit.framework */; };
+		A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
 		A1B2C3D4E5F60001000035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000035 /* Assets.xcassets */; };
 		A1B2C3D4E5F60001000036 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000036 /* Products.storekit */; };
 		A1B2C3D4E5F60001000040 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
@@ -89,6 +97,14 @@
 		A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPaywallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000034 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000052 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyCompletionView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWidgets.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AbideJourneyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1B2C3D4E5F60101000035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000036 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000037 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -124,6 +140,8 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60301000002 /* AbideJourney */,
+				A1B2C3D4E5F60301000030 /* AbideJourneyWatch */,
+				A1B2C3D4E5F60301000040 /* AbideJourneyWidgets */,
 				A1B2C3D4E5F60301000020 /* Frameworks */,
 				A1B2C3D4E5F60301000021 /* Products */,
 			);
@@ -133,8 +151,43 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60101000038 /* AbideJourney.app */,
+				A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */,
+				A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000030 /* AbideJourneyWatch */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60301000031 /* App */,
+				A1B2C3D4E5F60301000032 /* Views */,
+			);
+			path = AbideJourneyWatch;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000031 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000032 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000061 /* WatchHomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000040 /* AbideJourneyWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */,
+			);
+			path = AbideJourneyWidgets;
 			sourceTree = "<group>";
 		};
 		A1B2C3D4E5F60301000020 /* Frameworks */ = {
@@ -202,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */,
+				A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */,
 				A1B2C3D4E5F60101000013 /* ContentData.swift */,
 				A1B2C3D4E5F60101000014 /* ContentLibrary.swift */,
 				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
@@ -211,6 +265,7 @@
 				A1B2C3D4E5F60101000019 /* PrayerTimerService.swift */,
 				A1B2C3D4E5F60101000020 /* StoreKitService.swift */,
 				A1B2C3D4E5F60101000021 /* StreakService.swift */,
+				A1B2C3D4E5F60101000052 /* WidgetDataService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -251,6 +306,7 @@
 				A1B2C3D4E5F60101000026 /* CheckInSheet.swift */,
 				A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */,
 				A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */,
+				A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */,
 				A1B2C3D4E5F60101000029 /* PrayerTimerView.swift */,
 			);
 			path = DailyExperience;
@@ -312,6 +368,40 @@
 			productReference = A1B2C3D4E5F60101000038 /* AbideJourney.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A1B2C3D4E5F60401000002 /* AbideJourneyWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F60601000003 /* Build configuration list for PBXNativeTarget "AbideJourneyWatch" */;
+			buildPhases = (
+				A1B2C3D4E5F60201000010 /* Sources */,
+				A1B2C3D4E5F60201000011 /* Frameworks */,
+				A1B2C3D4E5F60201000012 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AbideJourneyWatch;
+			productName = AbideJourneyWatch;
+			productReference = A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1B2C3D4E5F60401000003 /* AbideJourneyWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F60601000004 /* Build configuration list for PBXNativeTarget "AbideJourneyWidgets" */;
+			buildPhases = (
+				A1B2C3D4E5F60201000020 /* Sources */,
+				A1B2C3D4E5F60201000021 /* Frameworks */,
+				A1B2C3D4E5F60201000022 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AbideJourneyWidgets;
+			productName = AbideJourneyWidgets;
+			productReference = A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -341,6 +431,8 @@
 			projectRoot = "";
 			targets = (
 				A1B2C3D4E5F60401000001 /* AbideJourney */,
+				A1B2C3D4E5F60401000002 /* AbideJourneyWatch */,
+				A1B2C3D4E5F60401000003 /* AbideJourneyWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -397,6 +489,56 @@
 				A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */,
 				A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */,
 				A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */,
+				A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */,
+				A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */,
+				A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000010 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */,
+				A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000020 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000011 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000021 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */,
+				A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000022 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,6 +730,110 @@
 			};
 			name = Release;
 		};
+		A1B2C3D4E5F60701000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Abide Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abidejourney.app;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abidejourney.app.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60701000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Abide Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abidejourney.app;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abidejourney.app.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		A1B2C3D4E5F60701000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AbideJourneyWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abidejourney.app.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60701000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AbideJourneyWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abidejourney.app.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -605,6 +851,24 @@
 			buildConfigurations = (
 				A1B2C3D4E5F60701000001 /* Debug */,
 				A1B2C3D4E5F60701000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F60601000003 /* Build configuration list for PBXNativeTarget "AbideJourneyWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60701000005 /* Debug */,
+				A1B2C3D4E5F60701000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F60601000004 /* Build configuration list for PBXNativeTarget "AbideJourneyWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60701000007 /* Debug */,
+				A1B2C3D4E5F60701000008 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
