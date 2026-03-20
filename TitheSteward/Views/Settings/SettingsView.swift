@@ -6,6 +6,9 @@ struct SettingsView: View {
     @State private var showingDebtTools = false
     @State private var showingDevotionals = false
     @State private var showingCounselor = false
+    @State private var showingBadges = false
+    @State private var showingReports = false
+    @State private var showingTaxSummary = false
 
     var body: some View {
         NavigationStack {
@@ -56,24 +59,45 @@ struct SettingsView: View {
                             showingPaywall = true
                         }
                     } label: {
-                        HStack {
-                            Label("AI Counselor", systemImage: "bubble.left.and.bubble.right.fill")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            if !appState.isPremium {
-                                Text("Premium")
-                                    .font(.caption2.bold())
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color("AccentGold"))
-                                    .clipShape(Capsule())
-                            } else {
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
+                        PremiumToolRow(label: "AI Counselor", icon: "bubble.left.and.bubble.right.fill", isPremium: appState.isPremium)
+                    }
+
+                    Button {
+                        if appState.isPremium {
+                            showingBadges = true
+                        } else {
+                            showingPaywall = true
                         }
+                    } label: {
+                        PremiumToolRow(label: "Generosity Badges", icon: "trophy.fill", isPremium: appState.isPremium)
+                    }
+
+                    Button {
+                        if appState.isPremium {
+                            showingReports = true
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
+                        PremiumToolRow(label: "Advanced Reports", icon: "chart.bar.fill", isPremium: appState.isPremium)
+                    }
+
+                    Button {
+                        if appState.isPremium {
+                            showingTaxSummary = true
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
+                        PremiumToolRow(label: "Tax Summary & Export", icon: "doc.text.fill", isPremium: appState.isPremium)
+                    }
+                }
+
+                Section("Community") {
+                    NavigationLink {
+                        SharingView()
+                    } label: {
+                        Label("Share & Invite", systemImage: "square.and.arrow.up")
                     }
                 }
 
@@ -137,6 +161,21 @@ struct SettingsView: View {
                     AICounselorChatView()
                 }
             }
+            .sheet(isPresented: $showingBadges) {
+                NavigationStack {
+                    BadgeGalleryView()
+                }
+            }
+            .sheet(isPresented: $showingReports) {
+                NavigationStack {
+                    AdvancedReportsView()
+                }
+            }
+            .sheet(isPresented: $showingTaxSummary) {
+                NavigationStack {
+                    TaxSummaryView()
+                }
+            }
         }
     }
 }
@@ -168,6 +207,33 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationTitle("Notifications")
+    }
+}
+
+struct PremiumToolRow: View {
+    let label: String
+    let icon: String
+    let isPremium: Bool
+
+    var body: some View {
+        HStack {
+            Label(label, systemImage: icon)
+                .foregroundColor(.primary)
+            Spacer()
+            if !isPremium {
+                Text("Premium")
+                    .font(.caption2.bold())
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color("AccentGold"))
+                    .clipShape(Capsule())
+            } else {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
     }
 }
 

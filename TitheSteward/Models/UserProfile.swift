@@ -30,6 +30,7 @@ final class UserProfile {
     @Relationship(deleteRule: .cascade) var debts: [DebtItem]
     @Relationship(deleteRule: .cascade) var recipients: [GivingRecipient]
     @Relationship(deleteRule: .cascade) var devotionalCompletions: [DevotionalCompletion]
+    @Relationship(deleteRule: .cascade) var badges: [GenerosityBadge]
 
     var tithingCommitment: TithingCommitment {
         get { TithingCommitment(rawValue: tithingCommitmentRaw) ?? .exploring }
@@ -76,6 +77,7 @@ final class UserProfile {
         self.debts = []
         self.recipients = []
         self.devotionalCompletions = []
+        self.badges = []
     }
 }
 

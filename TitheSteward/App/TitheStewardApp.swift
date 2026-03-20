@@ -17,6 +17,7 @@ struct TitheStewardApp: App {
             GivingRecipient.self,
             RecurringGift.self,
             ChatSession.self,
+            GenerosityBadge.self,
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,
