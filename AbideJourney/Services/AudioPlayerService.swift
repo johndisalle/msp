@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import AVFoundation
 import SwiftUI
@@ -167,5 +168,3 @@ final class AudioPlayerService {
 
     private var cancellables = Set<AnyCancellable>()
 }
-
-import Combine
