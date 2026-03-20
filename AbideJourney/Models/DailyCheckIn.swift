@@ -31,11 +31,11 @@ final class DailyCheckIn {
 }
 
 enum CheckInRating: String, Codable, CaseIterable {
-    case great = "🔥"
-    case good = "👍"
-    case okay = "😐"
-    case tough = "😓"
-    case missed = "⏭️"
+    case great = "great"
+    case good = "good"
+    case okay = "okay"
+    case tough = "tough"
+    case missed = "missed"
 
     var label: String {
         switch self {
@@ -49,11 +49,11 @@ enum CheckInRating: String, Codable, CaseIterable {
 
     var icon: String {
         switch self {
-        case .great: return "\u{1F525}"         // 🔥
-        case .good: return "\u{1F44D}"          // 👍
-        case .okay: return "\u{1F610}"          // 😐
-        case .tough: return "\u{1F613}"         // 😓
-        case .missed: return "\u{23ED}\u{FE0F}" // ⏭️
+        case .great: return "\u{1F525}"         // fire
+        case .good: return "\u{1F44D}"          // thumbs up
+        case .okay: return "\u{1F610}"          // neutral face
+        case .tough: return "\u{1F613}"         // downcast face
+        case .missed: return "\u{23ED}\u{FE0F}" // skip forward
         }
     }
 }

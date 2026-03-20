@@ -106,9 +106,9 @@ final class NotificationService {
             options: .foreground
         )
 
-        let checkInGreat = UNNotificationAction(identifier: "CHECKIN_GREAT", title: "🔥 Great")
-        let checkInGood = UNNotificationAction(identifier: "CHECKIN_GOOD", title: "👍 Good")
-        let checkInTough = UNNotificationAction(identifier: "CHECKIN_TOUGH", title: "😓 Tough")
+        let checkInGreat = UNNotificationAction(identifier: "CHECKIN_GREAT", title: "\u{1F525} Great")
+        let checkInGood = UNNotificationAction(identifier: "CHECKIN_GOOD", title: "\u{1F44D} Good")
+        let checkInTough = UNNotificationAction(identifier: "CHECKIN_TOUGH", title: "\u{1F613} Tough")
 
         let morningCategory = UNNotificationCategory(
             identifier: "MORNING_DEVOTIONAL",

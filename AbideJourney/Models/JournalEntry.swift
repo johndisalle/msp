@@ -23,12 +23,12 @@ final class JournalEntry {
 }
 
 enum Mood: String, Codable, CaseIterable {
-    case joyful = "😊"
-    case peaceful = "😌"
-    case grateful = "🙏"
-    case reflective = "🤔"
-    case struggling = "😔"
-    case hopeful = "🌟"
+    case joyful = "joyful"
+    case peaceful = "peaceful"
+    case grateful = "grateful"
+    case reflective = "reflective"
+    case struggling = "struggling"
+    case hopeful = "hopeful"
 
     var label: String {
         switch self {
@@ -43,12 +43,12 @@ enum Mood: String, Codable, CaseIterable {
 
     var icon: String {
         switch self {
-        case .joyful: return "\u{1F60A}"      // 😊
-        case .peaceful: return "\u{1F60C}"     // 😌
-        case .grateful: return "\u{1F64F}"     // 🙏
-        case .reflective: return "\u{1F914}"   // 🤔
-        case .struggling: return "\u{1F614}"   // 😔
-        case .hopeful: return "\u{1F31F}"      // 🌟
+        case .joyful: return "\u{1F60A}"      // smiling face
+        case .peaceful: return "\u{1F60C}"     // relieved face
+        case .grateful: return "\u{1F64F}"     // folded hands
+        case .reflective: return "\u{1F914}"   // thinking face
+        case .struggling: return "\u{1F614}"   // pensive face
+        case .hopeful: return "\u{1F31F}"      // glowing star
         }
     }
 }
