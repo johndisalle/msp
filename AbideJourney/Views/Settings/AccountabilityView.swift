@@ -76,9 +76,11 @@ struct AccountabilityView: View {
                     .padding(.vertical, 20)
                 } else {
                     ForEach(partners) { partner in
-                        PartnerRow(partner: partner, onSendEncouragement: {
-                            sendEncouragement(to: partner)
-                        })
+                        PartnerRow(
+                            partner: partner,
+                            onSendEncouragement: { sendEncouragement(to: partner) },
+                            onMarkActive: { markActive(partner) }
+                        )
                     }
                     .onDelete(perform: deletePartners)
                 }
@@ -140,6 +142,21 @@ struct AccountabilityView: View {
             try modelContext.save()
         } catch {
             saveError = "Failed to add partner. Please try again."
+            return
+        }
+
+        // Send the invitation via share sheet
+        let userName = profiles.first?.name ?? "A friend"
+        shareMessage = "Hey \(name)! \(userName) has invited you to be their accountability partner on the Abide Journey app. Walk together through a 40-day faith journey — encourage each other, pray for each other, and grow closer to God. 🙏\n\nDownload Abide Journey to get started!"
+        showingShareSheet = true
+    }
+
+    private func markActive(_ partner: AccountabilityPartner) {
+        partner.status = .active
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to update partner status."
         }
     }
 
@@ -179,6 +196,7 @@ struct AccountabilityView: View {
 struct PartnerRow: View {
     let partner: AccountabilityPartner
     let onSendEncouragement: () -> Void
+    var onMarkActive: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -206,7 +224,7 @@ struct PartnerRow: View {
                     .clipShape(Capsule())
             }
 
-            if partner.status == .active {
+            HStack(spacing: 12) {
                 Button {
                     onSendEncouragement()
                 } label: {
@@ -219,11 +237,25 @@ struct PartnerRow: View {
                     .foregroundStyle(.accent)
                 }
 
-                if let lastSent = partner.lastEncouragementSent {
-                    Text("Last encouraged \(lastSent, style: .relative) ago")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                if partner.status == .invited {
+                    Button {
+                        onMarkActive()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle")
+                                .font(.caption)
+                            Text("Mark Active")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.green)
+                    }
                 }
+            }
+
+            if let lastSent = partner.lastEncouragementSent {
+                Text("Last encouraged \(lastSent, style: .relative) ago")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
             }
         }
         .padding(.vertical, 4)

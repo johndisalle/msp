@@ -52,6 +52,8 @@
 		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
 		A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */; };
 		A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000052 /* WidgetDataService.swift */; };
+		A1B2C3D4E5F60001000093 /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */; };
+		A1B2C3D4E5F60001000094 /* TextToSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */; };
 		A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
@@ -115,6 +117,8 @@
 		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000052 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToSpeechService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyCompletionView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
@@ -292,6 +296,8 @@
 				A1B2C3D4E5F60101000091 /* PDFExportService.swift */,
 				A1B2C3D4E5F60101000021 /* StreakService.swift */,
 				A1B2C3D4E5F60101000052 /* WidgetDataService.swift */,
+				A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */,
+				A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -523,6 +529,8 @@
 				A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */,
 				A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */,
 				A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */,
+				A1B2C3D4E5F60001000093 /* SpeechRecognitionService.swift in Sources */,
+				A1B2C3D4E5F60001000094 /* TextToSpeechService.swift in Sources */,
 				A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */,
 				A1B2C3D4E5F60001000056 /* ContentThemes_Batch1.swift in Sources */,
 				A1B2C3D4E5F60001000057 /* ContentThemes_Batch2.swift in Sources */,

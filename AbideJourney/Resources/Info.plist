@@ -55,5 +55,9 @@
 	<string>Abide Journey can record your prayer time as Mindfulness minutes in Apple Health.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Abide Journey can record your prayer time as Mindfulness minutes in Apple Health.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Abide Journey uses the microphone to transcribe your voice journal reflections into text.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Abide Journey uses speech recognition to convert your spoken reflections into journal entries.</string>
 </dict>
 </plist>

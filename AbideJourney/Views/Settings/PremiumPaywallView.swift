@@ -26,7 +26,7 @@ struct PremiumPaywallView: View {
 
     private let features = [
         ("infinity", "Unlimited Journeys", "Start fresh anytime with new personalized paths"),
-        ("speaker.wave.2.fill", "Voice Devotionals", "Full library of narrated devotionals"),
+        ("speaker.wave.2.fill", "Listen to Devotionals", "Have each day's devotional read aloud to you"),
         ("paintpalette.fill", "Custom Themes", "Anxiety, grief, leadership & more deep-dive journeys"),
         ("person.2.fill", "Accountability", "Connect with trusted friends for mutual encouragement"),
         ("square.and.arrow.up", "Export Journals", "Save your reflections as beautiful PDFs"),

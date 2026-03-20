@@ -8,6 +8,7 @@ final class DailyExperienceViewModel {
     var journey: Journey?
     var journalText = ""
     var selectedMood: Mood?
+    var isVoiceJournalEntry = false
     var showingJournalSheet = false
     var showingCheckInSheet = false
     var showingPrayerTimer = false
@@ -100,7 +101,7 @@ final class DailyExperienceViewModel {
 
         // Save journal entry if there's text
         if !journalText.isEmpty {
-            let entry = JournalEntry(text: journalText, mood: selectedMood)
+            let entry = JournalEntry(text: journalText, mood: selectedMood, isVoiceEntry: isVoiceJournalEntry)
             entry.journeyDay = day
             context.insert(entry)
         }
@@ -150,6 +151,7 @@ final class DailyExperienceViewModel {
         // Reset for next day
         journalText = ""
         selectedMood = nil
+        isVoiceJournalEntry = false
         loadCurrentDay(from: [journey])
         checkDailyLimit(isPremium: isPremium)
     }

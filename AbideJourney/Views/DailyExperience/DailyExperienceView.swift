@@ -35,7 +35,8 @@ struct DailyExperienceView: View {
                             // Devotional
                             DevotionalCardView(
                                 title: day.devotionalTitle,
-                                text: day.devotionalText
+                                text: day.devotionalText,
+                                isPremium: isPremium
                             )
 
                             // Action steps
@@ -240,7 +241,9 @@ struct ScriptureCardView: View {
 struct DevotionalCardView: View {
     let title: String
     let text: String
+    var isPremium: Bool = false
     @State private var isExpanded = false
+    @State private var tts = TextToSpeechService.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -251,6 +254,35 @@ struct DevotionalCardView: View {
                 Text("Devotional")
                     .font(.headline)
                 Spacer()
+
+                if isPremium {
+                    Button {
+                        if tts.isSpeaking || tts.isPaused {
+                            if tts.isSpeaking {
+                                tts.togglePlayPause()
+                            } else {
+                                tts.togglePlayPause()
+                            }
+                        } else {
+                            tts.speak("\(title). \(text)")
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: tts.isSpeaking ? "pause.fill" : (tts.isPaused ? "play.fill" : "speaker.wave.2.fill"))
+                                .font(.caption)
+                            Text(tts.isSpeaking ? "Pause" : (tts.isPaused ? "Resume" : "Listen"))
+                                .font(.caption)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(Color.orange.opacity(0.12))
+                        )
+                        .foregroundStyle(.orange)
+                    }
+                    .accessibilityLabel(tts.isSpeaking ? "Pause devotional audio" : "Listen to devotional")
+                }
             }
 
             Text(title)
@@ -267,7 +299,6 @@ struct DevotionalCardView: View {
                 }
                 .font(.subheadline.bold())
             }
-
         }
         .padding()
         .background(
@@ -275,6 +306,9 @@ struct DevotionalCardView: View {
                 .fill(Color(.systemGray6))
         )
         .padding(.horizontal)
+        .onDisappear {
+            tts.stop()
+        }
     }
 }
 
