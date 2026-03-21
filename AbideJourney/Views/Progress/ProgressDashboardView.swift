@@ -45,28 +45,73 @@ struct ProgressDashboardView: View {
                         StreakCalendarView(journey: journey)
                     }
 
-                    // Faith Map link
-                    NavigationLink {
-                        FaithMapView()
-                    } label: {
-                        HStack {
-                            Image(systemName: "map.fill")
-                                .foregroundStyle(.accent)
-                            Text("View Faith Map")
-                                .font(.subheadline.bold())
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                    // Premium feature cards on Progress tab
+                    if isPremium {
+                        // Faith Map
+                        NavigationLink {
+                            FaithMapView()
+                        } label: {
+                            PremiumProgressCard(
+                                icon: "map.fill",
+                                color: .teal,
+                                title: "Faith Map",
+                                subtitle: "See your spiritual growth visualized over time"
+                            )
                         }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(Color.accentColor.opacity(0.08))
-                        )
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+
+                        // Faith Report
+                        NavigationLink {
+                            FaithReportView()
+                        } label: {
+                            PremiumProgressCard(
+                                icon: "sparkles.rectangle.stack.fill",
+                                color: .indigo,
+                                title: "Annual Faith Report",
+                                subtitle: "A beautiful summary of your year with God"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+
+                        // Accountability
+                        NavigationLink {
+                            AccountabilityView()
+                        } label: {
+                            PremiumProgressCard(
+                                icon: "person.2.fill",
+                                color: .green,
+                                title: "Accountability Partners",
+                                subtitle: "Invite a friend to walk alongside you"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                    } else {
+                        // Faith Map link (free users)
+                        NavigationLink {
+                            FaithMapView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "map.fill")
+                                    .foregroundStyle(.accent)
+                                Text("View Faith Map")
+                                    .font(.subheadline.bold())
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.accentColor.opacity(0.08))
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal)
 
                     // Premium journey themes teaser (only for free users, shown after 7+ days)
                     if !isPremium, let journey = viewModel.journey, journey.currentDay >= 7 {
@@ -436,6 +481,43 @@ struct StreakCalendarView: View {
         } else {
             return Color(.systemGray5)
         }
+    }
+}
+
+// MARK: - Premium Progress Card
+
+struct PremiumProgressCard: View {
+    let icon: String
+    let color: Color
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .frame(width: 36)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.subheadline.bold())
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(color.opacity(0.08))
+        )
     }
 }
 

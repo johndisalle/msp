@@ -65,6 +65,18 @@ struct DailyExperienceView: View {
                                 }
                             )
 
+                            // Premium feature hints (contextual discovery for subscribers)
+                            if isPremium {
+                                PremiumFeatureHintsCard(dayNumber: day.dayNumber)
+                            }
+
+                            // Soft upsell for free users after day 3
+                            if !isPremium && day.dayNumber > 3 {
+                                FreeUserUpgradeCard {
+                                    showingPremiumSheet = true
+                                }
+                            }
+
                             // Complete day button or daily limit message
                             if viewModel.dailyLimitReached {
                                 DailyLimitReachedCard(isPremium: isPremium)
@@ -584,6 +596,118 @@ struct DailyLimitReachedCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.indigo.opacity(0.08))
         )
+    }
+}
+
+// MARK: - Free User Upgrade Card
+
+struct FreeUserUpgradeCard: View {
+    let onTap: () -> Void
+
+    private let perks = [
+        ("person.crop.circle.badge.checkmark", "AI Spiritual Guide"),
+        ("mic.fill", "Voice Journaling"),
+        ("wand.and.stars", "Custom Journeys"),
+        ("heart.circle.fill", "Couples Journey"),
+    ]
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: "crown.fill")
+                    .foregroundStyle(.orange)
+                Text("Go Deeper with Premium")
+                    .font(.subheadline.bold())
+                Spacer()
+            }
+
+            HStack(spacing: 16) {
+                ForEach(perks, id: \.0) { icon, label in
+                    VStack(spacing: 6) {
+                        Image(systemName: icon)
+                            .font(.body)
+                            .foregroundStyle(.accent)
+                        Text(label)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+
+            Button {
+                onTap()
+            } label: {
+                Text("Try Free for 3 Days")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6))
+        )
+        .padding(.horizontal)
+    }
+}
+
+// MARK: - Premium Feature Hints Card
+
+struct PremiumFeatureHintsCard: View {
+    let dayNumber: Int
+
+    private var hint: (icon: String, color: Color, title: String, subtitle: String)? {
+        switch dayNumber {
+        case 1...3:
+            return ("mic.fill", .purple, "Try Voice Journaling", "Tap the mic button when journaling to speak your reflections instead of typing.")
+        case 4...7:
+            return ("person.crop.circle.badge.checkmark", .blue, "Talk to Your AI Guide", "Have a question about today's Scripture? Open the Guide tab for personal insight.")
+        case 8...14:
+            return ("person.2.fill", .green, "Invite an Accountability Partner", "Go to Settings to invite a friend to walk alongside you on this journey.")
+        case 15...21:
+            return ("heart.circle.fill", .pink, "Try a Couples Journey", "Walk through 40 days with your partner — find it in Settings under Journey.")
+        case 22...30:
+            return ("wand.and.stars", .orange, "Create a Custom Journey", "Describe what you're going through and we'll build a journey just for you. Find it in Settings.")
+        case 31...40:
+            return ("gift.fill", .orange, "Gift a Journey", "Know someone who could use encouragement? Send them a journey from Settings.")
+        default:
+            return nil
+        }
+    }
+
+    var body: some View {
+        if let hint {
+            HStack(spacing: 14) {
+                Image(systemName: hint.icon)
+                    .font(.title3)
+                    .foregroundStyle(hint.color)
+                    .frame(width: 32)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(hint.title)
+                        .font(.subheadline.bold())
+                    Text(hint.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineSpacing(2)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(hint.color.opacity(0.08))
+            )
+            .padding(.horizontal)
+        }
     }
 }
 

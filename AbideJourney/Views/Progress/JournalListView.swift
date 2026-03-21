@@ -23,7 +23,29 @@ struct JournalListView: View {
                     )
                 } else {
                     List {
-                        // Subtle export nudge after 5+ entries (only for free users)
+                        // Premium users: remind them about voice journaling
+                        if isPremium && !entries.contains(where: \.isVoiceEntry) {
+                            Section {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "mic.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 32)
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Try Voice Journaling")
+                                            .font(.subheadline.bold())
+                                        Text("Tap the mic button when writing a reflection to speak instead of type.")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .padding(.vertical, 4)
+                                .listRowBackground(Color.purple.opacity(0.05))
+                            }
+                        }
+
+                        // Free users: export nudge after 5+ entries
                         if !isPremium && entries.count >= 5 {
                             Section {
                                 Button {
