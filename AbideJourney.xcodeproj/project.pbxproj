@@ -60,8 +60,7 @@
 		A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000102 /* FaithMapView.swift */; };
 		A1B2C3D4E5F60001000103 /* FaithReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000103 /* FaithReportService.swift */; };
 		A1B2C3D4E5F60001000104 /* FaithReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000104 /* FaithReportView.swift */; };
-		A1B2C3D4E5F60001000105 /* SpiritualDirectorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */; };
-		A1B2C3D4E5F60001000106 /* SpiritualDirectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */; };
+
 		A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */; };
 		A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */; };
 		A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */; };
@@ -139,8 +138,7 @@
 		A1B2C3D4E5F60101000102 /* FaithMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithMapView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000103 /* FaithReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000104 /* FaithReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiritualDirectorService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiritualDirectorView.swift; sourceTree = "<group>"; };
+
 		A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouplesJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicJourneyView.swift; sourceTree = "<group>"; };
@@ -333,7 +331,6 @@
 				A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */,
 				A1B2C3D4E5F60101000100 /* WatchSyncService.swift */,
 				A1B2C3D4E5F60101000103 /* FaithReportService.swift */,
-				A1B2C3D4E5F60101000105 /* SpiritualDirectorService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -357,7 +354,6 @@
 				A1B2C3D4E5F60301000011 /* Onboarding */,
 				A1B2C3D4E5F60301000012 /* Progress */,
 				A1B2C3D4E5F60301000013 /* Settings */,
-				A1B2C3D4E5F60301000015 /* SpiritualDirector */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -421,14 +417,6 @@
 				A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */,
 			);
 			path = Milestones;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000015 /* SpiritualDirector */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000106 /* SpiritualDirectorView.swift */,
-			);
-			path = SpiritualDirector;
 			sourceTree = "<group>";
 		};
 		A1B2C3D4E5F60301000033 /* Services */ = {
@@ -610,8 +598,6 @@
 				A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */,
 				A1B2C3D4E5F60001000103 /* FaithReportService.swift in Sources */,
 				A1B2C3D4E5F60001000104 /* FaithReportView.swift in Sources */,
-				A1B2C3D4E5F60001000105 /* SpiritualDirectorService.swift in Sources */,
-				A1B2C3D4E5F60001000106 /* SpiritualDirectorView.swift in Sources */,
 				A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */,
@@ -798,7 +784,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GEMINI_API_KEY = AIzaSyBkqkPtpBHGsLMf2QR18OBd2uDIBdJjsQk;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AbideJourney/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AbideJourney;
@@ -833,7 +818,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GEMINI_API_KEY = AIzaSyBkqkPtpBHGsLMf2QR18OBd2uDIBdJjsQk;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AbideJourney/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AbideJourney;

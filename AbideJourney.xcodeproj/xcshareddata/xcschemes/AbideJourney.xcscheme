@@ -51,13 +51,6 @@
             ReferencedContainer = "container:AbideJourney.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "GEMINI_API_KEY"
-            value = "AIzaSyBkqkPtpBHGsLMf2QR18OBd2uDIBdJjsQk"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
