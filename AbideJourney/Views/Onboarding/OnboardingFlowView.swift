@@ -58,33 +58,46 @@ struct OnboardingFlowView: View {
 
 struct WelcomeStepView: View {
     let viewModel: OnboardingViewModel
+    @State private var appeared = false
 
     var body: some View {
         VStack(spacing: 32) {
             Spacer()
 
-            Image(systemName: "book.circle.fill")
-                .font(.system(size: 80))
-                .foregroundStyle(.accent)
-                .symbolEffect(.pulse)
-                .accessibilityHidden(true)
+            VStack(spacing: 20) {
+                Image(systemName: "book.circle.fill")
+                    .font(.system(size: 80))
+                    .foregroundStyle(.accent)
+                    .symbolEffect(.pulse)
+                    .accessibilityHidden(true)
+                    .scaleEffect(appeared ? 1 : 0.5)
+                    .opacity(appeared ? 1 : 0)
 
-            VStack(spacing: 12) {
                 Text("Abide Journey")
                     .font(.largeTitle.bold())
+                    .opacity(appeared ? 1 : 0)
 
-                Text("Your personal mentor in your pocket.\n40 days to deeper faith.")
+                Text("40 days that will change\nhow you walk with God.")
                     .font(.title3)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                    .opacity(appeared ? 1 : 0)
             }
+
+            VStack(spacing: 12) {
+                featureRow(icon: "flame.fill", color: .orange, text: "Daily devotionals written for you")
+                featureRow(icon: "hands.sparkles.fill", color: .purple, text: "Guided prayer and reflection")
+                featureRow(icon: "chart.line.uptrend.xyaxis", color: .blue, text: "Track your spiritual growth")
+            }
+            .padding(.horizontal, 24)
+            .opacity(appeared ? 1 : 0)
 
             Spacer()
 
             Button {
                 viewModel.nextStep()
             } label: {
-                Text("Begin Your Journey")
+                Text("Get Started")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -94,8 +107,27 @@ struct WelcomeStepView: View {
             }
             .padding(.horizontal, 32)
             .padding(.bottom, 48)
+            .opacity(appeared ? 1 : 0)
         }
         .padding()
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.8)) {
+                appeared = true
+            }
+        }
+    }
+
+    private func featureRow(icon: String, color: Color, text: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.body)
+                .foregroundStyle(color)
+                .frame(width: 28)
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
     }
 }
 
@@ -115,11 +147,12 @@ struct NameEntryStepView: View {
                     .foregroundStyle(.accent)
                     .accessibilityHidden(true)
 
-                Text("What's your name?")
+                Text("What should we call you?")
                     .font(.title2.bold())
 
-                Text("We'll use this to personalize your journey.")
+                Text("Your journey will be personally crafted for you.")
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
 
             TextField("Your name", text: $viewModel.userName)
@@ -163,12 +196,13 @@ struct MaturityStepView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                Text("Where are you in your faith journey?")
+                Text("Where are you in your walk with God?")
                     .font(.title2.bold())
                     .multilineTextAlignment(.center)
 
-                Text("This helps us tailor your experience.")
+                Text("No wrong answers — this helps us meet you where you are.")
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
 
             VStack(spacing: 12) {
@@ -246,10 +280,18 @@ struct QuizStepView: View {
 
                 Spacer()
 
-                Text(question.text)
-                    .font(.title3.bold())
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                VStack(spacing: 6) {
+                    Text(question.text)
+                        .font(.title3.bold())
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+
+                    if case .slider = question.type {
+                        Text("Slide to where you feel you are right now.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
 
                 switch question.type {
                 case .multipleChoice:
@@ -259,7 +301,7 @@ struct QuizStepView: View {
                                 viewModel.answerQuestion(option)
                             } label: {
                                 Text(option)
-                                    .frame(maxWidth: .infinity)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding()
                                     .background(Color(.systemGray6))
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -274,24 +316,30 @@ struct QuizStepView: View {
                         Text("\(Int(sliderValue))")
                             .font(.system(size: 48, weight: .bold, design: .rounded))
                             .foregroundStyle(.accent)
+                            .contentTransition(.numericText())
 
                         Slider(value: $sliderValue, in: min...max, step: step)
                             .tint(.accent)
                             .padding(.horizontal, 32)
 
                         HStack {
-                            Text("Low")
+                            Text("Not much")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("High")
+                            Text("A lot")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 32)
 
-                        Button("Continue") {
+                        Button {
                             viewModel.answerQuestion("\(Int(sliderValue))", numericValue: sliderValue)
+                        } label: {
+                            Text("Continue")
+                                .font(.headline)
+                                .padding(.horizontal, 32)
+                                .padding(.vertical, 10)
                         }
                         .buttonStyle(.borderedProminent)
                     }
@@ -444,6 +492,15 @@ struct GeneratingStepView: View {
     let viewModel: OnboardingViewModel
     let modelContext: ModelContext
     @State private var hasStarted = false
+    @State private var messageIndex = 0
+
+    private let messages = [
+        "Reading your heart...",
+        "Selecting Scripture for your season...",
+        "Building your 40-day path...",
+        "Adding reflection prompts...",
+        "Almost there..."
+    ]
 
     var body: some View {
         VStack(spacing: 32) {
@@ -468,13 +525,6 @@ struct GeneratingStepView: View {
                     hasStarted = false
                 }
                 .buttonStyle(.borderedProminent)
-            } else if viewModel.isGeneratingJourney {
-                ProgressView()
-                    .scaleEffect(1.5)
-
-                Text("Crafting your personal journey...")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
             } else {
                 Image(systemName: "sparkles")
                     .font(.system(size: 64))
@@ -482,9 +532,18 @@ struct GeneratingStepView: View {
                     .symbolEffect(.variableColor)
                     .accessibilityHidden(true)
 
-                Text("Ready to generate your\npersonalized 40-day journey")
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
+                Text("Crafting Your Journey")
+                    .font(.title2.bold())
+
+                Text(messages[messageIndex])
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut, value: messageIndex)
+
+                ProgressView()
+                    .scaleEffect(1.2)
+                    .padding(.top, 8)
             }
 
             Spacer()
@@ -493,7 +552,15 @@ struct GeneratingStepView: View {
             guard !hasStarted else { return }
             hasStarted = true
             viewModel.generateJourney(context: modelContext)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+
+            // Cycle through messages while generating
+            for i in 1..<messages.count {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.6) {
+                    withAnimation { messageIndex = i }
+                }
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 guard viewModel.generationError == nil else { return }
                 viewModel.nextStep()
             }
@@ -506,36 +573,48 @@ struct GeneratingStepView: View {
 struct ReadyStepView: View {
     let viewModel: OnboardingViewModel
     let onStart: () -> Void
+    @State private var appeared = false
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 28) {
             Spacer()
 
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 80))
-                .foregroundStyle(.green)
+            Image(systemName: "sun.max.fill")
+                .font(.system(size: 64))
+                .foregroundStyle(.orange)
+                .symbolEffect(.bounce, value: appeared)
                 .accessibilityHidden(true)
 
             VStack(spacing: 12) {
-                Text("Your Journey Awaits!")
-                    .font(.largeTitle.bold())
+                if let name = viewModel.userName.trimmingCharacters(in: .whitespaces).components(separatedBy: " ").first,
+                   !name.isEmpty {
+                    Text("\(name), you're all set!")
+                        .font(.largeTitle.bold())
+                } else {
+                    Text("You're all set!")
+                        .font(.largeTitle.bold())
+                }
 
                 if let journey = viewModel.generatedJourney {
                     Text(journey.title)
-                        .font(.title2)
+                        .font(.title3)
                         .foregroundStyle(.accent)
 
                     Text(journey.subtitle)
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-
-                    Text("40 days of growth, one step at a time.")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 4)
+                        .padding(.horizontal)
                 }
             }
+
+            VStack(spacing: 8) {
+                Label("40 days of personalized devotionals", systemImage: "book.fill")
+                Label("Daily Scripture, prayer & reflection", systemImage: "text.quote")
+                Label("Track your growth every step of the way", systemImage: "chart.line.uptrend.xyaxis")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
 
             Spacer()
 
@@ -554,6 +633,11 @@ struct ReadyStepView: View {
             .padding(.bottom, 48)
         }
         .padding()
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.5).delay(0.2)) {
+                appeared = true
+            }
+        }
     }
 }
 
