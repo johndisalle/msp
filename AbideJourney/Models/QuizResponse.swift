@@ -68,7 +68,7 @@ extension QuizQuestion {
         ),
         QuizQuestion(
             id: "community_level",
-            text: "Do you have people in your life who encourage your faith?",
+            text: "How supported do you feel by a faith community right now?",
             type: .slider(min: 1, max: 10, step: 1),
             options: [],
             category: .community

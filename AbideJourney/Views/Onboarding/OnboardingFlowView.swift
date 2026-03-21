@@ -172,6 +172,7 @@ struct NameEntryStepView: View {
                 Spacer()
 
                 Button {
+                    isFocused = false
                     viewModel.nextStep()
                 } label: {
                     Label("Next", systemImage: "arrow.right")
@@ -183,6 +184,11 @@ struct NameEntryStepView: View {
             .padding(.bottom, 48)
         }
         .padding()
+        .onSubmit {
+            guard !viewModel.userName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+            isFocused = false
+            viewModel.nextStep()
+        }
     }
 }
 
