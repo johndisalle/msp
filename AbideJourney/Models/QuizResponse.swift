@@ -47,9 +47,9 @@ extension QuizQuestion {
         ),
         QuizQuestion(
             id: "prayer_consistency",
-            text: "How often do you set aside time to pray each week?",
-            type: .slider(min: 1, max: 10, step: 1),
-            options: [],
+            text: "How often do you set aside time to pray?",
+            type: .multipleChoice,
+            options: ["Every day", "A few times a week", "Once a week", "When I remember", "I'm trying to start"],
             category: .prayer
         ),
         QuizQuestion(
