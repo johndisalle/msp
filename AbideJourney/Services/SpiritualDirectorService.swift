@@ -1,8 +1,8 @@
 import Foundation
 
 /// Manages AI spiritual director conversations with context from the user's journey data.
-/// Sends the full conversation history to the Anthropic Messages API so every response
-/// is genuinely contextual — no canned keyword matching.
+/// Sends the full conversation history to the Google Gemini API (free tier) so every
+/// response is genuinely contextual — no canned keyword matching.
 @Observable
 final class SpiritualDirectorService {
     static let shared = SpiritualDirectorService()
@@ -24,22 +24,27 @@ final class SpiritualDirectorService {
     private(set) var isLoading = false
     var error: String?
 
-    /// Read from Info.plist → ANTHROPIC_API_KEY, or fall back to the
-    /// ANTHROPIC_API_KEY environment variable set in the Xcode scheme.
+    /// Read from Info.plist → GEMINI_API_KEY, or fall back to the
+    /// GEMINI_API_KEY environment variable set in the Xcode scheme.
+    /// Get a free key at https://aistudio.google.com/apikey
     private let apiKey: String? = {
-        if let key = Bundle.main.object(forInfoDictionaryKey: "ANTHROPIC_API_KEY") as? String,
+        if let key = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String,
            !key.isEmpty, !key.hasPrefix("$(") {
             return key
         }
-        if let key = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"],
+        if let key = ProcessInfo.processInfo.environment["GEMINI_API_KEY"],
            !key.isEmpty {
             return key
         }
         return nil
     }()
 
-    private let apiURL = URL(string: "https://api.anthropic.com/v1/messages")!
-    private let model = "claude-sonnet-4-20250514"
+    private let model = "gemini-2.0-flash"
+
+    private var apiURL: URL? {
+        guard let apiKey else { return nil }
+        return URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent?key=\(apiKey)")
+    }
 
     private init() {}
 
@@ -137,42 +142,49 @@ final class SpiritualDirectorService {
         messages = []
     }
 
-    // MARK: - Anthropic API
+    // MARK: - Gemini API
 
-    /// Sends the full conversation to the Anthropic Messages API.
+    /// Sends the full conversation to the Google Gemini API (free tier).
     /// Falls back to local generation if no API key is configured or the request fails.
     private func fetchAIResponse(context: JourneyContext, forOpener: Bool = false) async -> String {
-        guard let apiKey, !apiKey.isEmpty else {
+        guard let apiURL else {
             return forOpener
                 ? generateLocalOpener(context: context)
                 : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
         }
 
-        // Build the messages array for the API (system prompt goes in the system field)
-        var apiMessages: [[String: String]] = []
-        for message in messages where message.role != .system {
-            apiMessages.append([
-                "role": message.role.rawValue,
-                "content": message.content
-            ])
-        }
-
-        // For the opener, send a single user turn asking for a greeting
-        if forOpener {
-            apiMessages.append([
-                "role": "user",
-                "content": "Start our conversation with a warm, personal opening message. Reference my journey context naturally."
-            ])
-        }
-
+        // Build the Gemini request body.
+        // Gemini uses "system_instruction" for the system prompt, and "contents" for the conversation.
+        // Gemini roles are "user" and "model" (not "assistant").
         let systemPrompt = messages.first(where: { $0.role == .system })?.content
             ?? buildSystemPrompt(context: context)
 
+        var contents: [[String: Any]] = []
+        for message in messages where message.role != .system {
+            let geminiRole = message.role == .assistant ? "model" : "user"
+            contents.append([
+                "role": geminiRole,
+                "parts": [["text": message.content]]
+            ])
+        }
+
+        // For the opener, add a user turn asking for a greeting
+        if forOpener {
+            contents.append([
+                "role": "user",
+                "parts": [["text": "Start our conversation with a warm, personal opening message. Reference my journey context naturally."]]
+            ])
+        }
+
         let body: [String: Any] = [
-            "model": model,
-            "max_tokens": 512,
-            "system": systemPrompt,
-            "messages": apiMessages
+            "system_instruction": [
+                "parts": [["text": systemPrompt]]
+            ],
+            "contents": contents,
+            "generationConfig": [
+                "maxOutputTokens": 512,
+                "temperature": 0.85
+            ]
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else {
@@ -184,8 +196,6 @@ final class SpiritualDirectorService {
         var request = URLRequest(url: apiURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
-        request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         request.httpBody = jsonData
         request.timeoutInterval = 30
 
@@ -203,11 +213,15 @@ final class SpiritualDirectorService {
                     : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
             }
 
-            // Parse the Anthropic response: { "content": [ { "type": "text", "text": "..." } ] }
+            // Parse Gemini response:
+            // { "candidates": [ { "content": { "parts": [ { "text": "..." } ] } } ] }
             if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let contentArray = json["content"] as? [[String: Any]],
-               let firstBlock = contentArray.first,
-               let text = firstBlock["text"] as? String {
+               let candidates = json["candidates"] as? [[String: Any]],
+               let firstCandidate = candidates.first,
+               let content = firstCandidate["content"] as? [String: Any],
+               let parts = content["parts"] as? [[String: Any]],
+               let firstPart = parts.first,
+               let text = firstPart["text"] as? String {
                 return text
             }
 
