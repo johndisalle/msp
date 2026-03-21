@@ -10,6 +10,7 @@ struct DailyExperienceView: View {
     @State private var showingPremiumSheet = false
     @State private var showingCompletionSheet = false
     @State private var showingMilestoneSheet = false
+    @State private var showingAdvancePrompt = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -17,8 +18,14 @@ struct DailyExperienceView: View {
         NavigationStack {
             Group {
                 if let day = viewModel.currentDay, let journey = viewModel.journey {
+                    ScrollViewReader { scrollProxy in
                     ScrollView {
                         VStack(spacing: 24) {
+                            // Invisible anchor for scroll-to-top
+                            Color.clear
+                                .frame(height: 0)
+                                .id("scrollTop")
+
                             // Day header
                             DayHeaderView(
                                 dayNumber: day.dayNumber,
@@ -99,6 +106,19 @@ struct DailyExperienceView: View {
                             }
                         }
                     }
+                    .alert("Continue to Next Day?", isPresented: $showingAdvancePrompt) {
+                        Button("Yes, Keep Going") {
+                            withAnimation {
+                                scrollProxy.scrollTo("scrollTop", anchor: .top)
+                            }
+                        }
+                        Button("I'm Done for Now", role: .cancel) { }
+                    } message: {
+                        if let day = viewModel.currentDay {
+                            Text("Great work! You can complete up to 3 days today. Ready to start Day \(day.dayNumber)?")
+                        }
+                    }
+                    } // ScrollViewReader
                 } else {
                     ContentUnavailableView(
                         "No Active Journey",
@@ -120,7 +140,12 @@ struct DailyExperienceView: View {
                     prompt: viewModel.currentDay?.reflectionPrompt ?? ""
                 )
             }
-            .sheet(isPresented: $viewModel.showingCheckInSheet) {
+            .sheet(isPresented: $viewModel.showingCheckInSheet, onDismiss: {
+                // After completing a day, prompt premium users to advance if they have completions left
+                if isPremium && !viewModel.dailyLimitReached && !viewModel.journeyJustCompleted {
+                    showingAdvancePrompt = true
+                }
+            }) {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
                     viewModel.completeDay(rating: rating, isPremium: isPremium, context: modelContext)
