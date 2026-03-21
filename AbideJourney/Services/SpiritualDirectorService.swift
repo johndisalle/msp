@@ -1,7 +1,8 @@
 import Foundation
 
 /// Manages AI spiritual director conversations with context from the user's journey data.
-/// Uses a configurable API endpoint for AI completions.
+/// Sends the full conversation history to the Anthropic Messages API so every response
+/// is genuinely contextual — no canned keyword matching.
 @Observable
 final class SpiritualDirectorService {
     static let shared = SpiritualDirectorService()
@@ -22,6 +23,23 @@ final class SpiritualDirectorService {
     private(set) var messages: [Message] = []
     private(set) var isLoading = false
     var error: String?
+
+    /// Read from Info.plist → ANTHROPIC_API_KEY, or fall back to the
+    /// ANTHROPIC_API_KEY environment variable set in the Xcode scheme.
+    private let apiKey: String? = {
+        if let key = Bundle.main.object(forInfoDictionaryKey: "ANTHROPIC_API_KEY") as? String,
+           !key.isEmpty, !key.hasPrefix("$(") {
+            return key
+        }
+        if let key = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"],
+           !key.isEmpty {
+            return key
+        }
+        return nil
+    }()
+
+    private let apiURL = URL(string: "https://api.anthropic.com/v1/messages")!
+    private let model = "claude-sonnet-4-20250514"
 
     private init() {}
 
@@ -54,6 +72,8 @@ final class SpiritualDirectorService {
         - Keep responses concise (2-4 paragraphs). This is a chat, not a sermon.
         - Never claim to be God or speak as God. You're a mentor pointing them to God.
         - Be encouraging but honest. Don't offer empty platitudes.
+        - Reference their actual journey data naturally — their moods, journal themes, prayer habits — so they feel truly known.
+        - Remember what they said earlier in this conversation and build on it.
 
         THEIR CURRENT JOURNEY:
         - Day \(context.currentDay) of \(context.totalDays) in "\(context.journeyTheme)"
@@ -91,9 +111,15 @@ final class SpiritualDirectorService {
         let systemPrompt = buildSystemPrompt(context: context)
         messages.append(Message(role: .system, content: systemPrompt))
 
-        // Generate opening message based on context
-        let opener = generateLocalOpener(context: context)
-        messages.append(Message(role: .assistant, content: opener))
+        // Request an AI-generated opening message so even the greeting feels personal
+        isLoading = true
+        error = nil
+
+        Task { @MainActor in
+            let opener = await fetchAIResponse(context: context, forOpener: true)
+            messages.append(Message(role: .assistant, content: opener))
+            isLoading = false
+        }
     }
 
     func sendMessage(_ text: String, context: JourneyContext) async {
@@ -101,9 +127,8 @@ final class SpiritualDirectorService {
         isLoading = true
         error = nil
 
-        // Generate a contextual response locally
-        // In production, this would call an AI API endpoint
-        let response = generateLocalResponse(userMessage: text, context: context)
+        let response = await fetchAIResponse(context: context)
+
         messages.append(Message(role: .assistant, content: response))
         isLoading = false
     }
@@ -112,14 +137,100 @@ final class SpiritualDirectorService {
         messages = []
     }
 
-    // MARK: - Local Response Generation
-    // These provide meaningful responses without requiring an API key.
-    // Replace with actual AI API calls in production.
+    // MARK: - Anthropic API
+
+    /// Sends the full conversation to the Anthropic Messages API.
+    /// Falls back to local generation if no API key is configured or the request fails.
+    private func fetchAIResponse(context: JourneyContext, forOpener: Bool = false) async -> String {
+        guard let apiKey, !apiKey.isEmpty else {
+            return forOpener
+                ? generateLocalOpener(context: context)
+                : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
+        }
+
+        // Build the messages array for the API (system prompt goes in the system field)
+        var apiMessages: [[String: String]] = []
+        for message in messages where message.role != .system {
+            apiMessages.append([
+                "role": message.role.rawValue,
+                "content": message.content
+            ])
+        }
+
+        // For the opener, send a single user turn asking for a greeting
+        if forOpener {
+            apiMessages.append([
+                "role": "user",
+                "content": "Start our conversation with a warm, personal opening message. Reference my journey context naturally."
+            ])
+        }
+
+        let systemPrompt = messages.first(where: { $0.role == .system })?.content
+            ?? buildSystemPrompt(context: context)
+
+        let body: [String: Any] = [
+            "model": model,
+            "max_tokens": 512,
+            "system": systemPrompt,
+            "messages": apiMessages
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else {
+            return forOpener
+                ? generateLocalOpener(context: context)
+                : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
+        }
+
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
+        request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        request.httpBody = jsonData
+        request.timeoutInterval = 30
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+                await MainActor.run {
+                    error = "AI response failed (status \(statusCode)). Using offline mode."
+                }
+                return forOpener
+                    ? generateLocalOpener(context: context)
+                    : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
+            }
+
+            // Parse the Anthropic response: { "content": [ { "type": "text", "text": "..." } ] }
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let contentArray = json["content"] as? [[String: Any]],
+               let firstBlock = contentArray.first,
+               let text = firstBlock["text"] as? String {
+                return text
+            }
+
+            return forOpener
+                ? generateLocalOpener(context: context)
+                : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
+
+        } catch {
+            await MainActor.run {
+                self.error = "Couldn't reach the server. Using offline mode."
+            }
+            return forOpener
+                ? generateLocalOpener(context: context)
+                : generateLocalResponse(userMessage: messages.last(where: { $0.role == .user })?.content ?? "", context: context)
+        }
+    }
+
+    // MARK: - Local Fallback Responses
+    // Used when no API key is configured or the network request fails.
 
     private func generateLocalOpener(context: JourneyContext) -> String {
         let name = context.userName
 
-        // Check recent moods for struggling
         let isStruggling = context.recentMoods.contains("Struggling") || context.recentCheckInRatings.contains("Tough") || context.recentCheckInRatings.contains("Missed")
 
         if isStruggling {
@@ -141,7 +252,6 @@ final class SpiritualDirectorService {
         let name = context.userName
         let message = userMessage.lowercased()
 
-        // Detect themes in user's message
         if message.contains("anxious") || message.contains("anxiety") || message.contains("worried") || message.contains("scared") {
             return "\(name), thank you for sharing that. Anxiety is so real, and God doesn't dismiss it.\n\nPhilippians 4:6-7 says, \"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.\" That's not a command to stop feeling - it's an invitation to bring those feelings to Him.\n\nWhat specifically has been making you anxious? Sometimes naming it takes away some of its power."
         }
@@ -162,7 +272,6 @@ final class SpiritualDirectorService {
             return "\(name), I hear you. Seasons of struggle don't mean God has left - sometimes they mean He's doing His deepest work.\n\nIsaiah 43:2 promises, \"When you pass through the waters, I will be with you.\" Notice it says \"when,\" not \"if.\" Struggle is part of the journey.\n\nYou've shown up for \(context.currentDay) days already. That's not failure - that's faithfulness in the middle of hard. What feels hardest right now?"
         }
 
-        // Default thoughtful response
         return "Thank you for sharing that, \(name). I appreciate your honesty.\n\nAs you sit with Day \(context.currentDay) of \(context.journeyTheme), here's something to consider: God is more interested in your heart than your performance. He sees every effort you make.\n\nWhat's one thing from today's scripture (\(context.scripturesToday.isEmpty ? "today's reading" : context.scripturesToday)) that stood out to you? Sometimes the verse that catches your attention is God highlighting something specific for you."
     }
 }

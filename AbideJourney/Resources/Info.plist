@@ -59,5 +59,7 @@
 	<string>Abide Journey uses the microphone to transcribe your voice journal reflections into text.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Abide Journey uses speech recognition to convert your spoken reflections into journal entries.</string>
+	<key>ANTHROPIC_API_KEY</key>
+	<string>$(ANTHROPIC_API_KEY)</string>
 </dict>
 </plist>
