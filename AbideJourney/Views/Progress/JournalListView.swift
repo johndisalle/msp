@@ -195,6 +195,14 @@ struct JournalEntryRow: View {
                     .foregroundStyle(.secondary)
             }
 
+            if let day = entry.journeyDay, !day.reflectionPrompt.isEmpty {
+                Text(day.reflectionPrompt)
+                    .font(.caption)
+                    .italic()
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+
             Text(entry.text)
                 .font(.body)
                 .lineLimit(3)
