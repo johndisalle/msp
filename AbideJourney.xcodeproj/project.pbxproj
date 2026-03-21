@@ -798,6 +798,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
+				GEMINI_API_KEY = AIzaSyBkqkPtpBHGsLMf2QR18OBd2uDIBdJjsQk;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AbideJourney/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AbideJourney;
@@ -832,6 +833,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
+				GEMINI_API_KEY = AIzaSyBkqkPtpBHGsLMf2QR18OBd2uDIBdJjsQk;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AbideJourney/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AbideJourney;
