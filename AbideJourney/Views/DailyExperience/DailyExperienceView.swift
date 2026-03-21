@@ -630,7 +630,7 @@ struct FreeUserUpgradeCard: View {
     let onTap: () -> Void
 
     private let perks = [
-        ("person.crop.circle.badge.checkmark", "AI Spiritual Guide"),
+        ("paintpalette.fill", "Deep-Dive Themes"),
         ("mic.fill", "Voice Journaling"),
         ("wand.and.stars", "Custom Journeys"),
         ("heart.circle.fill", "Couples Journey"),
@@ -693,7 +693,7 @@ struct PremiumFeatureHintsCard: View {
         case 1...3:
             return ("mic.fill", .purple, "Try Voice Journaling", "Tap the mic button when journaling to speak your reflections instead of typing.")
         case 4...7:
-            return ("person.crop.circle.badge.checkmark", .blue, "Talk to Your AI Guide", "Have a question about today's Scripture? Open the Guide tab for personal insight.")
+            return ("map.fill", .teal, "Explore Your Faith Map", "Check the Progress tab to see your spiritual growth visualized over time.")
         case 8...14:
             return ("person.2.fill", .green, "Invite an Accountability Partner", "Go to Settings to invite a friend to walk alongside you on this journey.")
         case 15...21:

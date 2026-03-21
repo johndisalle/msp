@@ -27,7 +27,6 @@ struct PremiumPaywallView: View {
 
     private let features = [
         ("heart.fill", "Kingdom-Funded", "We tithe our profits to ministry and missions around the world"),
-        ("person.crop.circle.badge.checkmark", "AI Spiritual Guide", "A wise, always-available conversation partner for your faith"),
         ("wand.and.stars", "Custom Journeys", "Describe what you're going through and we'll build a journey for it"),
         ("paintpalette.fill", "Deep-Dive Themes", "Anxiety, grief, leadership & 10+ premium journey themes"),
         ("heart.circle.fill", "Couples Journey", "Walk through 40 days together with your partner"),
@@ -451,7 +450,6 @@ struct PremiumCelebrationView: View {
     @State private var showFeatures = false
 
     private let unlockedFeatures: [(icon: String, color: Color, title: String, description: String)] = [
-        ("person.crop.circle.badge.checkmark", .blue, "AI Spiritual Guide", "Get personal guidance for your walk with God"),
         ("paintpalette.fill", .purple, "Deep-Dive Journeys", "Anxiety, grief, leadership & 10+ premium themes"),
         ("wand.and.stars", .orange, "Custom Journeys", "Describe your situation and get a journey built for you"),
         ("heart.circle.fill", .pink, "Couples Journey", "Walk through 40 days of growth with your partner"),
@@ -534,7 +532,7 @@ struct PremiumCelebrationView: View {
 
                 // CTA
                 VStack(spacing: 12) {
-                    Text("Try the AI Guide tab — it's ready for you now.")
+                    Text("Your premium features are ready — explore them now.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
