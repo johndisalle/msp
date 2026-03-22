@@ -52,6 +52,8 @@
 		TS00000001000047 /* CounselorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000047 /* CounselorViewModel.swift */; };
 		TS00000001000048 /* AICounselorChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000048 /* AICounselorChatView.swift */; };
 		TS00000001000049 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000049 /* ChatSession.swift */; };
+		TS00000001000052 /* ReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000052 /* ReportService.swift */; };
+		TS00000001000053 /* GenerosityBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000053 /* GenerosityBadge.swift */; };
 		TS00000001000037 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000037 /* Assets.xcassets */; };
 		TS00000001000038 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = TS00000002000040 /* Products.storekit */; };
 		TS00000001000050 /* TitheStewardWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = TS00000002000050 /* TitheStewardWidgets.swift */; };
@@ -125,6 +127,8 @@
 		TS00000002000047 /* CounselorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounselorViewModel.swift; sourceTree = "<group>"; };
 		TS00000002000048 /* AICounselorChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICounselorChatView.swift; sourceTree = "<group>"; };
 		TS00000002000049 /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
+		TS00000002000052 /* ReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportService.swift; sourceTree = "<group>"; };
+		TS00000002000053 /* GenerosityBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerosityBadge.swift; sourceTree = "<group>"; };
 		TS00000002100006 /* ViewModelIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelIntegrationTests.swift; sourceTree = "<group>"; };
 		TS00000002100007 /* GivingServiceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GivingServiceIntegrationTests.swift; sourceTree = "<group>"; };
 		TS00000002100008 /* CounselorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounselorServiceTests.swift; sourceTree = "<group>"; };
@@ -232,6 +236,7 @@
 				TS00000002000011 /* GenerosityScore.swift */,
 				TS00000002000012 /* GivingRecipient.swift */,
 				TS00000002000049 /* ChatSession.swift */,
+				TS00000002000053 /* GenerosityBadge.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -348,6 +353,7 @@
 				TS00000002000042 /* AppError.swift */,
 				TS00000002000045 /* AICounselorService.swift */,
 				TS00000002000046 /* RecurringGiftScheduler.swift */,
+				TS00000002000052 /* ReportService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -587,6 +593,8 @@
 				TS00000001000047 /* CounselorViewModel.swift in Sources */,
 				TS00000001000048 /* AICounselorChatView.swift in Sources */,
 				TS00000001000049 /* ChatSession.swift in Sources */,
+				TS00000001000052 /* ReportService.swift in Sources */,
+				TS00000001000053 /* GenerosityBadge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
