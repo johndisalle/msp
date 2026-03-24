@@ -34,9 +34,6 @@ final class StoreKitService {
         Task { await loadProducts() }
     }
 
-    nonisolated deinit {
-        updateListenerTask?.cancel()
-    }
 
     // MARK: - Load Products
 
