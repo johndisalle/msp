@@ -60,7 +60,7 @@
   },
   "subscriptionGroups" : [
     {
-      "id" : "21406498",
+      "id" : "A1B2C3D4",
       "localizations" : [
 
       ],
@@ -76,14 +76,8 @@
           "displayPrice" : "4.99",
           "familyShareable" : false,
           "groupNumber" : 2,
-          "internalID" : "6B1C7A3E-9D2F-4E8B-A5C1-1234567890AB",
-          "introductoryOffer" : {
-            "displayPrice" : "0",
-            "internalID" : "7C2D8B4F-AE3A-5F9C-B6D2-1234567890CD",
-            "numberOfPeriods" : 1,
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P3D"
-          },
+          "internalID" : "F1A2B3C4-D5E6-7890-ABCD-EF1234567801",
+          "introductoryOffer" : null,
           "localizations" : [
             {
               "description" : "Unlimited journeys, voice devotionals, accountability features",
@@ -94,7 +88,7 @@
           "productID" : "com.abidejourney.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Premium Monthly",
-          "subscriptionGroupID" : "21406498",
+          "subscriptionGroupID" : "A1B2C3D4",
           "type" : "RecurringSubscription"
         },
         {
@@ -107,17 +101,11 @@
           "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "8D3E9C5A-BF4A-6AAD-C7E3-1234567890EF",
-          "introductoryOffer" : {
-            "displayPrice" : "0",
-            "internalID" : "9E4FAD6A-CA5B-7ABE-D8F4-123456789012",
-            "numberOfPeriods" : 1,
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P3D"
-          },
+          "internalID" : "F1A2B3C4-D5E6-7890-ABCD-EF1234567802",
+          "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlimited journeys, voice devotionals, accountability features — save 33%",
+              "description" : "Unlimited journeys, voice devotionals, accountability features - save 33%",
               "displayName" : "Abide Premium Yearly",
               "locale" : "en_US"
             }
@@ -125,14 +113,14 @@
           "productID" : "com.abidejourney.premium.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Premium Yearly",
-          "subscriptionGroupID" : "21406498",
+          "subscriptionGroupID" : "A1B2C3D4",
           "type" : "RecurringSubscription"
         }
       ]
     }
   ],
   "version" : {
-    "major" : 3,
+    "major" : 4,
     "minor" : 0
   }
 }
