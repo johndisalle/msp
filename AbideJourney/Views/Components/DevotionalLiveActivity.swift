@@ -53,7 +53,7 @@ struct DevotionalLiveActivity: Widget {
 
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: 4) {
-                        Text(""\(context.state.verseSnippet)"")
+                        Text("\u{201C}\(context.state.verseSnippet)\u{201D}")
                             .font(.caption)
                             .italic()
                             .lineLimit(2)
@@ -160,7 +160,7 @@ struct LockScreenLiveActivityView: View {
 
             // Verse
             VStack(spacing: 4) {
-                Text(""\(context.state.verseSnippet)"")
+                Text("\u{201C}\(context.state.verseSnippet)\u{201D}")
                     .font(.subheadline)
                     .italic()
                     .foregroundStyle(.white.opacity(0.9))

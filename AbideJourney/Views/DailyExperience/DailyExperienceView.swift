@@ -272,7 +272,7 @@ struct ScriptureCardView: View {
                 Spacer()
             }
 
-            Text(""\(text)"")
+            Text("\u{201C}\(text)\u{201D}")
                 .font(.body)
                 .italic()
                 .lineSpacing(4)
