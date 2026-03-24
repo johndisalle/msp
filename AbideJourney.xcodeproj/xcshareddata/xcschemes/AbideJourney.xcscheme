@@ -39,8 +39,12 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES"
-      storeKitConfigurationFileReference = "AbideJourney/Resources/Products.storekit">
+      allowLocationSimulation = "YES">
+      <StoreKitConfigurationFileReference
+         identifier = "../../AbideJourney/Resources/Products.storekit"
+         referenceType = "0"
+         relativePath = "../../AbideJourney/Resources/Products.storekit">
+      </StoreKitConfigurationFileReference>
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
