@@ -34,7 +34,7 @@ final class StoreKitService {
         Task { await loadProducts() }
     }
 
-    deinit {
+    nonisolated deinit {
         updateListenerTask?.cancel()
     }
 
@@ -114,9 +114,10 @@ final class StoreKitService {
     // MARK: - Transaction Listener
 
     private func listenForTransactions() -> Task<Void, Error> {
-        Task.detached {
+        Task.detached { [weak self] in
             for await result in Transaction.updates {
-                if let transaction = try? self.checkVerified(result) {
+                guard let self else { return }
+                if let transaction = try? await self.checkVerified(result) {
                     await transaction.finish()
                     await self.updatePurchasedProducts()
                 }
