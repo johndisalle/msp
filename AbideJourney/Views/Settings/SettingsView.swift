@@ -244,13 +244,13 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    if let privacyURL = URL(string: "https://abidejourney.com/privacy") {
+                    if let privacyURL = URL(string: "https://johndisalle.github.io/msp/privacy.html") {
                         Link(destination: privacyURL) {
                             Label("Privacy Policy", systemImage: "hand.raised")
                         }
                     }
 
-                    if let termsURL = URL(string: "https://abidejourney.com/terms") {
+                    if let termsURL = URL(string: "https://johndisalle.github.io/msp/terms.html") {
                         Link(destination: termsURL) {
                             Label("Terms of Service", systemImage: "doc.text")
                         }
