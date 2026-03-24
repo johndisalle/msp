@@ -1,6 +1,7 @@
 import Foundation
 import StoreKit
 
+@MainActor
 @Observable
 final class StoreKitService {
     static let shared = StoreKitService()
@@ -45,13 +46,16 @@ final class StoreKitService {
 
         do {
             let requestedIDs = Self.allProductIDs
+            print("[StoreKit] Requesting products: \(requestedIDs)")
             let loadedProducts = try await Product.products(for: requestedIDs)
+            print("[StoreKit] Loaded \(loadedProducts.count) products: \(loadedProducts.map { $0.id })")
             if loadedProducts.isEmpty {
-                errorMessage = "No subscription products available. Please try again later."
+                errorMessage = "No subscription products available. Please check that Products.storekit is set in your scheme's StoreKit Configuration."
             }
             products = loadedProducts.sorted { $0.price < $1.price }
             isLoading = false
         } catch {
+            print("[StoreKit] Error loading products: \(error)")
             errorMessage = "Failed to load products: \(error.localizedDescription)"
             isLoading = false
         }
