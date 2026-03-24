@@ -665,7 +665,7 @@ struct FreeUserUpgradeCard: View {
             Button {
                 onTap()
             } label: {
-                Text("Try Free for 3 Days")
+                Text("Upgrade to Premium")
                     .font(.subheadline.bold())
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)

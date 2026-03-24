@@ -161,7 +161,7 @@ struct JourneyCompletionView: View {
                 }
             } label: {
                 HStack {
-                    Text("Try Premium Free for 3 Days")
+                    Text("Upgrade to Premium")
                         .font(.subheadline.bold())
                     Image(systemName: "arrow.right")
                         .font(.caption)

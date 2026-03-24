@@ -54,7 +54,7 @@ struct PremiumPaywallView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 28) {
-                        // Hero section - lead with free trial
+                        // Hero section
                         heroSection
 
                         // Testimonial
