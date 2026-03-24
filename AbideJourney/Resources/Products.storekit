@@ -1,5 +1,5 @@
 {
-  "identifier" : "com.abidejourney.products",
+  "identifier" : "Products",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -60,7 +60,7 @@
   },
   "subscriptionGroups" : [
     {
-      "id" : "com.abidejourney.premium",
+      "id" : "21406498",
       "localizations" : [
 
       ],
@@ -76,10 +76,10 @@
           "displayPrice" : "4.99",
           "familyShareable" : false,
           "groupNumber" : 2,
-          "internalID" : "D3A1B2C4-1001-4001-8001-000000000001",
+          "internalID" : "6B1C7A3E-9D2F-4E8B-A5C1-1234567890AB",
           "introductoryOffer" : {
             "displayPrice" : "0",
-            "internalID" : "D3A1B2C4-2001-4001-8001-000000000001",
+            "internalID" : "7C2D8B4F-AE3G-5F9C-B6D2-1234567890CD",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P3D"
@@ -94,7 +94,7 @@
           "productID" : "com.abidejourney.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Premium Monthly",
-          "subscriptionGroupID" : "com.abidejourney.premium",
+          "subscriptionGroupID" : "21406498",
           "type" : "RecurringSubscription"
         },
         {
@@ -107,10 +107,10 @@
           "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "D3A1B2C4-1001-4001-8001-000000000002",
+          "internalID" : "8D3E9C5G-BF4H-6GAD-C7E3-1234567890EF",
           "introductoryOffer" : {
             "displayPrice" : "0",
-            "internalID" : "D3A1B2C4-2001-4001-8001-000000000002",
+            "internalID" : "9E4FAD6H-CG5I-7HBE-D8F4-1234567890GH",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P3D"
@@ -125,14 +125,14 @@
           "productID" : "com.abidejourney.premium.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Premium Yearly",
-          "subscriptionGroupID" : "com.abidejourney.premium",
+          "subscriptionGroupID" : "21406498",
           "type" : "RecurringSubscription"
         }
       ]
     }
   ],
   "version" : {
-    "major" : 4,
+    "major" : 3,
     "minor" : 0
   }
 }
