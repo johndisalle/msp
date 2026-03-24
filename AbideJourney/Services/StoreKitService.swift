@@ -13,9 +13,9 @@ final class StoreKitService {
 
     private var updateListenerTask: Task<Void, Error>?
 
-    static let monthlyProductID = "com.abidejourney.premium.monthly"
-    static let yearlyProductID = "com.abidejourney.premium.yearly"
-    static let allProductIDs: Set<String> = [monthlyProductID, yearlyProductID]
+    nonisolated static let monthlyProductID = "com.abidejourney.premium.monthly"
+    nonisolated static let yearlyProductID = "com.abidejourney.premium.yearly"
+    nonisolated static let allProductIDs: Set<String> = [monthlyProductID, yearlyProductID]
 
     var isPremium: Bool {
         !purchasedProductIDs.isEmpty
