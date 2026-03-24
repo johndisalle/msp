@@ -1,120 +1,91 @@
 {
-  "identifier" : "Products",
-  "nonRenewingSubscriptions" : [
-
-  ],
-  "products" : [
-
-  ],
-  "settings" : {
-    "_failTransactionsEnabled" : false,
-    "_locale" : "en_US",
-    "_storefront" : "USA",
-    "_storeKitErrors" : [
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Load Products"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Purchase"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Verification"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "App Store Sync"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Subscription Status"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "App Transaction"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Manage Subscriptions Sheet"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Offer Code Redeem Sheet"
-      },
-      {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Subscription Renewal"
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
       }
     ]
   },
+  "identifier" : "1983A933",
+  "nonRenewingSubscriptions" : [
+  ],
+  "products" : [
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6760856253",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "KLSZXFN257",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 795811482.71127796,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+    ],
+    "_timeRate" : 0
+  },
   "subscriptionGroups" : [
     {
-      "id" : "A1B2C3D4",
+      "id" : "21987241",
       "localizations" : [
-
       ],
-      "name" : "Premium",
+      "name" : "premium",
       "subscriptions" : [
         {
           "adHocOffers" : [
-
           ],
           "codeOffers" : [
-
           ],
           "displayPrice" : "4.99",
           "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "F1A2B3C4-D5E6-7890-ABCD-EF1234567801",
+          "groupNumber" : 1,
+          "internalID" : "6760856178",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlimited journeys, voice devotionals, accountability features",
-              "displayName" : "Abide Premium Monthly",
+              "description" : "Monthly Premium Subscription to AbideJourney",
+              "displayName" : "AbideJourney Premium Monthly",
               "locale" : "en_US"
             }
           ],
           "productID" : "com.abidejourney.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Premium Monthly",
-          "subscriptionGroupID" : "A1B2C3D4",
-          "type" : "RecurringSubscription"
+          "referenceName" : "Monthly",
+          "subscriptionGroupID" : "21987241",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
         },
         {
           "adHocOffers" : [
-
           ],
           "codeOffers" : [
-
           ],
           "displayPrice" : "39.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "F1A2B3C4-D5E6-7890-ABCD-EF1234567802",
+          "groupNumber" : 2,
+          "internalID" : "6760919317",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlimited journeys, voice devotionals, accountability features - save 33%",
-              "displayName" : "Abide Premium Yearly",
+              "description" : "Unlimited journeys, devotional audio, deep-dive themes",
+              "displayName" : "AbideJourney Premium",
               "locale" : "en_US"
             }
           ],
           "productID" : "com.abidejourney.premium.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Premium Yearly",
-          "subscriptionGroupID" : "A1B2C3D4",
-          "type" : "RecurringSubscription"
+          "referenceName" : "Yearly",
+          "subscriptionGroupID" : "21987241",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
         }
       ]
     }
