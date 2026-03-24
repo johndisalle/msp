@@ -14,9 +14,5 @@
 	<array>
 		<string>group.com.abidejourney.shared</string>
 	</array>
-	<key>com.apple.developer.in-app-payments</key>
-	<array>
-		<string>merchant.com.abidejourney.app</string>
-	</array>
 </dict>
 </plist>

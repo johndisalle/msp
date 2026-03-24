@@ -180,7 +180,7 @@ struct PremiumThemesTeaser: View {
                 onTap()
             } label: {
                 HStack {
-                    Text("Explore with Free Trial")
+                    Text("Explore Premium")
                         .font(.subheadline.bold())
                     Image(systemName: "arrow.right")
                         .font(.caption)

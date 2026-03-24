@@ -80,16 +80,8 @@ struct PremiumPaywallView: View {
                         // Subscribe button
                         subscribeButton
 
-                        // Price disclaimer
-                        let priceText: String = {
-                            switch selectedPlan {
-                            case .yearly:
-                                return storeService.yearlyProduct?.displayPrice ?? "$39.99"
-                            case .monthly:
-                                return storeService.monthlyProduct?.displayPrice ?? "$4.99"
-                            }
-                        }()
-                        Text("3-day free trial, then \(priceText)/\(selectedPlan == .yearly ? "year" : "month"). Cancel anytime.")
+                        // Subscription details
+                        Text("Cancel anytime. Subscription auto-renews.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -152,11 +144,11 @@ struct PremiumPaywallView: View {
                 .padding(.top, 24)
                 .accessibilityHidden(true)
 
-            Text("Try Premium Free\nfor 3 Days")
+            Text("Go Deeper\nwith Premium")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
 
-            Text("Go deeper in your walk with Christ.\nCancel anytime — no commitment.")
+            Text("Unlock every journey, feature, and tool\nto grow closer to Christ.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -270,43 +262,41 @@ struct PremiumPaywallView: View {
 
     private var planSelection: some View {
         VStack(spacing: 12) {
-            if let yearly = storeService.yearlyProduct {
-                PlanButton(
-                    title: "Yearly",
-                    price: yearly.displayPrice + "/year",
-                    badge: "Save 33%",
-                    isSelected: selectedPlan == .yearly
-                ) {
-                    selectedPlan = .yearly
+            if storeService.isLoading {
+                ProgressView("Loading plans...")
+                    .padding()
+            } else if storeService.products.isEmpty {
+                VStack(spacing: 8) {
+                    Text("Unable to load subscription options.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Button("Try Again") {
+                        Task { await storeService.loadProducts() }
+                    }
+                    .font(.subheadline.bold())
                 }
+                .padding()
             } else {
-                PlanButton(
-                    title: "Yearly",
-                    price: "$39.99/year",
-                    badge: "Save 33%",
-                    isSelected: selectedPlan == .yearly
-                ) {
-                    selectedPlan = .yearly
+                if let yearly = storeService.yearlyProduct {
+                    PlanButton(
+                        title: "Yearly",
+                        price: yearly.displayPrice + "/year",
+                        badge: "Save 33%",
+                        isSelected: selectedPlan == .yearly
+                    ) {
+                        selectedPlan = .yearly
+                    }
                 }
-            }
 
-            if let monthly = storeService.monthlyProduct {
-                PlanButton(
-                    title: "Monthly",
-                    price: monthly.displayPrice + "/month",
-                    badge: nil,
-                    isSelected: selectedPlan == .monthly
-                ) {
-                    selectedPlan = .monthly
-                }
-            } else {
-                PlanButton(
-                    title: "Monthly",
-                    price: "$4.99/month",
-                    badge: nil,
-                    isSelected: selectedPlan == .monthly
-                ) {
-                    selectedPlan = .monthly
+                if let monthly = storeService.monthlyProduct {
+                    PlanButton(
+                        title: "Monthly",
+                        price: monthly.displayPrice + "/month",
+                        badge: nil,
+                        isSelected: selectedPlan == .monthly
+                    ) {
+                        selectedPlan = .monthly
+                    }
                 }
             }
         }
@@ -314,6 +304,10 @@ struct PremiumPaywallView: View {
     }
 
     // MARK: - Subscribe Button
+
+    private var hasProducts: Bool {
+        selectedPlan == .monthly ? storeService.monthlyProduct != nil : storeService.yearlyProduct != nil
+    }
 
     private var subscribeButton: some View {
         Button {
@@ -323,23 +317,25 @@ struct PremiumPaywallView: View {
                 if isPurchasing {
                     ProgressView()
                         .tint(.white)
-                } else {
-                    VStack(spacing: 2) {
-                        Text("Start Your Free Trial")
+                } else if storeService.isLoading {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                            .tint(.white)
+                        Text("Loading...")
                             .font(.headline)
-                        Text("No charge for 3 days")
-                            .font(.caption)
-                            .opacity(0.85)
                     }
+                } else {
+                    Text("Subscribe")
+                        .font(.headline)
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
+            .background(isPurchasing || !hasProducts ? Color(.systemGray4) : Color.accentColor)
             .foregroundColor(.white)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
-        .disabled(isPurchasing)
+        .disabled(isPurchasing || !hasProducts)
         .padding(.horizontal)
     }
 
