@@ -3,31 +3,31 @@ import SwiftData
 
 @Model
 final class JourneyDay {
-    var id: UUID
-    var dayNumber: Int
+    var id: UUID = UUID()
+    var dayNumber: Int = 0
     var date: Date?
-    var isCompleted: Bool
-    var isUnlocked: Bool
+    var isCompleted: Bool = false
+    var isUnlocked: Bool = false
     var hasBeenAdapted: Bool = false
 
     // Content
-    var scriptureReference: String
-    var scriptureText: String
-    var devotionalTitle: String
-    var devotionalText: String
+    var scriptureReference: String = ""
+    var scriptureText: String = ""
+    var devotionalTitle: String = ""
+    var devotionalText: String = ""
     var devotionalAudioURL: String?
 
     // Prayer
-    var prayerText: String
-    var hasPrayed: Bool
+    var prayerText: String = ""
+    var hasPrayed: Bool = false
 
     // Action steps
-    var actionSteps: [ActionStep]
-    var reflectionPrompt: String
+    var actionSteps: [ActionStep] = []
+    var reflectionPrompt: String = ""
 
     // Focus
-    var focusArea: DiscipleshipArea
-    var theme: JourneyTheme
+    var focusArea: DiscipleshipArea = .prayer
+    var theme: JourneyTheme = .knowingGod
 
     var journey: Journey?
 

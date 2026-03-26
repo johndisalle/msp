@@ -3,17 +3,17 @@ import SwiftData
 
 @Model
 final class Journey {
-    var id: UUID
-    var title: String
-    var subtitle: String
-    var startDate: Date
-    var totalDays: Int
-    var currentDay: Int
-    var isActive: Bool
-    var isCompleted: Bool
-    var theme: JourneyTheme
-    var focusAreas: [DiscipleshipArea]
-    var isCouple: Bool
+    var id: UUID = UUID()
+    var title: String = ""
+    var subtitle: String = ""
+    var startDate: Date = Date()
+    var totalDays: Int = 40
+    var currentDay: Int = 0
+    var isActive: Bool = true
+    var isCompleted: Bool = false
+    var theme: JourneyTheme = .knowingGod
+    var focusAreas: [DiscipleshipArea] = []
+    var isCouple: Bool = false
     var partnerName: String?
 
     var user: UserProfile?

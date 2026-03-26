@@ -8,6 +8,9 @@ struct AbideJourneyApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     init() {
+        // Initialize analytics
+        Analytics.configure()
+
         do {
             let schema = Schema([
                 UserProfile.self,
@@ -20,7 +23,8 @@ struct AbideJourneyApp: App {
             ])
             let config = ModelConfiguration(
                 schema: schema,
-                isStoredInMemoryOnly: false
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .automatic
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {

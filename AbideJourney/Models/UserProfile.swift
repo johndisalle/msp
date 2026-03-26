@@ -3,16 +3,16 @@ import SwiftData
 
 @Model
 final class UserProfile {
-    var id: UUID
-    var name: String
-    var createdAt: Date
-    var spiritualMaturity: SpiritualMaturity
-    var preferredTranslation: BibleTranslation
-    var isPremium: Bool
+    var id: UUID = UUID()
+    var name: String = ""
+    var createdAt: Date = Date()
+    var spiritualMaturity: SpiritualMaturity = .exploring
+    var preferredTranslation: BibleTranslation = .niv
+    var isPremium: Bool = false
     var premiumExpiresAt: Date?
-    var notificationMorningTime: Date
-    var notificationEveningTime: Date
-    var notificationsEnabled: Bool
+    var notificationMorningTime: Date = Date()
+    var notificationEveningTime: Date = Date()
+    var notificationsEnabled: Bool = true
     var appleUserID: String?
     var email: String?
 

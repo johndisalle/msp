@@ -4,13 +4,13 @@ import SwiftData
 
 @Model
 final class DailyCheckIn {
-    var id: UUID
-    var date: Date
-    var rating: CheckInRating
+    var id: UUID = UUID()
+    var date: Date = Date()
+    var rating: CheckInRating = .okay
     var note: String?
-    var prayerMinutes: Int
-    var completedActionSteps: Int
-    var totalActionSteps: Int
+    var prayerMinutes: Int = 0
+    var completedActionSteps: Int = 0
+    var totalActionSteps: Int = 0
 
     var journeyDay: JourneyDay?
 

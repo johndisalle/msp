@@ -3,11 +3,11 @@ import SwiftData
 
 @Model
 final class QuizResponse {
-    var id: UUID
-    var questionId: String
-    var answer: String
+    var id: UUID = UUID()
+    var questionId: String = ""
+    var answer: String = ""
     var numericValue: Double?
-    var answeredAt: Date
+    var answeredAt: Date = Date()
 
     var user: UserProfile?
 

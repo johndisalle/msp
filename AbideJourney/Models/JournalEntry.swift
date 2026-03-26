@@ -4,12 +4,12 @@ import SwiftData
 
 @Model
 final class JournalEntry {
-    var id: UUID
-    var text: String
-    var createdAt: Date
-    var updatedAt: Date
+    var id: UUID = UUID()
+    var text: String = ""
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     var mood: Mood?
-    var isVoiceEntry: Bool
+    var isVoiceEntry: Bool = false
 
     var journeyDay: JourneyDay?
 

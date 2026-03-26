@@ -3,11 +3,11 @@ import SwiftData
 
 @Model
 final class AccountabilityPartner {
-    var id: UUID
-    var name: String
-    var email: String
-    var status: PartnerStatus
-    var addedAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var email: String = ""
+    var status: PartnerStatus = .invited
+    var addedAt: Date = Date()
     var lastEncouragementSent: Date?
 
     var user: UserProfile?
