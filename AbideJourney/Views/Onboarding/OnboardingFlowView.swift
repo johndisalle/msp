@@ -715,7 +715,8 @@ struct QuizStepView: View {
                     Text(question.text)
                         .font(.system(.title3, design: .serif, weight: .bold))
                         .foregroundColor(AJTheme.primaryText)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal)
 
                     if case .slider = question.type {
