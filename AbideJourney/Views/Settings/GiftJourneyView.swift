@@ -127,6 +127,7 @@ struct GiftJourneyView: View {
                     .padding(.bottom, 32)
                 }
             }
+            .ajScreenBackground()
             .navigationTitle("Gift a Journey")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -212,7 +213,7 @@ struct GiftJourneyView: View {
         VStack(spacing: 16) {
             Image(systemName: "gift.fill")
                 .font(.system(size: 36))
-                .foregroundStyle(.blue)
+                .foregroundStyle(AJTheme.sage)
 
             Text("A Gift for \(recipientName)")
                 .font(.title3.bold())
