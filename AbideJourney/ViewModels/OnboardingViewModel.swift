@@ -2,6 +2,7 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+@MainActor
 @Observable
 final class OnboardingViewModel {
     var currentStep: OnboardingStep = .welcome
