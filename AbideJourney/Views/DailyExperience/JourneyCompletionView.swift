@@ -87,6 +87,7 @@ struct JourneyCompletionView: View {
                     .padding(.bottom, 32)
                 }
             }
+            .ajScreenBackground()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }

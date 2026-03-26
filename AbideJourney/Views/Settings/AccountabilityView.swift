@@ -203,14 +203,14 @@ struct PartnerRow: View {
             HStack {
                 Image(systemName: "person.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.sage)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(partner.name)
                         .font(.subheadline.bold())
                     Text(partner.email)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
 
                 Spacer()
@@ -234,7 +234,7 @@ struct PartnerRow: View {
                         Text("Send Encouragement")
                             .font(.caption)
                     }
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.sage)
                 }
 
                 if partner.status == .invited {
@@ -247,7 +247,7 @@ struct PartnerRow: View {
                             Text("Mark Active")
                                 .font(.caption)
                         }
-                        .foregroundStyle(.green)
+                        .foregroundStyle(AJTheme.success)
                     }
                 }
             }
@@ -255,7 +255,7 @@ struct PartnerRow: View {
             if let lastSent = partner.lastEncouragementSent {
                 Text("Last encouraged \(lastSent, style: .relative) ago")
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(AJTheme.secondaryText.opacity(0.7))
             }
         }
         .padding(.vertical, 4)

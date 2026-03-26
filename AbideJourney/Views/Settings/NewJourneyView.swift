@@ -217,22 +217,22 @@ private struct ThemeCard: View {
                         .font(.caption2.bold())
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(Color.orange.opacity(0.15))
-                        .foregroundStyle(.orange)
+                        .background(AJTheme.goldLight.opacity(0.4))
+                        .foregroundStyle(AJTheme.gold)
                         .clipShape(Capsule())
                 } else if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(AJTheme.sage)
                 }
             }
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.accentColor.opacity(0.08) : Color(.systemGray6))
+                    .fill(isSelected ? AJTheme.sage.opacity(0.08) : AJTheme.cardBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : .clear, lineWidth: 2)
+                    .stroke(isSelected ? AJTheme.sage : .clear, lineWidth: 2)
             )
         }
         .buttonStyle(.plain)

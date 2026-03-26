@@ -219,7 +219,7 @@ struct FaithMapView: View {
 
         return VStack(alignment: .leading, spacing: 16) {
             Text("All-Time")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 lifetimeStat(value: "\(totalDays)", label: "Days Completed", icon: "checkmark.circle.fill", color: .green)
@@ -228,12 +228,7 @@ struct FaithMapView: View {
                 lifetimeStat(value: "\(totalJourneys)", label: "Journeys", icon: "map.fill", color: .orange)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
@@ -246,7 +241,7 @@ struct FaithMapView: View {
                 .font(.title2.bold())
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
