@@ -13,7 +13,8 @@ struct CheckInSheet: View {
                 Spacer()
 
                 Text("How did today's step go?")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 HStack(spacing: 16) {
                     ForEach(CheckInRating.allCases, id: \.self) { rating in
@@ -30,12 +31,12 @@ struct CheckInSheet: View {
                                     .frame(height: selectedRating == rating ? 44 : 32)
                                 Text(rating.label)
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AJTheme.secondaryText)
                             }
                             .padding(8)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(selectedRating == rating ? Color.accentColor.opacity(0.15) : .clear)
+                                    .fill(selectedRating == rating ? AJTheme.sage.opacity(0.15) : .clear)
                             )
                         }
                         .buttonStyle(.plain)
@@ -57,10 +58,10 @@ struct CheckInSheet: View {
                     dismiss()
                 } label: {
                     Text("Submit")
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedRating != nil ? Color.accentColor : Color(.systemGray4))
+                        .background(selectedRating != nil ? AJTheme.sage : AJTheme.sandstone)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
@@ -68,6 +69,7 @@ struct CheckInSheet: View {
                 .padding(.horizontal, 32)
                 .padding(.bottom, 32)
             }
+            .ajScreenBackground()
             .navigationTitle("Evening Check-In")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

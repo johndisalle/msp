@@ -23,17 +23,17 @@ struct AccountabilityView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Image(systemName: "chart.bar.fill")
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(AJTheme.sage)
                             Text("Your Progress")
-                                .font(.headline)
+                                .font(AJTheme.subheadlineFont)
                         }
 
                         Text("Day \(journey.currentDay) of \(journey.totalDays) — \(journey.theme.rawValue)")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         ProgressView(value: journey.progress)
-                            .tint(.accent)
+                            .tint(AJTheme.sage)
 
                         Button {
                             shareProgress(journey: journey)
@@ -45,7 +45,7 @@ struct AccountabilityView: View {
                             .font(.subheadline.bold())
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 8)
-                            .background(Color.accentColor.opacity(0.1))
+                            .background(AJTheme.sage.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                     }
@@ -61,15 +61,15 @@ struct AccountabilityView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "person.2.circle")
                             .font(.largeTitle)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         Text("No accountability partners yet")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         Text("Invite a trusted friend to encourage each other on your faith journey.")
                             .font(.caption)
-                            .foregroundStyle(.tertiary)
+                            .foregroundStyle(AJTheme.secondaryText.opacity(0.7))
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)
@@ -100,7 +100,7 @@ struct AccountabilityView: View {
                     Label("Celebrate wins together", systemImage: "party.popper.fill")
                         .font(.subheadline)
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .padding(.vertical, 4)
             } header: {
                 Text("Tips for Accountability")

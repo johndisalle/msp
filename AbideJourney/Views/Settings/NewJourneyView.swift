@@ -23,7 +23,7 @@ struct NewJourneyView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Choose your next 40-day theme.")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                     }
                     .padding(.horizontal)
                     .padding(.top, 8)
@@ -31,7 +31,7 @@ struct NewJourneyView: View {
                     // Free themes
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Journeys")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
                             .padding(.horizontal)
 
                         ForEach(JourneyTheme.freeThemes, id: \.self) { theme in
@@ -50,10 +50,10 @@ struct NewJourneyView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Deep-Dive Journeys")
-                                .font(.headline)
+                                .font(AJTheme.subheadlineFont)
                             Image(systemName: "crown.fill")
                                 .font(.caption)
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(AJTheme.gold)
                                 .accessibilityHidden(true)
                         }
                         .padding(.horizontal)
@@ -61,7 +61,7 @@ struct NewJourneyView: View {
                         if !isPremium {
                             Text("Unlock these focused journeys with Premium")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AJTheme.secondaryText)
                                 .padding(.horizontal)
                         }
 
@@ -91,12 +91,12 @@ struct NewJourneyView: View {
                                     .tint(.white)
                             } else {
                                 Text("Start \(selectedTheme.rawValue)")
-                                    .font(.headline)
+                                    .font(AJTheme.subheadlineFont)
                             }
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.accentColor)
+                        .background(AJTheme.sage)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -105,6 +105,7 @@ struct NewJourneyView: View {
                     .padding(.bottom, 32)
                 }
             }
+            .ajScreenBackground()
             .navigationTitle("New Journey")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {

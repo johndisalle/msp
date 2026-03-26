@@ -20,24 +20,25 @@ struct JourneyCompletionView: View {
                     VStack(spacing: 16) {
                         ZStack {
                             Circle()
-                                .fill(Color.green.opacity(0.1))
+                                .fill(AJTheme.success.opacity(0.1))
                                 .frame(width: 120, height: 120)
                                 .scaleEffect(animateConfetti ? 1.0 : 0.5)
                                 .opacity(animateConfetti ? 1.0 : 0)
 
                             Image(systemName: "checkmark.seal.fill")
                                 .font(.system(size: 64))
-                                .foregroundStyle(.green)
+                                .foregroundStyle(AJTheme.success)
                                 .symbolEffect(.bounce, value: animateConfetti)
                         }
 
                         Text("Journey Complete!")
-                            .font(.largeTitle.bold())
+                            .font(AJTheme.titleFont)
+                            .foregroundColor(AJTheme.primaryText)
 
                         if let journey {
                             Text("You finished all \(journey.totalDays) days of\n\"\(journey.title)\"")
                                 .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AJTheme.secondaryText)
                                 .multilineTextAlignment(.center)
                         }
                     }
@@ -50,19 +51,19 @@ struct JourneyCompletionView: View {
                     // Encouragement
                     VStack(spacing: 8) {
                         Text("\"Being confident of this, that He who began a good work in you will carry it on to completion.\"")
-                            .font(.body)
+                            .font(AJTheme.scriptureFont)
                             .italic()
                             .multilineTextAlignment(.center)
                             .lineSpacing(3)
 
                         Text("— Philippians 1:6")
                             .font(.caption.bold())
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.accentSecondary)
                     }
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.accentColor.opacity(0.08))
+                            .fill(AJTheme.cream.opacity(0.5))
                     )
                     .padding(.horizontal)
 
@@ -75,10 +76,10 @@ struct JourneyCompletionView: View {
                         dismiss()
                     } label: {
                         Text(isPremium ? "Done" : "Continue")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.accentColor)
+                            .background(AJTheme.sage)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -117,7 +118,8 @@ struct JourneyCompletionView: View {
         .padding(.vertical, 16)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
         )
         .padding(.horizontal)
     }
@@ -140,9 +142,9 @@ struct JourneyCompletionView: View {
         VStack(spacing: 14) {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(AJTheme.gold)
                 Text("Ready for your next journey?")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
             }
 
             Text("Premium members get unlimited journeys on topics like overcoming anxiety, walking through grief, hearing God's voice, and more.")
@@ -166,15 +168,15 @@ struct JourneyCompletionView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.orange.opacity(0.12))
-                .foregroundStyle(.orange)
+                .background(AJTheme.goldLight.opacity(0.3))
+                .foregroundStyle(AJTheme.gold)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
+                .fill(AJTheme.cardBackground)
         )
         .padding(.horizontal)
     }

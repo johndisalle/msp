@@ -94,18 +94,18 @@ struct ProgressDashboardView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "map.fill")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(AJTheme.sage)
                                 Text("View Faith Map")
                                     .font(.subheadline.bold())
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AJTheme.secondaryText)
                             }
                             .padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.accentColor.opacity(0.08))
+                                    .fill(AJTheme.sage.opacity(0.08))
                             )
                         }
                         .buttonStyle(.plain)
@@ -121,6 +121,7 @@ struct ProgressDashboardView: View {
                 }
                 .padding(.vertical)
             }
+            .ajScreenBackground()
             .navigationTitle("Progress")
             .onAppear {
                 viewModel.loadProgress(from: journeys)
@@ -147,11 +148,11 @@ struct PremiumThemesTeaser: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("What's Next?")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             Text("Keep growing with deep-dive journeys designed for where life has you right now.")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .lineSpacing(2)
 
             HStack(spacing: 10) {
@@ -164,7 +165,7 @@ struct PremiumThemesTeaser: View {
 
                         Text(theme.name)
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -187,17 +188,12 @@ struct PremiumThemesTeaser: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
-                .background(Color.accentColor.opacity(0.1))
-                .foregroundStyle(.accent)
+                .background(AJTheme.sage.opacity(0.1))
+                .foregroundStyle(AJTheme.sage)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -212,19 +208,19 @@ struct JourneyProgressCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(journey.title)
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
                     Text("Day \(journey.currentDay) of \(journey.totalDays)")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
                 Spacer()
                 Text("\(Int(journey.progress * 100))%")
                     .font(.title2.bold())
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.gold)
             }
 
             ProgressView(value: journey.progress)
-                .tint(.accent)
+                .tint(AJTheme.sage)
                 .scaleEffect(y: 2)
 
             HStack {
@@ -232,15 +228,10 @@ struct JourneyProgressCard: View {
                 Spacer()
                 Label(journey.theme.rawValue, systemImage: journey.theme.icon)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            .font(AJTheme.captionFont)
+            .foregroundStyle(AJTheme.secondaryText)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -256,12 +247,7 @@ struct StreakCard: View {
             StreakStatView(value: streakInfo.longestStreak, label: "Longest\nStreak", icon: "trophy.fill", color: .yellow)
             StreakStatView(value: streakInfo.totalDaysCompleted, label: "Total\nDays", icon: "checkmark.seal.fill", color: .green)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -283,7 +269,7 @@ struct StreakStatView: View {
 
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -303,7 +289,7 @@ struct HabitRingsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("This Week's Habits")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             HStack(spacing: 20) {
                 HabitRingView(progress: prayer, label: "Prayer", color: .blue, icon: "hands.sparkles.fill")
@@ -312,12 +298,7 @@ struct HabitRingsCard: View {
                 HabitRingView(progress: worship, label: "Worship", color: .purple, icon: "music.note")
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -348,7 +329,7 @@ struct HabitRingView: View {
 
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
@@ -366,7 +347,7 @@ struct WeeklyStatsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Weekly Summary")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             HStack(spacing: 16) {
                 StatItemView(value: "\(prayerDays)", unit: "days", label: "Prayer", color: .blue)
@@ -374,12 +355,7 @@ struct WeeklyStatsCard: View {
                 StatItemView(value: "\(obedienceCount)", unit: "steps", label: "Completed", color: .orange)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -397,11 +373,11 @@ struct StatItemView: View {
                     .font(.title2.bold())
                 Text(unit)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AJTheme.secondaryText)
             }
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -420,7 +396,7 @@ struct StreakCalendarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Journey Calendar")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
                 ForEach(journey.days.sorted(by: { $0.dayNumber < $1.dayNumber })) { day in
@@ -430,7 +406,7 @@ struct StreakCalendarView: View {
                         .overlay {
                             Text("\(day.dayNumber)")
                                 .font(.caption2)
-                                .foregroundStyle(day.isCompleted ? .white : .secondary)
+                                .foregroundStyle(day.isCompleted ? .white : AJTheme.secondaryText)
                         }
                         .accessibilityLabel("Day \(day.dayNumber), \(day.isCompleted ? "completed" : day.isUnlocked ? "current" : "upcoming")")
                 }
@@ -439,46 +415,41 @@ struct StreakCalendarView: View {
             HStack(spacing: 16) {
                 HStack(spacing: 4) {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.green)
+                        .fill(AJTheme.success)
                         .frame(width: 12, height: 12)
                     Text("Completed")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
                 HStack(spacing: 4) {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.accentColor)
+                        .fill(AJTheme.sage)
                         .frame(width: 12, height: 12)
                     Text("Today")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
                 HStack(spacing: 4) {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(.systemGray5))
+                        .fill(AJTheme.cream)
                         .frame(width: 12, height: 12)
                     Text("Upcoming")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
     private func dayColor(for day: JourneyDay) -> Color {
         if day.isCompleted {
-            return .green
+            return AJTheme.success
         } else if day.isUnlocked {
-            return .accentColor
+            return AJTheme.sage
         } else {
-            return Color(.systemGray5)
+            return AJTheme.cream
         }
     }
 }
@@ -503,14 +474,14 @@ struct PremiumProgressCard: View {
                     .font(.subheadline.bold())
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AJTheme.secondaryText)
             }
 
             Spacer()
 
             Image(systemName: "chevron.right")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
         .padding()
         .background(

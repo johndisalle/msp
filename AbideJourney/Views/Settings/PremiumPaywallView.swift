@@ -151,17 +151,17 @@ struct PremiumPaywallView: View {
         VStack(spacing: 16) {
             Image(systemName: "crown.fill")
                 .font(.system(size: 44))
-                .foregroundStyle(.orange)
+                .foregroundStyle(AJTheme.gold)
                 .padding(.top, 24)
                 .accessibilityHidden(true)
 
             Text("Go Deeper\nwith Premium")
-                .font(.largeTitle.bold())
+                .font(AJTheme.titleFont)
                 .multilineTextAlignment(.center)
 
             Text("Unlock every journey, feature, and tool\nto grow closer to Christ.")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
         }
     }
@@ -172,9 +172,9 @@ struct PremiumPaywallView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Image(systemName: "paintpalette.fill")
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(AJTheme.accentSecondary)
                 Text("Unlock Deep-Dive Journeys")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
             }
             .padding(.horizontal)
 
@@ -184,7 +184,7 @@ struct PremiumPaywallView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Image(systemName: theme.icon)
                                 .font(.title2)
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(AJTheme.sage)
 
                             Text(theme.name)
                                 .font(.subheadline.bold())
@@ -192,14 +192,14 @@ struct PremiumPaywallView: View {
 
                             Text(theme.description)
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AJTheme.secondaryText)
                                 .lineLimit(2)
                         }
                         .frame(width: 150, alignment: .leading)
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 14)
-                                .fill(Color(.systemGray6))
+                                .fill(AJTheme.cardBackground)
                         )
                     }
                 }
@@ -215,7 +215,7 @@ struct PremiumPaywallView: View {
             ForEach(features, id: \.0) { icon, title, description in
                 HStack(spacing: 14) {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
+                        .foregroundStyle(AJTheme.success)
 
                     VStack(alignment: .leading, spacing: 1) {
                         Text(title)
@@ -232,7 +232,8 @@ struct PremiumPaywallView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
         )
         .padding(.horizontal)
     }
@@ -328,7 +329,7 @@ struct PremiumPaywallView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
+                .background(isPurchasing ? AJTheme.sandstone : AJTheme.sage)
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             }
@@ -394,7 +395,7 @@ struct PlanButton: View {
                                 .font(.caption2.bold())
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(Color.orange)
+                                .background(AJTheme.gold)
                                 .foregroundColor(.white)
                                 .clipShape(Capsule())
                         }
@@ -413,11 +414,11 @@ struct PlanButton: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.accentColor.opacity(0.1) : Color(.systemGray6))
+                    .fill(isSelected ? AJTheme.sage.opacity(0.1) : AJTheme.cardBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : .clear, lineWidth: 2)
+                    .stroke(isSelected ? AJTheme.sage : .clear, lineWidth: 2)
             )
         }
         .buttonStyle(.plain)
@@ -453,20 +454,20 @@ struct PremiumCelebrationView: View {
                 // Crown icon with celebration
                 ZStack {
                     Circle()
-                        .fill(Color.orange.opacity(0.15))
+                        .fill(AJTheme.goldLight.opacity(0.3))
                         .frame(width: 120, height: 120)
                         .scaleEffect(appeared ? 1 : 0.3)
 
                     Image(systemName: "crown.fill")
                         .font(.system(size: 56))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(AJTheme.gold)
                         .symbolEffect(.bounce, value: appeared)
                 }
                 .padding(.top, 16)
 
                 VStack(spacing: 8) {
                     Text("Welcome to Premium!")
-                        .font(.largeTitle.bold())
+                        .font(AJTheme.titleFont)
                         .opacity(appeared ? 1 : 0)
 
                     Text("Here's everything you just unlocked:")
@@ -495,14 +496,14 @@ struct PremiumCelebrationView: View {
                             Spacer()
 
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                                .foregroundStyle(AJTheme.success)
                                 .font(.body)
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color(.systemGray6))
+                                .fill(AJTheme.cardBackground)
                         )
                         .opacity(showFeatures ? 1 : 0)
                         .offset(y: showFeatures ? 0 : 10)
@@ -529,7 +530,7 @@ struct PremiumCelebrationView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.accentColor)
+                            .background(AJTheme.sage)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }

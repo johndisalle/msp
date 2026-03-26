@@ -17,15 +17,15 @@ struct JournalEntrySheet: View {
                     // Prompt
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Reflection Prompt")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(AJTheme.captionFont)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         Text(prompt)
-                            .font(.body)
+                            .font(AJTheme.scriptureFont)
                             .italic()
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.accentColor.opacity(0.08))
+                            .background(AJTheme.cream.opacity(0.5))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
 
@@ -33,7 +33,7 @@ struct JournalEntrySheet: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("How are you feeling?")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         HStack(spacing: 12) {
                             ForEach(Mood.allCases, id: \.self) { mood in
@@ -52,7 +52,7 @@ struct JournalEntrySheet: View {
                                     .padding(.horizontal, 6)
                                     .background(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .fill(selectedMood == mood ? Color.accentColor.opacity(0.15) : .clear)
+                                            .fill(selectedMood == mood ? AJTheme.sage.opacity(0.15) : .clear)
                                     )
                                 }
                                 .buttonStyle(.plain)
@@ -82,9 +82,9 @@ struct JournalEntrySheet: View {
                                 .padding(.vertical, 5)
                                 .background(
                                     Capsule()
-                                        .fill(speechService.isRecording ? Color.red.opacity(0.15) : Color.purple.opacity(0.1))
+                                        .fill(speechService.isRecording ? AJTheme.destructive.opacity(0.15) : AJTheme.sage.opacity(0.1))
                                 )
-                                .foregroundStyle(speechService.isRecording ? .red : .purple)
+                                .foregroundStyle(speechService.isRecording ? AJTheme.destructive : AJTheme.sage)
                             }
                             .accessibilityLabel(speechService.isRecording ? "Stop recording" : "Start voice entry")
                         }
@@ -96,14 +96,14 @@ struct JournalEntrySheet: View {
                         TextEditor(text: $journalText)
                             .frame(minHeight: 200)
                             .padding(8)
-                            .background(Color(.systemGray6))
+                            .background(AJTheme.cardBackground)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .focused($isFocused)
 
                         if let error = speechService.error {
                             Text(error)
                                 .font(.caption)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(AJTheme.destructive)
                         }
                     }
                 }
@@ -140,7 +140,7 @@ struct JournalEntrySheet: View {
     private var voiceRecordingIndicator: some View {
         HStack(spacing: 8) {
             Circle()
-                .fill(.red)
+                .fill(AJTheme.destructive)
                 .frame(width: 8, height: 8)
 
             Text("Speak your reflection — it will appear as text below")
@@ -154,14 +154,14 @@ struct JournalEntrySheet: View {
             } label: {
                 Text("Stop")
                     .font(.caption.bold())
-                    .foregroundStyle(.red)
+                    .foregroundStyle(AJTheme.destructive)
             }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color.red.opacity(0.06))
+                .fill(AJTheme.destructive.opacity(0.06))
         )
     }
 

@@ -37,6 +37,7 @@ struct FaithMapView: View {
             }
             .padding(.vertical)
         }
+        .ajScreenBackground()
         .navigationTitle("Faith Map")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -47,20 +48,20 @@ struct FaithMapView: View {
         VStack(spacing: 12) {
             Image(systemName: "map.fill")
                 .font(.system(size: 32))
-                .foregroundStyle(.accent)
+                .foregroundStyle(AJTheme.sage)
 
             Text("Your Faith Journey")
-                .font(.title3.bold())
+                .font(AJTheme.subheadlineFont)
 
             Text("A picture of your spiritual growth over time")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
         .padding()
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.accentColor.opacity(0.08))
+                .fill(AJTheme.sage.opacity(0.08))
         )
         .padding(.horizontal)
     }
@@ -70,7 +71,7 @@ struct FaithMapView: View {
     private var moodTrendChart: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Mood Over Time")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             let moodData = weeklyMoodAverages()
 
@@ -80,14 +81,14 @@ struct FaithMapView: View {
                         x: .value("Week", point.week),
                         y: .value("Rating", point.average)
                     )
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.sage)
                     .interpolationMethod(.catmullRom)
 
                     AreaMark(
                         x: .value("Week", point.week),
                         y: .value("Rating", point.average)
                     )
-                    .foregroundStyle(.accent.opacity(0.1))
+                    .foregroundStyle(AJTheme.sage.opacity(0.1))
                     .interpolationMethod(.catmullRom)
                 }
                 .chartYScale(domain: 1...5)
@@ -104,12 +105,7 @@ struct FaithMapView: View {
                 .frame(height: 180)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
@@ -118,7 +114,7 @@ struct FaithMapView: View {
     private var prayerHeatMap: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Prayer Days by Week")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             let weeklyPrayer = weeklyPrayerDays()
 
@@ -134,12 +130,7 @@ struct FaithMapView: View {
                 .frame(height: 150)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
@@ -148,7 +139,7 @@ struct FaithMapView: View {
     private var discipleshipRadar: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Discipleship Areas")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             let areaStats = discipleshipAreaStats()
 
@@ -161,11 +152,11 @@ struct FaithMapView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             Text(stat.area.rawValue)
-                                .font(.subheadline)
+                                .font(AJTheme.bodyFont)
                             Spacer()
                             Text("\(stat.daysCompleted) days")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(AJTheme.captionFont)
+                                .foregroundStyle(AJTheme.secondaryText)
                         }
 
                         ProgressView(value: stat.progress)
@@ -174,12 +165,7 @@ struct FaithMapView: View {
                 }
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
@@ -188,43 +174,38 @@ struct FaithMapView: View {
     private var journeyTimeline: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Journey History")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
 
             let sortedJourneys = journeys.sorted { $0.startDate > $1.startDate }
 
             ForEach(sortedJourneys) { journey in
                 HStack(spacing: 14) {
                     Image(systemName: journey.isCompleted && journey.currentDay >= journey.totalDays ? "checkmark.circle.fill" : "circle.dotted")
-                        .foregroundStyle(journey.isCompleted && journey.currentDay >= journey.totalDays ? .green : .secondary)
+                        .foregroundStyle(journey.isCompleted && journey.currentDay >= journey.totalDays ? AJTheme.success : AJTheme.secondaryText)
 
                     VStack(alignment: .leading, spacing: 3) {
                         Text(journey.title)
                             .font(.subheadline.bold())
                         Text("\(journey.days.filter(\.isCompleted).count)/\(journey.totalDays) days \u{2022} \(journey.startDate, format: .dateTime.month().year())")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                     }
 
                     Spacer()
 
                     Text("\(Int(journey.progress * 100))%")
                         .font(.caption.bold())
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(AJTheme.gold)
                 }
             }
 
             if sortedJourneys.isEmpty {
                 Text("Start your first journey to see your history here.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AJTheme.secondaryText)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 
