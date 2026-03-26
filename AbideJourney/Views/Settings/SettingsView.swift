@@ -385,10 +385,10 @@ struct SettingsView: View {
         NotificationService.shared.cancelAllNotifications()
         guard profile.notificationsEnabled,
               let journey = journeys.first(where: { $0.isActive && !$0.isCompleted }),
-              let currentDay = journey.days
+              let currentDay = (journey.days ?? [])
                 .sorted(by: { $0.dayNumber < $1.dayNumber })
                 .first(where: { !$0.isCompleted && $0.isUnlocked })
-                ?? journey.days
+                ?? (journey.days ?? [])
                 .sorted(by: { $0.dayNumber < $1.dayNumber })
                 .first(where: { !$0.isCompleted })
         else { return }

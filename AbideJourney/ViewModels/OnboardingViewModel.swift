@@ -145,7 +145,7 @@ final class OnboardingViewModel {
             let granted = await NotificationService.shared.requestAuthorization()
             if granted {
                 NotificationService.shared.registerCategories()
-                if let firstDay = journey.days.first {
+                if let firstDay = (journey.days ?? []).first {
                     NotificationService.shared.scheduleMorningReminder(
                         at: profile.notificationMorningTime,
                         dayNumber: 1,

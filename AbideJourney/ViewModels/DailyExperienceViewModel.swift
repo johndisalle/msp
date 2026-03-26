@@ -27,7 +27,7 @@ final class DailyExperienceViewModel {
 
     private func completionsToday(in journey: Journey) -> Int {
         let calendar = Calendar.current
-        return journey.days.filter { day in
+        return (journey.days ?? []).filter { day in
             guard day.isCompleted, let date = day.date else { return false }
             return calendar.isDateInToday(date)
         }.count
@@ -49,7 +49,7 @@ final class DailyExperienceViewModel {
         journey = activeJourney
 
         // Find the current day (first uncompleted and unlocked day)
-        let sortedDays = activeJourney.days.sorted { $0.dayNumber < $1.dayNumber }
+        let sortedDays = (activeJourney.days ?? []).sorted { $0.dayNumber < $1.dayNumber }
         currentDay = sortedDays.first(where: { !$0.isCompleted && $0.isUnlocked })
             ?? sortedDays.first(where: { !$0.isCompleted })
 
@@ -121,7 +121,7 @@ final class DailyExperienceViewModel {
 
         // Unlock next day
         let nextDayNumber = day.dayNumber + 1
-        if let nextDay = journey.days.first(where: { $0.dayNumber == nextDayNumber }) {
+        if let nextDay = (journey.days ?? []).first(where: { $0.dayNumber == nextDayNumber }) {
             nextDay.isUnlocked = true
         }
 
@@ -153,7 +153,7 @@ final class DailyExperienceViewModel {
         }
 
         // Schedule next day's notifications
-        if let profile = journey.user, let nextDay = journey.days.first(where: { $0.dayNumber == nextDayNumber }) {
+        if let profile = journey.user, let nextDay = (journey.days ?? []).first(where: { $0.dayNumber == nextDayNumber }) {
             NotificationService.shared.scheduleMorningReminder(
                 at: profile.notificationMorningTime,
                 dayNumber: nextDayNumber,

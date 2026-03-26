@@ -150,7 +150,7 @@ struct FaithReportView: View {
         let currentYear = year
 
         let yearJourneys = journeys.filter { calendar.component(.year, from: $0.startDate) == currentYear }
-        let allDays = yearJourneys.flatMap(\.days).filter(\.isCompleted)
+        let allDays = yearJourneys.flatMap { $0.days ?? [] }.filter(\.isCompleted)
         let yearEntries = journalEntries.filter { calendar.component(.year, from: $0.createdAt) == currentYear }
 
         // Top mood

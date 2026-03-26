@@ -399,7 +399,7 @@ struct StreakCalendarView: View {
                 .font(AJTheme.subheadlineFont)
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
-                ForEach(journey.days.sorted(by: { $0.dayNumber < $1.dayNumber })) { day in
+                ForEach((journey.days ?? []).sorted(by: { $0.dayNumber < $1.dayNumber })) { day in
                     RoundedRectangle(cornerRadius: 4)
                         .fill(dayColor(for: day))
                         .frame(height: 28)

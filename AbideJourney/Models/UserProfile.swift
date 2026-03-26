@@ -17,13 +17,13 @@ final class UserProfile {
     var email: String?
 
     @Relationship(deleteRule: .cascade, inverse: \Journey.user)
-    var journeys: [Journey]
+    var journeys: [Journey]?
 
     @Relationship(deleteRule: .cascade, inverse: \QuizResponse.user)
-    var quizResponses: [QuizResponse]
+    var quizResponses: [QuizResponse]?
 
     @Relationship(deleteRule: .cascade, inverse: \AccountabilityPartner.user)
-    var accountabilityPartners: [AccountabilityPartner]
+    var accountabilityPartners: [AccountabilityPartner]?
 
     init(
         name: String = "",
@@ -40,9 +40,9 @@ final class UserProfile {
         self.notificationsEnabled = true
         self.appleUserID = nil
         self.email = nil
-        self.journeys = []
-        self.quizResponses = []
-        self.accountabilityPartners = []
+        self.journeys = nil
+        self.quizResponses = nil
+        self.accountabilityPartners = nil
 
         // Default morning 7:00 AM, evening 8:00 PM
         var morningComponents = DateComponents()

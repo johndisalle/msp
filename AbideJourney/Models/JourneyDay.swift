@@ -32,10 +32,10 @@ final class JourneyDay {
     var journey: Journey?
 
     @Relationship(deleteRule: .cascade, inverse: \JournalEntry.journeyDay)
-    var journalEntries: [JournalEntry]
+    var journalEntries: [JournalEntry]?
 
     @Relationship(deleteRule: .cascade, inverse: \DailyCheckIn.journeyDay)
-    var checkIns: [DailyCheckIn]
+    var checkIns: [DailyCheckIn]?
 
     init(
         dayNumber: Int,
@@ -66,8 +66,8 @@ final class JourneyDay {
         self.reflectionPrompt = reflectionPrompt
         self.focusArea = focusArea
         self.theme = theme
-        self.journalEntries = []
-        self.checkIns = []
+        self.journalEntries = nil
+        self.checkIns = nil
     }
 }
 

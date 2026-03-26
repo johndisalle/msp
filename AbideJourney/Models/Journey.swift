@@ -19,7 +19,7 @@ final class Journey {
     var user: UserProfile?
 
     @Relationship(deleteRule: .cascade, inverse: \JourneyDay.journey)
-    var days: [JourneyDay]
+    var days: [JourneyDay]?
 
     var progress: Double {
         guard totalDays > 0 else { return 0 }
@@ -49,7 +49,7 @@ final class Journey {
         self.focusAreas = focusAreas
         self.isCouple = false
         self.partnerName = nil
-        self.days = []
+        self.days = nil
     }
 }
 

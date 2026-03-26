@@ -31,7 +31,7 @@ final class ProgressViewModel {
         let calendar = Calendar.current
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())) ?? Date()
 
-        let weekDays = journey.days.filter { day in
+        let weekDays = (journey.days ?? []).filter { day in
             guard let date = day.date else { return false }
             return date >= startOfWeek && day.isCompleted
         }
@@ -49,7 +49,7 @@ final class ProgressViewModel {
         obedienceRingProgress = totalSteps > 0 ? Double(completedSteps) / Double(totalSteps) : 0
 
         // Worship ring: check-in ratings this week
-        let weekCheckIns = weekDays.flatMap { $0.checkIns }
+        let weekCheckIns = weekDays.flatMap { $0.checkIns ?? [] }
         let positiveCheckIns = weekCheckIns.filter { $0.rating == .great || $0.rating == .good }.count
         worshipRingProgress = weekCheckIns.isEmpty ? 0 : Double(positiveCheckIns) / Double(weekCheckIns.count)
     }
@@ -58,7 +58,7 @@ final class ProgressViewModel {
         let calendar = Calendar.current
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())) ?? Date()
 
-        let weekDays = journey.days.filter { day in
+        let weekDays = (journey.days ?? []).filter { day in
             guard let date = day.date else { return false }
             return date >= startOfWeek && day.isCompleted
         }

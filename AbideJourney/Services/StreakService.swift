@@ -14,7 +14,7 @@ final class StreakService {
     }
 
     func calculateStreak(for journey: Journey) -> StreakInfo {
-        let completedDays = journey.days
+        let completedDays = (journey.days ?? [])
             .filter { $0.isCompleted }
             .sorted { $0.dayNumber < $1.dayNumber }
 
@@ -68,7 +68,7 @@ final class StreakService {
     }
 
     func checkForMissedDays(journey: Journey) -> Int {
-        guard let lastCompletedDay = journey.days
+        guard let lastCompletedDay = (journey.days ?? [])
             .filter({ $0.isCompleted })
             .sorted(by: { $0.dayNumber > $1.dayNumber })
             .first,

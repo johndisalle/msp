@@ -30,12 +30,12 @@ final class AdaptiveJourneyService {
 
     /// Analyze the last 7 days of check-ins for a journey.
     func analyzeRecentWeek(journey: Journey) -> WeeklyAnalysis {
-        let recentDays = journey.days
+        let recentDays = (journey.days ?? [])
             .filter { $0.isCompleted }
             .sorted { $0.dayNumber > $1.dayNumber }
             .prefix(7)
 
-        let checkIns = recentDays.compactMap { $0.checkIns.first }
+        let checkIns = recentDays.compactMap { ($0.checkIns ?? []).first }
 
         guard !checkIns.isEmpty else {
             return WeeklyAnalysis(
@@ -89,7 +89,7 @@ final class AdaptiveJourneyService {
     /// Called when completing a day, modifies only the immediately next day.
     /// Skips days that have already been adapted to prevent accumulation.
     func adaptUpcomingContent(journey: Journey, analysis: WeeklyAnalysis) {
-        let upcomingDays = journey.days
+        let upcomingDays = (journey.days ?? [])
             .filter { !$0.isCompleted }
             .sorted { $0.dayNumber < $1.dayNumber }
 

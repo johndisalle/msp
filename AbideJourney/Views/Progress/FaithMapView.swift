@@ -9,11 +9,11 @@ struct FaithMapView: View {
     @Query(sort: \JournalEntry.createdAt) private var journalEntries: [JournalEntry]
 
     private var allDays: [JourneyDay] {
-        journeys.flatMap(\.days).filter(\.isCompleted).sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        journeys.flatMap { $0.days ?? [] }.filter(\.isCompleted).sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
     }
 
     private var allCheckIns: [DailyCheckIn] {
-        allDays.flatMap(\.checkIns)
+        allDays.flatMap { $0.checkIns ?? [] }
     }
 
     var body: some View {
@@ -186,7 +186,7 @@ struct FaithMapView: View {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(journey.title)
                             .font(.subheadline.bold())
-                        Text("\(journey.days.filter(\.isCompleted).count)/\(journey.totalDays) days \u{2022} \(journey.startDate, format: .dateTime.month().year())")
+                        Text("\((journey.days ?? []).filter(\.isCompleted).count)/\(journey.totalDays) days \u{2022} \(journey.startDate, format: .dateTime.month().year())")
                             .font(.caption)
                             .foregroundStyle(AJTheme.secondaryText)
                     }
