@@ -64,6 +64,9 @@
 		A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */; };
 		A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */; };
 		A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */; };
+		A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000111 /* AnalyticsService.swift */; };
+		A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000112 /* AuthService.swift */; };
+		A1B2C3D4E5F60001000113 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000113 /* Theme.swift */; };
 		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
@@ -142,6 +145,9 @@
 		A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouplesJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncReceiver.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000111 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000112 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000113 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -278,6 +284,7 @@
 				A1B2C3D4E5F60101000001 /* AbideJourneyApp.swift */,
 				A1B2C3D4E5F60101000002 /* MainTabView.swift */,
 				A1B2C3D4E5F60101000003 /* RootView.swift */,
+				A1B2C3D4E5F60101000113 /* Theme.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -310,7 +317,9 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */,
+				A1B2C3D4E5F60101000111 /* AnalyticsService.swift */,
 				A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */,
+				A1B2C3D4E5F60101000112 /* AuthService.swift */,
 				A1B2C3D4E5F60101000013 /* ContentData.swift */,
 				A1B2C3D4E5F60101000014 /* ContentLibrary.swift */,
 				A1B2C3D4E5F60101000056 /* ContentThemes_Batch1.swift */,
@@ -599,6 +608,9 @@
 				A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */,
+				A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */,
+				A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */,
+				A1B2C3D4E5F60001000113 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
