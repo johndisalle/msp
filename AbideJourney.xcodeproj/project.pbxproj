@@ -67,6 +67,9 @@
 		A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000111 /* AnalyticsService.swift */; };
 		A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000112 /* AuthService.swift */; };
 		A1B2C3D4E5F60001000113 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000113 /* Theme.swift */; };
+		A1B2C3D4E5F60001000114 /* ContentExpansion_Prayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000114 /* ContentExpansion_Prayer.swift */; };
+		A1B2C3D4E5F60001000115 /* ContentExpansion_Scripture.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000115 /* ContentExpansion_Scripture.swift */; };
+		A1B2C3D4E5F60001000116 /* ContentExpansion_Obedience.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000116 /* ContentExpansion_Obedience.swift */; };
 		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
@@ -148,6 +151,9 @@
 		A1B2C3D4E5F60101000111 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000112 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000113 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000114 /* ContentExpansion_Prayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Prayer.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000115 /* ContentExpansion_Scripture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Scripture.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000116 /* ContentExpansion_Obedience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Obedience.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -326,6 +332,9 @@
 				A1B2C3D4E5F60101000057 /* ContentThemes_Batch2.swift */,
 				A1B2C3D4E5F60101000058 /* ContentThemes_Batch3.swift */,
 				A1B2C3D4E5F60101000059 /* ContentThemes_Batch4.swift */,
+				A1B2C3D4E5F60101000114 /* ContentExpansion_Prayer.swift */,
+				A1B2C3D4E5F60101000115 /* ContentExpansion_Scripture.swift */,
+				A1B2C3D4E5F60101000116 /* ContentExpansion_Obedience.swift */,
 				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
 				A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */,
 				A1B2C3D4E5F60101000017 /* LiveActivityService.swift */,
@@ -611,6 +620,9 @@
 				A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */,
 				A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */,
 				A1B2C3D4E5F60001000113 /* Theme.swift in Sources */,
+				A1B2C3D4E5F60001000114 /* ContentExpansion_Prayer.swift in Sources */,
+				A1B2C3D4E5F60001000115 /* ContentExpansion_Scripture.swift in Sources */,
+				A1B2C3D4E5F60001000116 /* ContentExpansion_Obedience.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

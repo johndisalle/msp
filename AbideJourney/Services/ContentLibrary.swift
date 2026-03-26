@@ -48,13 +48,13 @@ final class ContentLibrary {
     /// Uses the expanded ContentData entries (6-8 per area = 42-56 total).
     private func contentBank(for area: DiscipleshipArea) -> [DayContent] {
         switch area {
-        case .prayer:       return Self.prayerContent
-        case .scripture:    return Self.scriptureContent
-        case .obedience:    return Self.obedienceContent
-        case .worship:      return Self.worshipContent
-        case .community:    return Self.communityContent
-        case .evangelism:   return Self.evangelismContent
-        case .service:      return Self.serviceContent
+        case .prayer:       return Self.prayerContent + Self.prayerContentExpansion
+        case .scripture:    return Self.scriptureContent + Self.scriptureContentExpansion
+        case .obedience:    return Self.obedienceContent + Self.obedienceContentExpansion
+        case .worship:      return Self.worshipContent + Self.worshipContentExpansion
+        case .community:    return Self.communityContent + Self.communityContentExpansion
+        case .evangelism:   return Self.evangelismContent + Self.evangelismContentExpansion
+        case .service:      return Self.serviceContent + Self.serviceContentExpansion
         }
     }
 }
