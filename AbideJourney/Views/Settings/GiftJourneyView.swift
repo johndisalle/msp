@@ -94,11 +94,11 @@ struct GiftJourneyView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Add a Personal Message (optional)")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                         TextEditor(text: $personalMessage)
                             .frame(minHeight: 80)
                             .padding(8)
-                            .background(Color(.systemGray6))
+                            .background(AJTheme.cardBackground)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     .padding(.horizontal)
@@ -115,10 +115,10 @@ struct GiftJourneyView: View {
                             Image(systemName: "paperplane.fill")
                             Text("Send Gift")
                         }
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(recipientName.isEmpty ? Color(.systemGray4) : Color.accentColor)
+                        .background(recipientName.isEmpty ? AJTheme.sandstone : AJTheme.sage)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -146,7 +146,7 @@ struct GiftJourneyView: View {
         VStack(spacing: 16) {
             Image(systemName: "gift.fill")
                 .font(.title)
-                .foregroundStyle(.accent)
+                .foregroundStyle(AJTheme.gold)
 
             Text("A Gift for \(recipientName.isEmpty ? "..." : recipientName)")
                 .font(.headline)
@@ -172,11 +172,11 @@ struct GiftJourneyView: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.accentColor.opacity(0.06))
+                .fill(AJTheme.sage.opacity(0.06))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [6, 4]))
-                        .foregroundStyle(.accent.opacity(0.3))
+                        .foregroundStyle(AJTheme.sage.opacity(0.3))
                 )
         )
     }
