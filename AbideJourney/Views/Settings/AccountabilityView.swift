@@ -263,9 +263,9 @@ struct PartnerRow: View {
 
     private var statusColor: Color {
         switch partner.status {
-        case .invited: return .orange
-        case .active: return .green
-        case .declined: return .red
+        case .invited: return AJTheme.warning
+        case .active: return AJTheme.success
+        case .declined: return AJTheme.destructive
         }
     }
 }
@@ -306,7 +306,7 @@ struct AddPartnerSheet: View {
                     Text("Partner Details")
                 } footer: {
                     Text(emailFooter)
-                        .foregroundStyle(!email.isEmpty && !isValidEmail ? .red : .secondary)
+                        .foregroundStyle(!email.isEmpty && !isValidEmail ? AJTheme.destructive : AJTheme.secondaryText)
                 }
 
                 Section {
@@ -316,7 +316,7 @@ struct AddPartnerSheet: View {
                             .italic()
                         Text("— James 5:16")
                             .font(.caption)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.sage)
                     }
                     .padding(.vertical, 4)
                 }

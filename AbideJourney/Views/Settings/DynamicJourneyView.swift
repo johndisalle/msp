@@ -33,14 +33,14 @@ struct DynamicJourneyView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "wand.and.stars")
                             .font(.system(size: 44))
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.sage)
 
                         Text("Create Your Journey")
-                            .font(.title2.bold())
+                            .font(AJTheme.headlineFont)
 
                         Text("Tell us what you're going through, and we'll build a personalized 40-day journey just for you.")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                             .multilineTextAlignment(.center)
                             .lineSpacing(3)
                     }
@@ -51,18 +51,18 @@ struct DynamicJourneyView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("What's on your heart?")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
 
                         TextEditor(text: $userDescription)
                             .frame(minHeight: 120)
                             .padding(12)
-                            .background(Color(.systemGray6))
+                            .background(AJTheme.cardBackground)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .focused($isFocused)
 
                         Text("\(userDescription.count)/500")
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     .padding(.horizontal)
@@ -71,7 +71,7 @@ struct DynamicJourneyView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Or tap an example:")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                             .padding(.horizontal)
 
                         FlowLayout(spacing: 8) {
@@ -83,7 +83,7 @@ struct DynamicJourneyView: View {
                                         .font(.caption)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 8)
-                                        .background(Color(.systemGray6))
+                                        .background(AJTheme.cardBackground)
                                         .clipShape(Capsule())
                                         .foregroundStyle(.primary)
                                 }
@@ -95,7 +95,7 @@ struct DynamicJourneyView: View {
                     // What you'll get
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Your Journey Will Include")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
 
                         featureRow(icon: "text.book.closed.fill", text: "40 daily scriptures chosen for your situation", color: .blue)
                         featureRow(icon: "heart.text.square.fill", text: "Devotionals written around your specific needs", color: .orange)
@@ -105,7 +105,7 @@ struct DynamicJourneyView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.systemGray6))
+                            .fill(AJTheme.cardBackground)
                     )
                     .padding(.horizontal)
 
@@ -127,10 +127,10 @@ struct DynamicJourneyView: View {
                                 }
                             }
                         }
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(userDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color(.systemGray4) : Color.accentColor)
+                        .background(userDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? AJTheme.sandstone : AJTheme.sage)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -139,6 +139,7 @@ struct DynamicJourneyView: View {
                     .padding(.bottom, 32)
                 }
             }
+            .ajScreenBackground()
             .navigationTitle("Custom Journey")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -165,7 +166,7 @@ struct DynamicJourneyView: View {
                 .frame(width: 24)
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
     }
 

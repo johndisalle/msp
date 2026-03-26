@@ -25,14 +25,14 @@ struct FaithReportView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "sparkles.rectangle.stack.fill")
                         .font(.system(size: 44))
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(AJTheme.sage)
 
                     Text("Your \(String(year)) Faith Report")
-                        .font(.title2.bold())
+                        .font(AJTheme.headlineFont)
 
                     Text("A beautiful summary of your spiritual journey this year")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.top, 20)
@@ -51,7 +51,7 @@ struct FaithReportView: View {
                 // Insights
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Highlights")
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
 
                     if !stats.topMood.isEmpty {
                         insightRow(title: "Top Mood", value: stats.topMood, icon: "face.smiling.fill", color: .yellow)
@@ -66,8 +66,8 @@ struct FaithReportView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color(.systemBackground))
-                        .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
+                        .fill(AJTheme.cardBackground)
+                        .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
                 )
                 .padding(.horizontal)
 
@@ -88,7 +88,7 @@ struct FaithReportView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.accentColor)
+                    .background(AJTheme.sage)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
@@ -97,6 +97,7 @@ struct FaithReportView: View {
                 .padding(.bottom, 32)
             }
         }
+        .ajScreenBackground()
         .navigationTitle("Faith Report")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingShareSheet) {
@@ -117,7 +118,7 @@ struct FaithReportView: View {
                 .font(.title.bold())
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -134,7 +135,7 @@ struct FaithReportView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AJTheme.secondaryText)
                 Text(value)
                     .font(.subheadline.bold())
             }

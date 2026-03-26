@@ -34,14 +34,14 @@ struct CouplesJourneyView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "heart.circle.fill")
                             .font(.system(size: 44))
-                            .foregroundStyle(.pink)
+                            .foregroundStyle(AJTheme.gold)
 
                         Text("Journey Together")
-                            .font(.title2.bold())
+                            .font(AJTheme.headlineFont)
 
                         Text("Start a shared 40-day devotional with your partner. Same daily content, couples-focused reflection prompts, and a shared sense of purpose.")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                             .multilineTextAlignment(.center)
                             .lineSpacing(3)
                     }
@@ -52,7 +52,7 @@ struct CouplesJourneyView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Your Partner's Name")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                         TextField("Name", text: $partnerName)
                             .textFieldStyle(.roundedBorder)
                             .textContentType(.name)
@@ -62,7 +62,7 @@ struct CouplesJourneyView: View {
                     // Theme selection
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Choose Your Journey")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
                             .padding(.horizontal)
 
                         ForEach(couplesThemes, id: \.theme) { item in
@@ -72,7 +72,7 @@ struct CouplesJourneyView: View {
                                 HStack(spacing: 14) {
                                     Image(systemName: item.theme.icon)
                                         .font(.title3)
-                                        .foregroundStyle(.pink)
+                                        .foregroundStyle(AJTheme.gold)
                                         .frame(width: 32)
 
                                     VStack(alignment: .leading, spacing: 3) {
@@ -80,24 +80,24 @@ struct CouplesJourneyView: View {
                                             .font(.subheadline.bold())
                                         Text(item.couplesSubtitle)
                                             .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(AJTheme.secondaryText)
                                     }
 
                                     Spacer()
 
                                     if selectedTheme == item.theme {
                                         Image(systemName: "checkmark.circle.fill")
-                                            .foregroundStyle(.pink)
+                                            .foregroundStyle(AJTheme.gold)
                                     }
                                 }
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(selectedTheme == item.theme ? Color.pink.opacity(0.08) : Color(.systemGray6))
+                                        .fill(selectedTheme == item.theme ? AJTheme.gold.opacity(0.08) : AJTheme.cardBackground)
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(selectedTheme == item.theme ? Color.pink : .clear, lineWidth: 2)
+                                        .stroke(selectedTheme == item.theme ? AJTheme.gold : .clear, lineWidth: 2)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -108,7 +108,7 @@ struct CouplesJourneyView: View {
                     // How it works
                     VStack(alignment: .leading, spacing: 12) {
                         Text("How It Works")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
 
                         howItWorksRow(icon: "1.circle.fill", text: "You both get the same daily devotional and scripture")
                         howItWorksRow(icon: "2.circle.fill", text: "Reflection prompts are designed for couples to discuss together")
@@ -118,7 +118,7 @@ struct CouplesJourneyView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.systemGray6))
+                            .fill(AJTheme.cardBackground)
                     )
                     .padding(.horizontal)
 
@@ -136,10 +136,10 @@ struct CouplesJourneyView: View {
                                 }
                             }
                         }
-                        .font(.headline)
+                        .font(AJTheme.subheadlineFont)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(partnerName.isEmpty ? Color(.systemGray4) : Color.pink)
+                        .background(partnerName.isEmpty ? AJTheme.sandstone : AJTheme.sage)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -148,6 +148,7 @@ struct CouplesJourneyView: View {
                     .padding(.bottom, 32)
                 }
             }
+            .ajScreenBackground()
             .navigationTitle("Couples Journey")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -172,11 +173,11 @@ struct CouplesJourneyView: View {
     private func howItWorksRow(icon: String, text: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .foregroundStyle(.pink)
+                .foregroundStyle(AJTheme.gold)
                 .frame(width: 24)
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AJTheme.secondaryText)
         }
     }
 

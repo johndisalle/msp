@@ -20,14 +20,14 @@ struct GiftJourneyView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "gift.fill")
                             .font(.system(size: 44))
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.gold)
 
                         Text("Gift a Journey")
-                            .font(.title2.bold())
+                            .font(AJTheme.headlineFont)
 
                         Text("Give someone you care about a life-changing 40-day journey with God.")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                             .multilineTextAlignment(.center)
                             .lineSpacing(3)
                     }
@@ -37,7 +37,7 @@ struct GiftJourneyView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Who is this for?")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AJTheme.secondaryText)
                         TextField("Their name", text: $recipientName)
                             .textFieldStyle(.roundedBorder)
                             .textContentType(.name)
@@ -47,7 +47,7 @@ struct GiftJourneyView: View {
                     // Theme selection
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Choose a Journey")
-                            .font(.headline)
+                            .font(AJTheme.subheadlineFont)
                             .padding(.horizontal)
 
                         ForEach(premiumThemes, id: \.self) { theme in
@@ -65,24 +65,24 @@ struct GiftJourneyView: View {
                                             .font(.subheadline.bold())
                                         Text(theme.subtitle)
                                             .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(AJTheme.secondaryText)
                                     }
 
                                     Spacer()
 
                                     if selectedTheme == theme {
                                         Image(systemName: "checkmark.circle.fill")
-                                            .foregroundStyle(.accent)
+                                            .foregroundStyle(AJTheme.sage)
                                     }
                                 }
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(selectedTheme == theme ? Color.accentColor.opacity(0.08) : Color(.systemGray6))
+                                        .fill(selectedTheme == theme ? AJTheme.sage.opacity(0.08) : AJTheme.cardBackground)
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(selectedTheme == theme ? Color.accentColor : .clear, lineWidth: 2)
+                                        .stroke(selectedTheme == theme ? AJTheme.sage : .clear, lineWidth: 2)
                                 )
                             }
                             .buttonStyle(.plain)
