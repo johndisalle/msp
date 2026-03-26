@@ -69,8 +69,8 @@ extension QuizQuestion {
         QuizQuestion(
             id: "community_level",
             text: "How supported do you feel by a faith community right now?",
-            type: .slider(min: 1, max: 10, step: 1),
-            options: [],
+            type: .multipleChoice,
+            options: ["Very supported", "Somewhat supported", "A little, but I want more", "Not really", "I don't have one yet"],
             category: .community
         ),
         QuizQuestion(
