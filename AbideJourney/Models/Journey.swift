@@ -11,7 +11,7 @@ final class Journey {
     var currentDay: Int = 0
     var isActive: Bool = true
     var isCompleted: Bool = false
-    var theme: JourneyTheme = .knowingGod
+    var theme: JourneyTheme = JourneyTheme.knowingGod
     var focusAreas: [DiscipleshipArea] = []
     var isCouple: Bool = false
     var partnerName: String?

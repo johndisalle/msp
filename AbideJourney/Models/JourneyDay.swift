@@ -26,8 +26,8 @@ final class JourneyDay {
     var reflectionPrompt: String = ""
 
     // Focus
-    var focusArea: DiscipleshipArea = .prayer
-    var theme: JourneyTheme = .knowingGod
+    var focusArea: DiscipleshipArea = DiscipleshipArea.prayer
+    var theme: JourneyTheme = JourneyTheme.knowingGod
 
     var journey: Journey?
 

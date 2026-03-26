@@ -6,7 +6,7 @@ final class AccountabilityPartner {
     var id: UUID = UUID()
     var name: String = ""
     var email: String = ""
-    var status: PartnerStatus = .invited
+    var status: PartnerStatus = PartnerStatus.invited
     var addedAt: Date = Date()
     var lastEncouragementSent: Date?
 

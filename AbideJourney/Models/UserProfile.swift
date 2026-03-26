@@ -6,8 +6,8 @@ final class UserProfile {
     var id: UUID = UUID()
     var name: String = ""
     var createdAt: Date = Date()
-    var spiritualMaturity: SpiritualMaturity = .exploring
-    var preferredTranslation: BibleTranslation = .niv
+    var spiritualMaturity: SpiritualMaturity = SpiritualMaturity.exploring
+    var preferredTranslation: BibleTranslation = BibleTranslation.niv
     var isPremium: Bool = false
     var premiumExpiresAt: Date?
     var notificationMorningTime: Date = Date()

@@ -6,7 +6,7 @@ import SwiftData
 final class DailyCheckIn {
     var id: UUID = UUID()
     var date: Date = Date()
-    var rating: CheckInRating = .okay
+    var rating: CheckInRating = CheckInRating.okay
     var note: String?
     var prayerMinutes: Int = 0
     var completedActionSteps: Int = 0
