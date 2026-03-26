@@ -309,44 +309,58 @@ struct PremiumPaywallView: View {
         selectedPlan == .monthly ? storeService.monthlyProduct != nil : storeService.yearlyProduct != nil
     }
 
+    @ViewBuilder
     private var subscribeButton: some View {
-        Button {
-            Task { await purchaseSelected() }
-        } label: {
-            Group {
-                if isPurchasing {
-                    ProgressView()
-                        .tint(.white)
-                } else if storeService.isLoading {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                            .tint(.white)
-                        Text("Loading...")
-                            .font(.headline)
-                    }
-                } else {
-                    Text("Subscribe")
-                        .font(.headline)
-                }
+        if storeService.isLoading {
+            HStack(spacing: 8) {
+                ProgressView()
+                Text("Loading subscription options...")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(isPurchasing || !hasProducts ? Color(.systemGray4) : Color.accentColor)
-            .foregroundColor(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+        } else if !hasProducts && !storeService.isLoading {
+            VStack(spacing: 10) {
+                Text("Subscriptions are temporarily unavailable.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Button("Try Again") {
+                    Task { await storeService.loadProducts() }
+                }
+                .font(.subheadline.bold())
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+        } else {
+            Button {
+                Task { await purchaseSelected() }
+            } label: {
+                Group {
+                    if isPurchasing {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Text("Subscribe")
+                            .font(.headline)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(isPurchasing ? Color(.systemGray4) : Color.accentColor)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+            }
+            .disabled(isPurchasing)
+            .padding(.horizontal)
         }
-        .disabled(isPurchasing || !hasProducts)
-        .padding(.horizontal)
     }
 
     private func purchaseSelected() async {
         isPurchasing = true
         purchaseError = nil
-
-        // If products haven't loaded yet, retry before giving up
-        if storeService.products.isEmpty {
-            await storeService.loadProducts()
-        }
 
         let product: Product?
         switch selectedPlan {
@@ -357,21 +371,16 @@ struct PremiumPaywallView: View {
         }
 
         guard let product else {
-            purchaseError = "Product not available. Please close and reopen this screen, or restart the app."
+            purchaseError = "Subscription not available right now. Please try again later."
             isPurchasing = false
             return
         }
 
         do {
             if let _ = try await storeService.purchase(product) {
-                // Purchase successful
                 if let profile = profiles.first {
                     profile.isPremium = true
-                    do {
-                        try modelContext.save()
-                    } catch {
-                        purchaseError = "Purchase succeeded but profile could not be updated. Please restart the app."
-                    }
+                    try? modelContext.save()
                 }
                 isPurchasing = false
                 withAnimation(.easeInOut(duration: 0.4)) {

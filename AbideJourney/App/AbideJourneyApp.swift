@@ -34,9 +34,32 @@ struct AbideJourneyApp: App {
             if let modelContainer {
                 RootView()
                     .modelContainer(modelContainer)
+                    .task {
+                        await restorePremiumStatusIfNeeded(container: modelContainer)
+                    }
             } else {
                 DatabaseErrorView()
             }
+        }
+    }
+
+    /// Checks StoreKit entitlements on launch and syncs premium status with the user profile.
+    /// Handles the case where a user reinstalls the app or premium state was lost locally.
+    @MainActor
+    private func restorePremiumStatusIfNeeded(container: ModelContainer) async {
+        let store = StoreKitService.shared
+        await store.updatePurchasedProducts()
+
+        let context = container.mainContext
+        let descriptor = FetchDescriptor<UserProfile>()
+        guard let profile = try? context.fetch(descriptor).first else { return }
+
+        if store.isPremium && !profile.isPremium {
+            profile.isPremium = true
+            try? context.save()
+        } else if !store.isPremium && profile.isPremium {
+            profile.isPremium = false
+            try? context.save()
         }
     }
 }
