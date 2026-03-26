@@ -100,6 +100,14 @@ final class OnboardingViewModel {
             spiritualMaturity: selectedMaturity,
             preferredTranslation: selectedTranslation
         )
+
+        // Link Apple ID if signed in
+        let auth = AuthService.shared
+        if auth.isSignedIn {
+            profile.appleUserID = auth.appleUserID
+            profile.email = auth.userEmail
+        }
+
         context.insert(profile)
 
         var quizResponses: [QuizResponse] = []

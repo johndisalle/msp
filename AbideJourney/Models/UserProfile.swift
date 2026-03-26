@@ -13,6 +13,8 @@ final class UserProfile {
     var notificationMorningTime: Date
     var notificationEveningTime: Date
     var notificationsEnabled: Bool
+    var appleUserID: String?
+    var email: String?
 
     @Relationship(deleteRule: .cascade, inverse: \Journey.user)
     var journeys: [Journey]
@@ -36,6 +38,8 @@ final class UserProfile {
         self.isPremium = false
         self.premiumExpiresAt = nil
         self.notificationsEnabled = true
+        self.appleUserID = nil
+        self.email = nil
         self.journeys = []
         self.quizResponses = []
         self.accountabilityPartners = []

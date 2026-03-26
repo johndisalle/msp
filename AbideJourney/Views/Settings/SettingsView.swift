@@ -1,8 +1,10 @@
 import SwiftUI
 import SwiftData
+import AuthenticationServices
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.colorScheme) private var colorScheme
     @Query private var profiles: [UserProfile]
     @Query private var journeys: [Journey]
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
@@ -46,6 +48,36 @@ struct SettingsView: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
+                        }
+                    }
+
+                    // Account
+                    Section("Account") {
+                        if AuthService.shared.isSignedIn {
+                            HStack {
+                                Image(systemName: "apple.logo")
+                                    .foregroundStyle(.primary)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Signed in with Apple")
+                                        .font(.subheadline)
+                                    if let email = profile.email {
+                                        Text(email)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            }
+                        } else {
+                            SignInWithAppleButton(.signIn, onRequest: { request in
+                                request.requestedScopes = [.fullName, .email]
+                            }, onCompletion: { result in
+                                handleSignIn(result, profile: profile)
+                            })
+                            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                            .frame(height: 44)
                         }
                     }
 
@@ -314,6 +346,22 @@ struct SettingsView: View {
 
         // Reset onboarding flag to return to welcome screen
         hasCompletedOnboarding = false
+    }
+
+    private func handleSignIn(_ result: Result<ASAuthorization, Error>, profile: UserProfile) {
+        do {
+            try AuthService.shared.handleAuthorization(result)
+            profile.appleUserID = AuthService.shared.appleUserID
+            if let email = AuthService.shared.userEmail {
+                profile.email = email
+            }
+            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                profile.name = fullName
+            }
+            try? modelContext.save()
+        } catch {
+            // User cancelled or auth failed — no action needed
+        }
     }
 
     private func rescheduleNotifications(for profile: UserProfile) {

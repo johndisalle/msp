@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import AuthenticationServices
 
 struct OnboardingFlowView: View {
     @Environment(\.modelContext) private var modelContext
@@ -59,6 +60,8 @@ struct OnboardingFlowView: View {
 struct WelcomeStepView: View {
     let viewModel: OnboardingViewModel
     @State private var appeared = false
+    @State private var authError: String?
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: 32) {
@@ -94,18 +97,35 @@ struct WelcomeStepView: View {
 
             Spacer()
 
-            Button {
-                viewModel.nextStep()
-            } label: {
-                Text("Get Started")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            VStack(spacing: 14) {
+                // Sign in with Apple
+                SignInWithAppleButton(.signUp, onRequest: { request in
+                    request.requestedScopes = [.fullName, .email]
+                }, onCompletion: { result in
+                    handleSignInResult(result)
+                })
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                .frame(height: 52)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding(.horizontal, 32)
+
+                // Continue without account
+                Button {
+                    viewModel.nextStep()
+                } label: {
+                    Text("Continue without Account")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                if let authError {
+                    Text(authError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                }
             }
-            .padding(.horizontal, 32)
             .padding(.bottom, 48)
             .opacity(appeared ? 1 : 0)
         }
@@ -114,6 +134,21 @@ struct WelcomeStepView: View {
             withAnimation(.easeOut(duration: 0.8)) {
                 appeared = true
             }
+        }
+    }
+
+    private func handleSignInResult(_ result: Result<ASAuthorization, Error>) {
+        do {
+            try AuthService.shared.handleAuthorization(result)
+            // Pre-fill name if Apple provided it
+            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                viewModel.userName = fullName
+            }
+            viewModel.nextStep()
+        } catch let error as ASAuthorizationError where error.code == .canceled {
+            // User cancelled — do nothing
+        } catch {
+            authError = error.localizedDescription
         }
     }
 
