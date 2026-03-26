@@ -55,12 +55,17 @@ struct SettingsView: View {
                     Section("Account") {
                         if AuthService.shared.isSignedIn {
                             HStack {
-                                Image(systemName: "apple.logo")
-                                    .foregroundStyle(.primary)
+                                Image(systemName: AuthService.shared.authMethod == .apple ? "apple.logo" : "envelope.fill")
+                                    .foregroundStyle(AuthService.shared.authMethod == .apple ? .primary : AJTheme.sage)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text("Signed in with Apple")
+                                    Text(AuthService.shared.authMethod == .apple ? "Signed in with Apple" : "Signed in with Email")
                                         .font(.subheadline)
-                                    if let email = profile.email {
+                                    if let name = AuthService.shared.userFullName {
+                                        Text(name)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let email = AuthService.shared.userEmail {
                                         Text(email)
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
@@ -69,6 +74,12 @@ struct SettingsView: View {
                                 Spacer()
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(.green)
+                            }
+
+                            Button(role: .destructive) {
+                                AuthService.shared.signOut()
+                            } label: {
+                                Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
                             }
                         } else {
                             SignInWithAppleButton(.signIn, onRequest: { request in

@@ -55,10 +55,12 @@ struct WelcomeStepView: View {
     let viewModel: OnboardingViewModel
     @State private var appeared = false
     @State private var authError: String?
+    @State private var showingSignUp = false
+    @State private var showingSignIn = false
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: AJTheme.paddingXLarge) {
+        VStack(spacing: AJTheme.paddingLarge) {
             Spacer()
 
             VStack(spacing: 20) {
@@ -102,22 +104,45 @@ struct WelcomeStepView: View {
 
             Spacer()
 
-            VStack(spacing: 14) {
+            VStack(spacing: 12) {
+                // Sign in with Apple
                 SignInWithAppleButton(.signUp, onRequest: { request in
                     request.requestedScopes = [.fullName, .email]
                 }, onCompletion: { result in
-                    handleSignInResult(result)
+                    handleAppleSignIn(result)
                 })
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
                 .frame(height: 52)
                 .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
                 .padding(.horizontal, AJTheme.paddingXLarge)
 
+                // Create account with email
+                Button {
+                    showingSignUp = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "envelope.fill")
+                        Text("Sign Up with Email")
+                    }
+                }
+                .buttonStyle(AJSecondaryButtonStyle())
+                .padding(.horizontal, AJTheme.paddingXLarge)
+
+                // Sign in for returning users
+                Button {
+                    showingSignIn = true
+                } label: {
+                    Text("Already have an account? Sign In")
+                        .font(.system(.subheadline, design: .serif, weight: .medium))
+                        .foregroundStyle(AJTheme.sage)
+                }
+
+                // Skip
                 Button {
                     viewModel.nextStep()
                 } label: {
                     Text("Continue without Account")
-                        .font(.system(.subheadline, design: .serif))
+                        .font(.system(.caption, design: .serif))
                         .foregroundStyle(AJTheme.secondaryText)
                 }
 
@@ -129,7 +154,7 @@ struct WelcomeStepView: View {
                         .padding(.horizontal, AJTheme.paddingXLarge)
                 }
             }
-            .padding(.bottom, 48)
+            .padding(.bottom, 40)
             .opacity(appeared ? 1 : 0)
         }
         .padding()
@@ -138,9 +163,15 @@ struct WelcomeStepView: View {
                 appeared = true
             }
         }
+        .sheet(isPresented: $showingSignUp) {
+            EmailSignUpSheet(viewModel: viewModel, authError: $authError)
+        }
+        .sheet(isPresented: $showingSignIn) {
+            EmailSignInSheet(viewModel: viewModel, authError: $authError)
+        }
     }
 
-    private func handleSignInResult(_ result: Result<ASAuthorization, Error>) {
+    private func handleAppleSignIn(_ result: Result<ASAuthorization, Error>) {
         do {
             try AuthService.shared.handleAuthorization(result)
             if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
@@ -168,6 +199,339 @@ struct WelcomeStepView: View {
                 .font(.system(.subheadline, design: .serif))
                 .foregroundStyle(AJTheme.secondaryText)
             Spacer()
+        }
+    }
+}
+
+// MARK: - Email Sign Up Sheet
+
+struct EmailSignUpSheet: View {
+    let viewModel: OnboardingViewModel
+    @Binding var authError: String?
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var name = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var confirmPassword = ""
+    @State private var sheetError: String?
+    @State private var isPasswordVisible = false
+    @FocusState private var focusedField: Field?
+
+    enum Field { case name, email, password, confirm }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: AJTheme.paddingLarge) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "person.badge.plus")
+                            .font(.system(size: 40))
+                            .foregroundStyle(AJTheme.sage)
+                            .accessibilityHidden(true)
+
+                        Text("Create Your Account")
+                            .font(AJTheme.headlineFont)
+                            .foregroundColor(AJTheme.primaryText)
+
+                        Text("Your journey starts here.")
+                            .font(AJTheme.bodyFont)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .padding(.top, AJTheme.paddingLarge)
+
+                    VStack(spacing: AJTheme.paddingMedium) {
+                        AuthTextField(
+                            label: "Full Name",
+                            icon: "person.fill",
+                            text: $name,
+                            isSecure: false
+                        )
+                        .focused($focusedField, equals: .name)
+                        .textContentType(.name)
+                        .submitLabel(.next)
+
+                        AuthTextField(
+                            label: "Email",
+                            icon: "envelope.fill",
+                            text: $email,
+                            isSecure: false
+                        )
+                        .focused($focusedField, equals: .email)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.emailAddress)
+                        .submitLabel(.next)
+
+                        AuthTextField(
+                            label: "Password",
+                            icon: "lock.fill",
+                            text: $password,
+                            isSecure: true
+                        )
+                        .focused($focusedField, equals: .password)
+                        .textContentType(.newPassword)
+                        .submitLabel(.next)
+
+                        AuthTextField(
+                            label: "Confirm Password",
+                            icon: "lock.fill",
+                            text: $confirmPassword,
+                            isSecure: true
+                        )
+                        .focused($focusedField, equals: .confirm)
+                        .textContentType(.newPassword)
+                        .submitLabel(.done)
+                    }
+                    .padding(.horizontal, AJTheme.paddingLarge)
+
+                    if let sheetError {
+                        Text(sheetError)
+                            .font(AJTheme.captionFont)
+                            .foregroundStyle(AJTheme.destructive)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, AJTheme.paddingLarge)
+                    }
+
+                    Button {
+                        createAccount()
+                    } label: {
+                        Text("Create Account")
+                    }
+                    .buttonStyle(AJPrimaryButtonStyle())
+                    .padding(.horizontal, AJTheme.paddingLarge)
+                    .disabled(name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty)
+                }
+            }
+            .background(AJTheme.background.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(AJTheme.sage)
+                }
+            }
+            .onSubmit {
+                switch focusedField {
+                case .name: focusedField = .email
+                case .email: focusedField = .password
+                case .password: focusedField = .confirm
+                case .confirm: createAccount()
+                case nil: break
+                }
+            }
+        }
+    }
+
+    private func createAccount() {
+        sheetError = nil
+
+        guard password == confirmPassword else {
+            sheetError = "Passwords don't match."
+            return
+        }
+
+        do {
+            try AuthService.shared.signUp(name: name, email: email, password: password)
+            viewModel.userName = name
+            dismiss()
+            viewModel.nextStep()
+        } catch {
+            sheetError = error.localizedDescription
+        }
+    }
+}
+
+// MARK: - Email Sign In Sheet
+
+struct EmailSignInSheet: View {
+    let viewModel: OnboardingViewModel
+    @Binding var authError: String?
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+
+    @State private var email = ""
+    @State private var password = ""
+    @State private var sheetError: String?
+    @FocusState private var focusedField: Field?
+
+    enum Field { case email, password }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: AJTheme.paddingLarge) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.system(size: 40))
+                            .foregroundStyle(AJTheme.sage)
+                            .accessibilityHidden(true)
+
+                        Text("Welcome Back")
+                            .font(AJTheme.headlineFont)
+                            .foregroundColor(AJTheme.primaryText)
+
+                        Text("Sign in to continue your journey.")
+                            .font(AJTheme.bodyFont)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .padding(.top, AJTheme.paddingLarge)
+
+                    VStack(spacing: AJTheme.paddingMedium) {
+                        AuthTextField(
+                            label: "Email",
+                            icon: "envelope.fill",
+                            text: $email,
+                            isSecure: false
+                        )
+                        .focused($focusedField, equals: .email)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.emailAddress)
+                        .submitLabel(.next)
+
+                        AuthTextField(
+                            label: "Password",
+                            icon: "lock.fill",
+                            text: $password,
+                            isSecure: true
+                        )
+                        .focused($focusedField, equals: .password)
+                        .textContentType(.password)
+                        .submitLabel(.done)
+                    }
+                    .padding(.horizontal, AJTheme.paddingLarge)
+
+                    if let sheetError {
+                        Text(sheetError)
+                            .font(AJTheme.captionFont)
+                            .foregroundStyle(AJTheme.destructive)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, AJTheme.paddingLarge)
+                    }
+
+                    Button {
+                        signIn()
+                    } label: {
+                        Text("Sign In")
+                    }
+                    .buttonStyle(AJPrimaryButtonStyle())
+                    .padding(.horizontal, AJTheme.paddingLarge)
+                    .disabled(email.isEmpty || password.isEmpty)
+
+                    // Divider
+                    HStack {
+                        Rectangle().fill(AJTheme.sage.opacity(0.2)).frame(height: 1)
+                        Text("or")
+                            .font(.system(.caption, design: .serif))
+                            .foregroundStyle(AJTheme.secondaryText)
+                        Rectangle().fill(AJTheme.sage.opacity(0.2)).frame(height: 1)
+                    }
+                    .padding(.horizontal, AJTheme.paddingLarge)
+
+                    // Apple sign in option
+                    SignInWithAppleButton(.signIn, onRequest: { request in
+                        request.requestedScopes = [.fullName, .email]
+                    }, onCompletion: { result in
+                        do {
+                            try AuthService.shared.handleAuthorization(result)
+                            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                                viewModel.userName = fullName
+                            }
+                            dismiss()
+                            viewModel.nextStep()
+                        } catch let error as ASAuthorizationError where error.code == .canceled {
+                            // cancelled
+                        } catch {
+                            sheetError = error.localizedDescription
+                        }
+                    })
+                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                    .frame(height: 52)
+                    .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
+                    .padding(.horizontal, AJTheme.paddingLarge)
+                }
+            }
+            .background(AJTheme.background.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(AJTheme.sage)
+                }
+            }
+            .onSubmit {
+                switch focusedField {
+                case .email: focusedField = .password
+                case .password: signIn()
+                case nil: break
+                }
+            }
+        }
+    }
+
+    private func signIn() {
+        sheetError = nil
+        do {
+            try AuthService.shared.signIn(email: email, password: password)
+            if let name = AuthService.shared.userFullName {
+                viewModel.userName = name
+            }
+            dismiss()
+            viewModel.nextStep()
+        } catch {
+            sheetError = error.localizedDescription
+        }
+    }
+}
+
+// MARK: - Auth Text Field
+
+struct AuthTextField: View {
+    let label: String
+    let icon: String
+    var text: Binding<String>
+    var isSecure: Bool
+
+    @State private var isRevealed = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.system(.caption, design: .serif, weight: .medium))
+                .foregroundColor(AJTheme.primaryText)
+
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(AJTheme.sage)
+                    .frame(width: 20)
+
+                if isSecure && !isRevealed {
+                    SecureField(label, text: text)
+                        .font(AJTheme.bodyFont)
+                } else {
+                    TextField(label, text: text)
+                        .font(AJTheme.bodyFont)
+                }
+
+                if isSecure {
+                    Button {
+                        isRevealed.toggle()
+                    } label: {
+                        Image(systemName: isRevealed ? "eye.slash.fill" : "eye.fill")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                }
+            }
+            .padding()
+            .background(AJTheme.softWhite)
+            .cornerRadius(AJTheme.cornerRadiusSmall)
+            .overlay(
+                RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                    .stroke(AJTheme.sage.opacity(0.2), lineWidth: 1)
+            )
         }
     }
 }
