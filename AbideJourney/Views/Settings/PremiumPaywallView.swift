@@ -81,10 +81,24 @@ struct PremiumPaywallView: View {
                         subscribeButton
 
                         // Subscription details
-                        Text("Cancel anytime. Subscription auto-renews.")
+                        VStack(spacing: 6) {
+                            Text("Cancel anytime. Subscription auto-renews.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+
+                            HStack(spacing: 4) {
+                                if let privacyURL = URL(string: "https://johndisalle.github.io/msp/privacy.html") {
+                                    Link("Privacy Policy", destination: privacyURL)
+                                }
+                                Text("·")
+                                    .foregroundStyle(.secondary)
+                                if let termsURL = URL(string: "https://johndisalle.github.io/msp/terms.html") {
+                                    Link("Terms of Service", destination: termsURL)
+                                }
+                            }
                             .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
+                        }
 
                         // Restore
                         Button("Restore Purchases") {
