@@ -11,6 +11,7 @@ final class ContentLibrary {
         let scriptureText: String
         let devotionalTitle: String
         let devotionalText: String
+        let prayerText: String
         let reflectionPrompt: String
         let actionSteps: [String]
     }

@@ -6,7 +6,6 @@ import Charts
 /// Shows mood trends, prayer habits, discipleship area progress, and journey history.
 struct FaithMapView: View {
     @Query private var journeys: [Journey]
-    @Query private var prayerSessions: [PrayerSession]
     @Query(sort: \JournalEntry.createdAt) private var journalEntries: [JournalEntry]
 
     private var allDays: [JourneyDay] {
@@ -26,7 +25,7 @@ struct FaithMapView: View {
                     moodTrendChart
                 }
 
-                if !prayerSessions.isEmpty {
+                if allDays.contains(where: { $0.hasPrayed }) {
                     prayerHeatMap
                 }
 
@@ -233,7 +232,7 @@ struct FaithMapView: View {
 
     private var lifetimeStats: some View {
         let totalDays = allDays.count
-        let totalPrayer = prayerSessions.reduce(0) { $0 + Int($1.duration / 60) }
+        let totalPrayer = allDays.filter { $0.hasPrayed }.count
         let totalEntries = journalEntries.count
         let totalJourneys = journeys.count
 
@@ -323,13 +322,13 @@ struct FaithMapView: View {
 
         var weeklyData: [(date: Date, label: String, minutes: Int)] = []
 
-        for session in prayerSessions {
-            let weekStart = calendar.dateInterval(of: .weekOfYear, for: session.startTime)?.start ?? session.startTime
-            let minutes = Int(session.duration / 60)
+        for day in allDays where day.hasPrayed {
+            guard let date = day.date else { continue }
+            let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start ?? date
             if let existing = weeklyData.firstIndex(where: { calendar.isDate($0.date, equalTo: weekStart, toGranularity: .weekOfYear) }) {
-                weeklyData[existing].minutes += minutes
+                weeklyData[existing].minutes += 1
             } else {
-                weeklyData.append((date: weekStart, label: formatter.string(from: weekStart), minutes: minutes))
+                weeklyData.append((date: weekStart, label: formatter.string(from: weekStart), minutes: 1))
             }
         }
 
@@ -383,6 +382,6 @@ struct FaithMapView: View {
 #Preview {
     NavigationStack {
         FaithMapView()
-            .modelContainer(for: [Journey.self, PrayerSession.self, JournalEntry.self], inMemory: true)
+            .modelContainer(for: [Journey.self, JournalEntry.self], inMemory: true)
     }
 }

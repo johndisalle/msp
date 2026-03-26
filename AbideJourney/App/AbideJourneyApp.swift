@@ -16,7 +16,6 @@ struct AbideJourneyApp: App {
                 QuizResponse.self,
                 JournalEntry.self,
                 DailyCheckIn.self,
-                PrayerSession.self,
                 AccountabilityPartner.self
             ])
             let config = ModelConfiguration(

@@ -11,7 +11,6 @@ final class DailyExperienceViewModel {
     var isVoiceJournalEntry = false
     var showingJournalSheet = false
     var showingCheckInSheet = false
-    var showingPrayerTimer = false
     var journeyJustCompleted = false
     var milestoneDay: Int?
     var actionSteps: [ActionStep] = []
@@ -19,7 +18,6 @@ final class DailyExperienceViewModel {
 
     var dailyLimitReached = false
 
-    let prayerTimer = PrayerTimerService()
     let audioPlayer = AudioPlayerService.shared
 
     /// Free users: 1 day per calendar day. Premium: 3 days per calendar day.
@@ -98,10 +96,6 @@ final class DailyExperienceViewModel {
             )
         }
 
-        // Request HealthKit authorization on first load
-        Task {
-            _ = await HealthKitService.shared.requestAuthorization()
-        }
     }
 
     func toggleActionStep(at index: Int, context: ModelContext) {
@@ -186,7 +180,7 @@ final class DailyExperienceViewModel {
         let checkIn = DailyCheckIn(
             rating: rating,
             note: note,
-            prayerMinutes: prayerTimer.elapsedMinutes,
+            prayerMinutes: 0,
             completedActionSteps: completedSteps,
             totalActionSteps: actionSteps.count
         )
@@ -212,32 +206,13 @@ final class DailyExperienceViewModel {
         }
     }
 
-    func savePrayerSession(context: ModelContext) {
-        guard prayerTimer.elapsedSeconds > 0 else { return }
-
-        let session = PrayerSession(
-            startTime: prayerTimer.sessionStartDate ?? Date(),
-            duration: prayerTimer.elapsedSeconds,
-            type: .devotional
-        )
-        context.insert(session)
+    func markPrayed(context: ModelContext) {
+        guard let day = currentDay else { return }
+        day.hasPrayed = true
         do {
             try context.save()
         } catch {
-            saveError = "Failed to save your prayer session. Please try again."
+            saveError = "Failed to save your prayer. Please try again."
         }
-
-        // Save to HealthKit as Mindfulness session
-        if let startDate = prayerTimer.sessionStartDate {
-            Task {
-                try? await HealthKitService.shared.saveMindfulnessSession(
-                    startDate: startDate,
-                    duration: prayerTimer.elapsedSeconds
-                )
-            }
-        }
-
-        prayerTimer.reset()
-        showingPrayerTimer = false
     }
 }

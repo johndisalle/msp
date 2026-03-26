@@ -5,7 +5,6 @@ import SwiftData
 struct FaithReportView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var journeys: [Journey]
-    @Query private var prayerSessions: [PrayerSession]
     @Query private var profiles: [UserProfile]
     @Query(sort: \JournalEntry.createdAt) private var journalEntries: [JournalEntry]
 
@@ -151,7 +150,6 @@ struct FaithReportView: View {
 
         let yearJourneys = journeys.filter { calendar.component(.year, from: $0.startDate) == currentYear }
         let allDays = yearJourneys.flatMap(\.days).filter(\.isCompleted)
-        let yearSessions = prayerSessions.filter { calendar.component(.year, from: $0.startTime) == currentYear }
         let yearEntries = journalEntries.filter { calendar.component(.year, from: $0.createdAt) == currentYear }
 
         // Top mood
@@ -189,7 +187,7 @@ struct FaithReportView: View {
             userName: userName,
             year: currentYear,
             totalDaysCompleted: allDays.count,
-            totalPrayerMinutes: yearSessions.reduce(0) { $0 + Int($1.duration / 60) },
+            totalPrayerMinutes: allDays.filter { $0.hasPrayed }.count,
             totalJournalEntries: yearEntries.count,
             journeysCompleted: yearJourneys.filter { $0.isCompleted && $0.currentDay >= $0.totalDays }.count,
             longestStreak: longestStreak,

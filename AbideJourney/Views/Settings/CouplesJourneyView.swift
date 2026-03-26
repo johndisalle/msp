@@ -222,6 +222,7 @@ struct CouplesJourneyView: View {
                 scriptureText: content.scriptureText,
                 devotionalTitle: content.devotionalTitle,
                 devotionalText: content.devotionalText,
+                prayerText: content.prayerText,
                 reflectionPrompt: couplesPrompt,
                 focusArea: focusArea,
                 theme: selectedTheme,

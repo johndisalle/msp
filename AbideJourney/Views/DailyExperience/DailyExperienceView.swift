@@ -58,10 +58,10 @@ struct DailyExperienceView: View {
                             )
 
                             PrayerCardView(
-                                focusArea: day.focusArea,
-                                scriptureReference: day.scriptureReference,
-                                onStartPrayer: {
-                                    viewModel.showingPrayerTimer = true
+                                prayerText: day.prayerText,
+                                hasPrayed: day.hasPrayed,
+                                onPrayed: {
+                                    viewModel.markPrayed(context: modelContext)
                                 }
                             )
 
@@ -139,14 +139,6 @@ struct DailyExperienceView: View {
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
                     viewModel.completeDay(rating: rating, isPremium: isPremium, context: modelContext)
                 }
-            }
-            .sheet(isPresented: $viewModel.showingPrayerTimer) {
-                PrayerTimerView(
-                    timerService: viewModel.prayerTimer,
-                    onSave: { viewModel.savePrayerSession(context: modelContext) },
-                    focusArea: viewModel.currentDay?.focusArea,
-                    scriptureReference: viewModel.currentDay?.scriptureReference
-                )
             }
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
@@ -436,11 +428,9 @@ struct ReflectionCardView: View {
 // MARK: - Prayer Card
 
 struct PrayerCardView: View {
-    let focusArea: DiscipleshipArea
-    let scriptureReference: String
-    let onStartPrayer: () -> Void
-
-    @State private var showingSteps = false
+    let prayerText: String
+    let hasPrayed: Bool
+    let onPrayed: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -452,95 +442,50 @@ struct PrayerCardView: View {
                     .font(AJTheme.subheadlineFont)
                     .foregroundColor(AJTheme.primaryText)
                 Spacer()
-                Image(systemName: "timer")
-                    .foregroundStyle(AJTheme.secondaryText)
-                    .accessibilityHidden(true)
-            }
-
-            Text("Prayer is simply talking to God. There's no wrong way to do it — just be yourself.")
-                .font(AJTheme.bodyFont)
-                .foregroundStyle(AJTheme.secondaryText)
-                .lineSpacing(3)
-
-            Button {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    showingSteps.toggle()
-                }
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "lightbulb.fill")
-                        .font(.caption)
-                        .foregroundStyle(AJTheme.gold)
-                        .accessibilityHidden(true)
-                    Text("Not sure what to say? Here's a simple guide")
-                        .font(.system(.subheadline, design: .serif, weight: .medium))
-                        .foregroundStyle(AJTheme.primaryText)
-                    Spacer()
-                    Image(systemName: showingSteps ? "chevron.up" : "chevron.down")
-                        .font(.caption)
-                        .foregroundStyle(AJTheme.secondaryText)
-                        .accessibilityHidden(true)
-                }
-            }
-            .buttonStyle(.plain)
-
-            if showingSteps {
-                VStack(alignment: .leading, spacing: 12) {
-                    PrayerStepRow(
-                        number: "1",
-                        title: "Thank Him",
-                        description: "Start by thanking God for something specific today.",
-                        color: AJTheme.success
-                    )
-                    PrayerStepRow(
-                        number: "2",
-                        title: "Be Honest",
-                        description: "Tell God what's on your heart — worries, joys, questions. He can handle it all.",
-                        color: AJTheme.sage
-                    )
-                    PrayerStepRow(
-                        number: "3",
-                        title: "Ask",
-                        description: "Pray for your needs and for others. Nothing is too small.",
-                        color: AJTheme.sandstone
-                    )
-                    PrayerStepRow(
-                        number: "4",
-                        title: "Listen",
-                        description: "Sit quietly for a moment. God speaks through peace, through His Word, and through the stillness.",
-                        color: AJTheme.gold
-                    )
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "book.closed.fill")
-                            .font(.caption)
-                            .foregroundStyle(AJTheme.sage)
-                            .accessibilityHidden(true)
-                        Text("Try praying today's scripture back to God: \(scriptureReference)")
+                if hasPrayed {
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(AJTheme.success)
+                        Text("Prayed")
                             .font(AJTheme.captionFont)
-                            .foregroundStyle(AJTheme.secondaryText)
+                            .foregroundStyle(AJTheme.success)
                     }
-                    .padding(.top, 4)
                 }
-                .padding(.leading, 4)
-                .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
-            Button {
-                onStartPrayer()
-            } label: {
-                HStack {
-                    Image(systemName: "play.fill")
-                        .font(.caption)
-                        .accessibilityHidden(true)
-                    Text("Start Prayer Timer")
+            Text("Pray this out loud or silently in your heart:")
+                .font(AJTheme.captionFont)
+                .foregroundStyle(AJTheme.secondaryText)
+
+            Text(prayerText)
+                .font(.system(.body, design: .serif))
+                .foregroundColor(AJTheme.primaryText)
+                .lineSpacing(4)
+                .italic()
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                        .fill(AJTheme.cream.opacity(0.5))
+                )
+
+            if !hasPrayed {
+                Button {
+                    onPrayed()
+                } label: {
+                    HStack {
+                        Image(systemName: "checkmark")
+                            .font(.caption)
+                            .accessibilityHidden(true)
+                        Text("I've Prayed")
+                    }
+                    .font(.system(.subheadline, design: .serif, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(AJTheme.sage)
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
                 }
-                .font(.system(.subheadline, design: .serif, weight: .semibold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(AJTheme.sage)
-                .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
             }
         }
         .ajCard()

@@ -159,6 +159,7 @@ struct NewJourneyView: View {
                 scriptureText: content.scriptureText,
                 devotionalTitle: content.devotionalTitle,
                 devotionalText: content.devotionalText,
+                prayerText: content.prayerText,
                 reflectionPrompt: content.reflectionPrompt,
                 focusArea: focusArea,
                 theme: selectedTheme,

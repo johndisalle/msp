@@ -17,6 +17,10 @@ final class JourneyDay {
     var devotionalText: String
     var devotionalAudioURL: String?
 
+    // Prayer
+    var prayerText: String
+    var hasPrayed: Bool
+
     // Action steps
     var actionSteps: [ActionStep]
     var reflectionPrompt: String
@@ -39,6 +43,7 @@ final class JourneyDay {
         scriptureText: String,
         devotionalTitle: String,
         devotionalText: String,
+        prayerText: String = "",
         reflectionPrompt: String,
         focusArea: DiscipleshipArea,
         theme: JourneyTheme,
@@ -55,6 +60,8 @@ final class JourneyDay {
         self.devotionalTitle = devotionalTitle
         self.devotionalText = devotionalText
         self.devotionalAudioURL = nil
+        self.prayerText = prayerText
+        self.hasPrayed = false
         self.actionSteps = actionSteps
         self.reflectionPrompt = reflectionPrompt
         self.focusArea = focusArea

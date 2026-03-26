@@ -4,7 +4,6 @@ import SwiftData
 struct ProgressDashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var journeys: [Journey]
-    @Query private var prayerSessions: [PrayerSession]
     @Query private var profiles: [UserProfile]
     @State private var viewModel = ProgressViewModel()
     @State private var showingPremiumSheet = false
@@ -35,7 +34,7 @@ struct ProgressDashboardView: View {
 
                     // Weekly stats
                     WeeklyStatsCard(
-                        prayerMinutes: viewModel.weeklyPrayerMinutes,
+                        prayerMinutes: viewModel.weeklyPrayerCount,
                         scriptureCount: viewModel.weeklyScriptureCount,
                         obedienceCount: viewModel.weeklyObedienceCount
                     )
@@ -124,7 +123,7 @@ struct ProgressDashboardView: View {
             }
             .navigationTitle("Progress")
             .onAppear {
-                viewModel.loadProgress(from: journeys, sessions: prayerSessions)
+                viewModel.loadProgress(from: journeys)
             }
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
@@ -370,7 +369,7 @@ struct WeeklyStatsCard: View {
                 .font(.headline)
 
             HStack(spacing: 16) {
-                StatItemView(value: "\(prayerMinutes)", unit: "min", label: "Prayer", color: .blue)
+                StatItemView(value: "\(prayerMinutes)", unit: "days", label: "Prayer", color: .blue)
                 StatItemView(value: "\(scriptureCount)", unit: "days", label: "Scripture", color: .green)
                 StatItemView(value: "\(obedienceCount)", unit: "steps", label: "Completed", color: .orange)
             }
