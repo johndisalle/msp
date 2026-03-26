@@ -298,6 +298,12 @@ struct SettingsView: View {
                             Label("Terms of Service", systemImage: "doc.text")
                         }
                     }
+
+                    if let supportURL = URL(string: "https://johndisalle.github.io/msp/support.html") {
+                        Link(destination: supportURL) {
+                            Label("Customer Support", systemImage: "questionmark.circle")
+                        }
+                    }
                 }
 
                 // Account management
