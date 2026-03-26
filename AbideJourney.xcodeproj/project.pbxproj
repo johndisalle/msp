@@ -74,6 +74,14 @@
 		A1B2C3D4E5F60001000118 /* ContentExpansion_Community.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000118 /* ContentExpansion_Community.swift */; };
 		A1B2C3D4E5F60001000119 /* ContentExpansion_Evangelism.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000119 /* ContentExpansion_Evangelism.swift */; };
 		A1B2C3D4E5F60001000120 /* ContentExpansion_Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000120 /* ContentExpansion_Service.swift */; };
+		A1B2C3D4E5F60001000121 /* ContentExpansion_Anxiety.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000121 /* ContentExpansion_Anxiety.swift */; };
+		A1B2C3D4E5F60001000122 /* ContentExpansion_Grief.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000122 /* ContentExpansion_Grief.swift */; };
+		A1B2C3D4E5F60001000123 /* ContentExpansion_Leadership.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000123 /* ContentExpansion_Leadership.swift */; };
+		A1B2C3D4E5F60001000124 /* ContentExpansion_StartingOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000124 /* ContentExpansion_StartingOver.swift */; };
+		A1B2C3D4E5F60001000125 /* ContentExpansion_HealingRelationships.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000125 /* ContentExpansion_HealingRelationships.swift */; };
+		A1B2C3D4E5F60001000126 /* ContentExpansion_HearingGod.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */; };
+		A1B2C3D4E5F60001000127 /* ContentExpansion_Peace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */; };
+		A1B2C3D4E5F60001000128 /* ContentExpansion_Doubt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */; };
 		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
@@ -162,6 +170,14 @@
 		A1B2C3D4E5F60101000118 /* ContentExpansion_Community.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Community.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000119 /* ContentExpansion_Evangelism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Evangelism.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000120 /* ContentExpansion_Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Service.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000121 /* ContentExpansion_Anxiety.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Anxiety.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000122 /* ContentExpansion_Grief.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Grief.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000123 /* ContentExpansion_Leadership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Leadership.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000124 /* ContentExpansion_StartingOver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_StartingOver.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000125 /* ContentExpansion_HealingRelationships.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_HealingRelationships.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_HearingGod.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Peace.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Doubt.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -347,6 +363,14 @@
 				A1B2C3D4E5F60101000118 /* ContentExpansion_Community.swift */,
 				A1B2C3D4E5F60101000119 /* ContentExpansion_Evangelism.swift */,
 				A1B2C3D4E5F60101000120 /* ContentExpansion_Service.swift */,
+				A1B2C3D4E5F60101000121 /* ContentExpansion_Anxiety.swift */,
+				A1B2C3D4E5F60101000122 /* ContentExpansion_Grief.swift */,
+				A1B2C3D4E5F60101000123 /* ContentExpansion_Leadership.swift */,
+				A1B2C3D4E5F60101000124 /* ContentExpansion_StartingOver.swift */,
+				A1B2C3D4E5F60101000125 /* ContentExpansion_HealingRelationships.swift */,
+				A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */,
+				A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */,
+				A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */,
 				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
 				A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */,
 				A1B2C3D4E5F60101000017 /* LiveActivityService.swift */,
@@ -639,6 +663,14 @@
 				A1B2C3D4E5F60001000118 /* ContentExpansion_Community.swift in Sources */,
 				A1B2C3D4E5F60001000119 /* ContentExpansion_Evangelism.swift in Sources */,
 				A1B2C3D4E5F60001000120 /* ContentExpansion_Service.swift in Sources */,
+				A1B2C3D4E5F60001000121 /* ContentExpansion_Anxiety.swift in Sources */,
+				A1B2C3D4E5F60001000122 /* ContentExpansion_Grief.swift in Sources */,
+				A1B2C3D4E5F60001000123 /* ContentExpansion_Leadership.swift in Sources */,
+				A1B2C3D4E5F60001000124 /* ContentExpansion_StartingOver.swift in Sources */,
+				A1B2C3D4E5F60001000125 /* ContentExpansion_HealingRelationships.swift in Sources */,
+				A1B2C3D4E5F60001000126 /* ContentExpansion_HearingGod.swift in Sources */,
+				A1B2C3D4E5F60001000127 /* ContentExpansion_Peace.swift in Sources */,
+				A1B2C3D4E5F60001000128 /* ContentExpansion_Doubt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
