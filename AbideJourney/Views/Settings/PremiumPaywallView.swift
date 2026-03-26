@@ -57,9 +57,6 @@ struct PremiumPaywallView: View {
                         // Hero section
                         heroSection
 
-                        // Testimonial
-                        testimonialCard
-
                         // Premium journey themes preview
                         themesPreview
 
@@ -167,38 +164,6 @@ struct PremiumPaywallView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
-    }
-
-    // MARK: - Testimonial
-
-    private var testimonialCard: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 2) {
-                ForEach(0..<5) { _ in
-                    Image(systemName: "star.fill")
-                        .font(.caption)
-                        .foregroundStyle(.yellow)
-                }
-            }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("5 star rating")
-
-            Text("\"I used to feel like I was just going through the motions. This app taught me how to actually connect with God every single day.\"")
-                .font(.subheadline)
-                .italic()
-                .multilineTextAlignment(.center)
-                .lineSpacing(3)
-
-            Text("— Sarah M., Premium member")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
-        .padding(.horizontal)
     }
 
     // MARK: - Premium Themes Preview
