@@ -117,13 +117,13 @@ extension ContentLibrary {
         ),
         // Entry 20
         DayContent(
-            scriptureReference: "James 1:22-25",
-            scriptureText: "Do not merely listen to the word, and so deceive yourselves. Do what it says. Anyone who listens to the word but does not do what it says is like someone who looks at his face in a mirror and, after looking at himself, goes away and immediately forgets what he looks like. But whoever looks intently into the perfect law that gives freedom, and continues in it—not forgetting what they have heard, but doing it—they will be blessed in what they do.",
-            devotionalTitle: "The Mirror of the Word",
-            devotionalText: "James compares Scripture to a mirror that shows you who you really are. But the power isn't in the glance—it's in the response. A person who reads the Bible and walks away unchanged is like someone who checks a mirror, notices food on their face, and does nothing about it. The blessing comes when you look intently, continue in the Word, and let it shape your actions. Scripture is meant to transform, not merely inform. Let it do its full work in you today.",
-            prayerText: "Father, I don't want to be a forgetful hearer of Your Word. Help me to look intently into the perfect law that gives freedom and to continue in it. When Scripture reveals something that needs to change in my life, give me the courage to act on it immediately. I want the blessing that comes from being a doer, not just a listener. Guard me from self-deception, and let Your mirror show me the truth about who I am and who You are calling me to become. In Jesus' name, amen.",
-            reflectionPrompt: "What has God's Word recently shown you about yourself that you have not yet acted on?",
-            actionSteps: ["After reading Scripture today, write down one specific action it calls you to take—and do it before the day ends", "Ask a trusted friend to hold you accountable to one thing God is showing you through His Word"]
+            scriptureReference: "2 Peter 1:19-21",
+            scriptureText: "We also have the prophetic message as something completely reliable, and you will do well to pay attention to it, as to a light shining in a dark place, until the day dawns and the morning star rises in your hearts. Above all, you must understand that no prophecy of Scripture came about by the prophet's own interpretation of things. For prophecy never had its origin in the human will, but prophets, though human, spoke from God as they were carried along by the Holy Spirit.",
+            devotionalTitle: "A Light in the Dark",
+            devotionalText: "Peter calls Scripture a light shining in a dark place—and invites you to pay attention to it until the morning star rises in your heart. The Bible didn't originate from human creativity or opinion; men spoke from God as they were carried along by the Holy Spirit. This means Scripture carries divine authority. When the world around you feels dark and disorienting, the prophetic word stands completely reliable. You are not reading the guesses of ancient men; you are reading the voice of God Himself.",
+            prayerText: "God, thank You that Your Word is completely reliable—a light shining in a dark world. When confusion surrounds me and truth feels hard to find, anchor me to the certainty of Scripture. I believe that the prophets spoke from You, carried along by Your Holy Spirit. Let the morning star rise in my heart as I pay attention to what You have spoken. I choose to trust Your Word above my circumstances, above popular opinion, and above my own understanding. Shine Your light into every dark corner of my life. In Jesus' name, amen.",
+            reflectionPrompt: "How does knowing that Scripture originated from God—not human will—change the way you approach your Bible reading?",
+            actionSteps: ["Read a prophetic passage today (such as Isaiah 53 or Psalm 22) and reflect on its fulfillment in Christ", "When you encounter doubt about the Bible's reliability, write down the doubt and search for a Scripture that addresses it"]
         ),
     ]
 }
