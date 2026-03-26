@@ -30,14 +30,14 @@ final class ContentLibrary {
     /// or nil to fall back to the general discipleship area bank.
     private func themeContentBank(for theme: JourneyTheme) -> [DayContent]? {
         switch theme {
-        case .overcomingAnxiety:        return Self.anxietyContent
-        case .walkingThroughGrief:      return Self.griefContent
-        case .leadingLikeJesus:         return Self.leadershipContent
-        case .startingOver:             return Self.startingOverContent
-        case .healingRelationships:     return Self.healingRelationshipsContent
-        case .hearingGodsVoice:         return Self.hearingGodsVoiceContent
-        case .findingPeace:             return Self.findingPeaceContent
-        case .overcomingDoubt:          return Self.overcomingDoubtContent
+        case .overcomingAnxiety:        return Self.anxietyContent + Self.anxietyContentExpansion
+        case .walkingThroughGrief:      return Self.griefContent + Self.griefContentExpansion
+        case .leadingLikeJesus:         return Self.leadershipContent + Self.leadershipContentExpansion
+        case .startingOver:             return Self.startingOverContent + Self.startingOverContentExpansion
+        case .healingRelationships:     return Self.healingRelationshipsContent + Self.healingRelationshipsContentExpansion
+        case .hearingGodsVoice:         return Self.hearingGodsVoiceContent + Self.hearingGodsVoiceContentExpansion
+        case .findingPeace:             return Self.findingPeaceContent + Self.findingPeaceContentExpansion
+        case .overcomingDoubt:          return Self.overcomingDoubtContent + Self.overcomingDoubtContentExpansion
         default:                        return nil
         }
     }
