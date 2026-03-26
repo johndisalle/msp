@@ -185,6 +185,7 @@ struct GiftJourneyView: View {
     // MARK: - Gift Logic
 
     private func prepareGift() {
+        Analytics.giftJourneySent()
         var message = "Someone special gifted you a journey with God!\n\n"
         message += "\(selectedTheme.rawValue): \(selectedTheme.subtitle)\n\n"
 

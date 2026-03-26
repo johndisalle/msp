@@ -38,6 +38,7 @@ struct OnboardingFlowView: View {
                         .tag(OnboardingViewModel.OnboardingStep.generating)
 
                     ReadyStepView(viewModel: viewModel) {
+                        Analytics.onboardingCompleted(maturity: viewModel.selectedMaturity.rawValue)
                         hasCompletedOnboarding = true
                     }
                     .tag(OnboardingViewModel.OnboardingStep.ready)
@@ -159,6 +160,7 @@ struct WelcomeStepView: View {
         }
         .padding()
         .onAppear {
+            Analytics.onboardingStarted()
             withAnimation(.easeOut(duration: 0.8)) {
                 appeared = true
             }

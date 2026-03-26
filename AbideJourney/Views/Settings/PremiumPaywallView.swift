@@ -110,6 +110,7 @@ struct PremiumPaywallView: View {
                                             purchaseError = "Purchase restored but profile could not be updated."
                                         }
                                     }
+                                    Analytics.premiumRestored()
                                     withAnimation(.easeInOut(duration: 0.4)) {
                                         showingCelebration = true
                                     }
@@ -129,6 +130,7 @@ struct PremiumPaywallView: View {
                     }
                 }
                 .task {
+                    Analytics.paywallViewed()
                     await storeService.loadProducts()
                     await storeService.updatePurchasedProducts()
                     if storeService.isPremium {
@@ -364,6 +366,7 @@ struct PremiumPaywallView: View {
                     try? modelContext.save()
                 }
                 isPurchasing = false
+                Analytics.premiumPurchased(plan: selectedPlan == .yearly ? "yearly" : "monthly")
                 withAnimation(.easeInOut(duration: 0.4)) {
                     showingCelebration = true
                 }

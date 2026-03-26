@@ -242,6 +242,9 @@ struct CouplesJourneyView: View {
             return
         }
 
+        Analytics.journeyStarted(theme: selectedTheme.rawValue, isCouple: true)
+        Analytics.couplesJourneyStarted()
+
         // Prepare invitation
         let userName = profile.name
         shareMessage = "Hey \(partnerName)! \(userName) wants to do a 40-day faith journey with you called \"\(title)\".\n\n\(subtitle)\n\nDownload Abide Journey so we can walk through this together!"

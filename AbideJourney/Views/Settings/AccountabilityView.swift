@@ -144,6 +144,7 @@ struct AccountabilityView: View {
             saveError = "Failed to add partner. Please try again."
             return
         }
+        Analytics.accountabilityPartnerAdded()
 
         // Send the invitation via share sheet
         let userName = profiles.first?.name ?? "A friend"

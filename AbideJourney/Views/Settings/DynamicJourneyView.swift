@@ -226,6 +226,8 @@ struct DynamicJourneyView: View {
             return
         }
 
+        Analytics.customJourneyCreated()
+        Analytics.journeyStarted(theme: analysis.theme.rawValue, isCouple: false)
         isGenerating = false
         dismiss()
     }

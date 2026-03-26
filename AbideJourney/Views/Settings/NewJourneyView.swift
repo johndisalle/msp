@@ -179,6 +179,7 @@ struct NewJourneyView: View {
             return
         }
 
+        Analytics.journeyStarted(theme: selectedTheme.rawValue, isCouple: false)
         isGenerating = false
         dismiss()
     }

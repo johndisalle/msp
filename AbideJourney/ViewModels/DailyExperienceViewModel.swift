@@ -191,6 +191,7 @@ final class DailyExperienceViewModel {
         } catch {
             saveError = "Failed to save your check-in. Please try again."
         }
+        Analytics.checkInSubmitted(rating: rating.rawValue)
 
         showingCheckInSheet = false
     }
@@ -209,6 +210,7 @@ final class DailyExperienceViewModel {
     func markPrayed(context: ModelContext) {
         guard let day = currentDay else { return }
         day.hasPrayed = true
+        Analytics.prayerCompleted()
         do {
             try context.save()
         } catch {
