@@ -34,7 +34,7 @@ struct ProgressDashboardView: View {
 
                     // Weekly stats
                     WeeklyStatsCard(
-                        prayerMinutes: viewModel.weeklyPrayerCount,
+                        prayerDays: viewModel.weeklyPrayerCount,
                         scriptureCount: viewModel.weeklyScriptureCount,
                         obedienceCount: viewModel.weeklyObedienceCount
                     )
@@ -359,7 +359,7 @@ struct HabitRingView: View {
 // MARK: - Weekly Stats Card
 
 struct WeeklyStatsCard: View {
-    let prayerMinutes: Int
+    let prayerDays: Int
     let scriptureCount: Int
     let obedienceCount: Int
 
@@ -369,7 +369,7 @@ struct WeeklyStatsCard: View {
                 .font(.headline)
 
             HStack(spacing: 16) {
-                StatItemView(value: "\(prayerMinutes)", unit: "days", label: "Prayer", color: .blue)
+                StatItemView(value: "\(prayerDays)", unit: "days", label: "Prayer", color: .blue)
                 StatItemView(value: "\(scriptureCount)", unit: "days", label: "Scripture", color: .green)
                 StatItemView(value: "\(obedienceCount)", unit: "steps", label: "Completed", color: .orange)
             }

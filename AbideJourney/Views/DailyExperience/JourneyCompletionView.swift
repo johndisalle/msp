@@ -107,14 +107,12 @@ struct JourneyCompletionView: View {
     private func statsCard(journey: Journey) -> some View {
         let completedDays = journey.days.filter(\.isCompleted).count
         let journalCount = journey.days.flatMap(\.journalEntries).count
-        let totalPrayerMinutes = journey.days
-            .flatMap(\.checkIns)
-            .reduce(0) { $0 + $1.prayerMinutes }
+        let totalPrayerDays = journey.days.filter { $0.hasPrayed }.count
 
         return HStack(spacing: 0) {
             completionStat(value: "\(completedDays)", label: "Days\nCompleted", icon: "checkmark.circle.fill", color: .green)
             completionStat(value: "\(journalCount)", label: "Journal\nEntries", icon: "book.fill", color: .purple)
-            completionStat(value: "\(totalPrayerMinutes)", label: "Minutes\nin Prayer", icon: "hands.sparkles.fill", color: .blue)
+            completionStat(value: "\(totalPrayerDays)", label: "Days\nPrayed", icon: "hands.sparkles.fill", color: .blue)
         }
         .padding(.vertical, 16)
         .background(

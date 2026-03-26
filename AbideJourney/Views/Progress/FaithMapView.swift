@@ -117,16 +117,16 @@ struct FaithMapView: View {
 
     private var prayerHeatMap: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Prayer Minutes by Week")
+            Text("Prayer Days by Week")
                 .font(.headline)
 
-            let weeklyPrayer = weeklyPrayerMinutes()
+            let weeklyPrayer = weeklyPrayerDays()
 
             if !weeklyPrayer.isEmpty {
                 Chart(weeklyPrayer, id: \.week) { point in
                     BarMark(
                         x: .value("Week", point.week),
-                        y: .value("Minutes", point.minutes)
+                        y: .value("Days", point.days)
                     )
                     .foregroundStyle(.blue.gradient)
                     .cornerRadius(4)
@@ -242,7 +242,7 @@ struct FaithMapView: View {
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 lifetimeStat(value: "\(totalDays)", label: "Days Completed", icon: "checkmark.circle.fill", color: .green)
-                lifetimeStat(value: "\(totalPrayer)", label: "Minutes in Prayer", icon: "hands.sparkles.fill", color: .blue)
+                lifetimeStat(value: "\(totalPrayer)", label: "Days Prayed", icon: "hands.sparkles.fill", color: .blue)
                 lifetimeStat(value: "\(totalEntries)", label: "Journal Entries", icon: "book.fill", color: .purple)
                 lifetimeStat(value: "\(totalJourneys)", label: "Journeys", icon: "map.fill", color: .orange)
             }
@@ -283,7 +283,7 @@ struct FaithMapView: View {
 
     private struct WeeklyPrayer {
         let week: String
-        let minutes: Int
+        let days: Int
     }
 
     private struct AreaStat {
@@ -315,27 +315,27 @@ struct FaithMapView: View {
             .map { WeeklyMood(week: $0.label, average: $0.ratings.reduce(0, +) / Double($0.ratings.count)) }
     }
 
-    private func weeklyPrayerMinutes() -> [WeeklyPrayer] {
+    private func weeklyPrayerDays() -> [WeeklyPrayer] {
         let calendar = Calendar.current
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d"
 
-        var weeklyData: [(date: Date, label: String, minutes: Int)] = []
+        var weeklyData: [(date: Date, label: String, days: Int)] = []
 
         for day in allDays where day.hasPrayed {
             guard let date = day.date else { continue }
             let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start ?? date
             if let existing = weeklyData.firstIndex(where: { calendar.isDate($0.date, equalTo: weekStart, toGranularity: .weekOfYear) }) {
-                weeklyData[existing].minutes += 1
+                weeklyData[existing].days += 1
             } else {
-                weeklyData.append((date: weekStart, label: formatter.string(from: weekStart), minutes: 1))
+                weeklyData.append((date: weekStart, label: formatter.string(from: weekStart), days: 1))
             }
         }
 
         return weeklyData
             .sorted { $0.date < $1.date }
             .suffix(12)
-            .map { WeeklyPrayer(week: $0.label, minutes: $0.minutes) }
+            .map { WeeklyPrayer(week: $0.label, days: $0.days) }
     }
 
     private func discipleshipAreaStats() -> [AreaStat] {

@@ -57,13 +57,15 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            PrayerCardView(
-                                prayerText: day.prayerText,
-                                hasPrayed: day.hasPrayed,
-                                onPrayed: {
-                                    viewModel.markPrayed(context: modelContext)
-                                }
-                            )
+                            if !day.prayerText.isEmpty {
+                                PrayerCardView(
+                                    prayerText: day.prayerText,
+                                    hasPrayed: day.hasPrayed,
+                                    onPrayed: {
+                                        viewModel.markPrayed(context: modelContext)
+                                    }
+                                )
+                            }
 
                             if isPremium {
                                 PremiumFeatureHintsCard(dayNumber: day.dayNumber)

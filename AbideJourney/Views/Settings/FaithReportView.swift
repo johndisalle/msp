@@ -42,7 +42,7 @@ struct FaithReportView: View {
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     previewStat(value: "\(stats.totalDaysCompleted)", label: "Days Completed", icon: "checkmark.circle.fill", color: .green)
-                    previewStat(value: "\(stats.totalPrayerMinutes)", label: "Prayer Minutes", icon: "hands.sparkles.fill", color: .blue)
+                    previewStat(value: "\(stats.totalPrayerMinutes)", label: "Days Prayed", icon: "hands.sparkles.fill", color: .blue)
                     previewStat(value: "\(stats.totalJournalEntries)", label: "Reflections", icon: "book.fill", color: .purple)
                     previewStat(value: "\(stats.longestStreak)", label: "Longest Streak", icon: "flame.fill", color: .orange)
                 }

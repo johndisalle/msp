@@ -53,7 +53,7 @@ final class FaithReportService {
 
             let stats: [(String, String)] = [
                 ("\(data.totalDaysCompleted)", "Days with God"),
-                ("\(data.totalPrayerMinutes)", "Minutes in Prayer"),
+                ("\(data.totalPrayerMinutes)", "Days in Prayer"),
                 ("\(data.totalJournalEntries)", "Journal Reflections"),
                 ("\(data.journeysCompleted)", "Journeys Completed"),
                 ("\(data.longestStreak)", "Longest Streak"),
