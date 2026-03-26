@@ -20,13 +20,11 @@ struct DailyExperienceView: View {
                 if let day = viewModel.currentDay, let journey = viewModel.journey {
                     ScrollViewReader { scrollProxy in
                     ScrollView {
-                        VStack(spacing: 24) {
-                            // Invisible anchor for scroll-to-top
+                        VStack(spacing: AJTheme.paddingLarge) {
                             Color.clear
                                 .frame(height: 0)
                                 .id("scrollTop")
 
-                            // Day header
                             DayHeaderView(
                                 dayNumber: day.dayNumber,
                                 totalDays: journey.totalDays,
@@ -34,20 +32,17 @@ struct DailyExperienceView: View {
                                 progress: journey.progress
                             )
 
-                            // Scripture card
                             ScriptureCardView(
                                 reference: day.scriptureReference,
                                 text: day.scriptureText
                             )
 
-                            // Devotional
                             DevotionalCardView(
                                 title: day.devotionalTitle,
                                 text: day.devotionalText,
                                 isPremium: isPremium
                             )
 
-                            // Action steps
                             ActionStepsCardView(
                                 steps: $viewModel.actionSteps,
                                 onToggle: { index in
@@ -55,7 +50,6 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            // Reflection & Journal
                             ReflectionCardView(
                                 prompt: day.reflectionPrompt,
                                 onTapJournal: {
@@ -63,7 +57,6 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            // Prayer section with guidance
                             PrayerCardView(
                                 focusArea: day.focusArea,
                                 scriptureReference: day.scriptureReference,
@@ -72,37 +65,33 @@ struct DailyExperienceView: View {
                                 }
                             )
 
-                            // Premium feature hints (contextual discovery for subscribers)
                             if isPremium {
                                 PremiumFeatureHintsCard(dayNumber: day.dayNumber)
                             }
 
-                            // Soft upsell for free users after day 3
                             if !isPremium && day.dayNumber > 3 {
                                 FreeUserUpgradeCard {
                                     showingPremiumSheet = true
                                 }
                             }
 
-                            // Complete day button or daily limit message
                             if viewModel.dailyLimitReached {
                                 DailyLimitReachedCard(isPremium: isPremium)
                                     .padding(.horizontal)
-                                    .padding(.bottom, 32)
+                                    .padding(.bottom, AJTheme.paddingXLarge)
                             } else {
                                 Button {
                                     viewModel.showingCheckInSheet = true
                                 } label: {
-                                    Text("Complete Day \(day.dayNumber)")
-                                        .font(.headline)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color.accentColor)
-                                        .foregroundColor(.white)
-                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    HStack {
+                                        Image(systemName: "checkmark.seal.fill")
+                                            .accessibilityHidden(true)
+                                        Text("Complete Day \(day.dayNumber)")
+                                    }
                                 }
+                                .buttonStyle(AJPrimaryButtonStyle())
                                 .padding(.horizontal)
-                                .padding(.bottom, 32)
+                                .padding(.bottom, AJTheme.paddingXLarge)
                             }
                         }
                     }
@@ -128,6 +117,7 @@ struct DailyExperienceView: View {
                 }
             }
             .navigationTitle("Today")
+            .ajScreenBackground()
             .onAppear {
                 viewModel.loadCurrentDay(from: journeys)
                 viewModel.checkDailyLimit(isPremium: isPremium)
@@ -141,7 +131,6 @@ struct DailyExperienceView: View {
                 )
             }
             .sheet(isPresented: $viewModel.showingCheckInSheet, onDismiss: {
-                // After completing a day, prompt premium users to advance if they have completions left
                 if isPremium && !viewModel.dailyLimitReached && !viewModel.journeyJustCompleted {
                     showingAdvancePrompt = true
                 }
@@ -215,43 +204,40 @@ struct DayHeaderView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Day \(dayNumber)")
-                        .font(.largeTitle.bold())
+                        .font(AJTheme.titleFont)
+                        .foregroundColor(AJTheme.primaryText)
                     HStack(spacing: 6) {
                         Image(systemName: focusArea.icon)
                             .accessibilityHidden(true)
                         Text(focusArea.rawValue)
                     }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(.subheadline, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
                 }
 
                 Spacer()
 
                 ZStack {
                     Circle()
-                        .stroke(Color(.systemGray5), lineWidth: 6)
+                        .stroke(AJTheme.sage.opacity(0.15), lineWidth: 6)
                         .frame(width: 60, height: 60)
                     Circle()
                         .trim(from: 0, to: progress)
-                        .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                        .stroke(AJTheme.sage, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                         .frame(width: 60, height: 60)
                         .rotationEffect(.degrees(-90))
                     Text("\(dayNumber)/\(totalDays)")
-                        .font(.caption2.bold())
+                        .font(.system(.caption2, design: .serif, weight: .bold))
+                        .foregroundColor(AJTheme.primaryText)
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Journey progress, day \(dayNumber) of \(totalDays), \(Int(progress * 100)) percent complete")
             }
 
             ProgressView(value: progress)
-                .tint(.accent)
+                .tint(AJTheme.sage)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -263,29 +249,22 @@ struct ScriptureCardView: View {
     let text: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "text.book.closed.fill")
-                    .foregroundStyle(.accent)
-                Text("Scripture")
-                    .font(.headline)
-                Spacer()
-            }
+        VStack(spacing: AJTheme.paddingMedium) {
+            Image(systemName: "book.closed.fill")
+                .font(.title2)
+                .foregroundColor(AJTheme.gold)
 
             Text("\u{201C}\(text)\u{201D}")
-                .font(.body)
-                .italic()
+                .font(AJTheme.scriptureFont)
+                .foregroundColor(AJTheme.primaryText)
+                .multilineTextAlignment(.center)
                 .lineSpacing(4)
 
             Text("— \(reference)")
-                .font(.subheadline.bold())
-                .foregroundStyle(.accent)
+                .font(.system(.caption, design: .serif, weight: .semibold))
+                .foregroundColor(AJTheme.sage)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.accentColor.opacity(0.08))
-        )
+        .ajCard()
         .padding(.horizontal)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Scripture from \(reference): \(text)")
@@ -305,20 +284,17 @@ struct DevotionalCardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "heart.text.square.fill")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(AJTheme.gold)
                     .accessibilityHidden(true)
                 Text("Devotional")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
+                    .foregroundColor(AJTheme.primaryText)
                 Spacer()
 
                 if isPremium {
                     Button {
                         if tts.isSpeaking || tts.isPaused {
-                            if tts.isSpeaking {
-                                tts.togglePlayPause()
-                            } else {
-                                tts.togglePlayPause()
-                            }
+                            tts.togglePlayPause()
                         } else {
                             tts.speak("\(title). \(text)")
                         }
@@ -327,25 +303,27 @@ struct DevotionalCardView: View {
                             Image(systemName: tts.isSpeaking ? "pause.fill" : (tts.isPaused ? "play.fill" : "speaker.wave.2.fill"))
                                 .font(.caption)
                             Text(tts.isSpeaking ? "Pause" : (tts.isPaused ? "Resume" : "Listen"))
-                                .font(.caption)
+                                .font(.system(.caption, design: .serif))
                         }
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
                         .background(
                             Capsule()
-                                .fill(Color.orange.opacity(0.12))
+                                .fill(AJTheme.gold.opacity(0.12))
                         )
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(AJTheme.gold)
                     }
                     .accessibilityLabel(tts.isSpeaking ? "Pause devotional audio" : "Listen to devotional")
                 }
             }
 
             Text(title)
-                .font(.title3.bold())
+                .font(.system(.title3, design: .serif, weight: .bold))
+                .foregroundColor(AJTheme.primaryText)
 
             Text(text)
-                .font(.body)
+                .font(AJTheme.bodyFont)
+                .foregroundColor(AJTheme.primaryText)
                 .lineSpacing(4)
                 .lineLimit(isExpanded ? nil : 4)
 
@@ -353,14 +331,11 @@ struct DevotionalCardView: View {
                 Button("Read more") {
                     withAnimation { isExpanded = true }
                 }
-                .font(.subheadline.bold())
+                .font(.system(.subheadline, design: .serif, weight: .semibold))
+                .foregroundColor(AJTheme.sage)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
+        .ajCard()
         .padding(.horizontal)
         .onDisappear {
             tts.stop()
@@ -378,14 +353,15 @@ struct ActionStepsCardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "checklist")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(AJTheme.success)
                     .accessibilityHidden(true)
                 Text("Action Steps")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
+                    .foregroundColor(AJTheme.primaryText)
                 Spacer()
                 Text("\(steps.filter(\.isCompleted).count)/\(steps.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.captionFont)
+                    .foregroundStyle(AJTheme.secondaryText)
             }
 
             ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
@@ -394,13 +370,13 @@ struct ActionStepsCardView: View {
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(step.isCompleted ? .green : .secondary)
+                            .foregroundStyle(step.isCompleted ? AJTheme.success : AJTheme.secondaryText)
                             .font(.title3)
 
                         Text(step.text)
-                            .font(.body)
+                            .font(AJTheme.bodyFont)
                             .strikethrough(step.isCompleted)
-                            .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                            .foregroundStyle(step.isCompleted ? AJTheme.secondaryText : AJTheme.primaryText)
                             .multilineTextAlignment(.leading)
 
                         Spacer()
@@ -413,11 +389,7 @@ struct ActionStepsCardView: View {
                 .accessibilityHint("Double tap to toggle completion")
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -432,16 +404,17 @@ struct ReflectionCardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "pencil.and.outline")
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(AJTheme.sandstone)
                     .accessibilityHidden(true)
                 Text("Reflection")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
+                    .foregroundColor(AJTheme.primaryText)
                 Spacer()
             }
 
             Text(prompt)
-                .font(.body)
-                .italic()
+                .font(AJTheme.scriptureFont)
+                .foregroundColor(AJTheme.primaryText)
                 .lineSpacing(4)
 
             Button {
@@ -452,18 +425,10 @@ struct ReflectionCardView: View {
                         .accessibilityHidden(true)
                     Text("Write in Journal")
                 }
-                .font(.subheadline.bold())
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(Color.purple.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+            .buttonStyle(AJSecondaryButtonStyle())
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -481,23 +446,22 @@ struct PrayerCardView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Image(systemName: "hands.sparkles.fill")
-                    .foregroundStyle(.yellow)
+                    .foregroundStyle(AJTheme.gold)
                     .accessibilityHidden(true)
                 Text("Prayer")
-                    .font(.headline)
+                    .font(AJTheme.subheadlineFont)
+                    .foregroundColor(AJTheme.primaryText)
                 Spacer()
                 Image(systemName: "timer")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .accessibilityHidden(true)
             }
 
-            // Encouraging message
             Text("Prayer is simply talking to God. There's no wrong way to do it — just be yourself.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(AJTheme.bodyFont)
+                .foregroundStyle(AJTheme.secondaryText)
                 .lineSpacing(3)
 
-            // Expandable prayer steps
             Button {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     showingSteps.toggle()
@@ -506,15 +470,15 @@ struct PrayerCardView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "lightbulb.fill")
                         .font(.caption)
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(AJTheme.gold)
                         .accessibilityHidden(true)
                     Text("Not sure what to say? Here's a simple guide")
-                        .font(.subheadline.bold())
-                        .foregroundStyle(.primary)
+                        .font(.system(.subheadline, design: .serif, weight: .medium))
+                        .foregroundStyle(AJTheme.primaryText)
                     Spacer()
                     Image(systemName: showingSteps ? "chevron.up" : "chevron.down")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AJTheme.secondaryText)
                         .accessibilityHidden(true)
                 }
             }
@@ -526,35 +490,35 @@ struct PrayerCardView: View {
                         number: "1",
                         title: "Thank Him",
                         description: "Start by thanking God for something specific today.",
-                        color: .green
+                        color: AJTheme.success
                     )
                     PrayerStepRow(
                         number: "2",
                         title: "Be Honest",
                         description: "Tell God what's on your heart — worries, joys, questions. He can handle it all.",
-                        color: .blue
+                        color: AJTheme.sage
                     )
                     PrayerStepRow(
                         number: "3",
                         title: "Ask",
                         description: "Pray for your needs and for others. Nothing is too small.",
-                        color: .purple
+                        color: AJTheme.sandstone
                     )
                     PrayerStepRow(
                         number: "4",
                         title: "Listen",
                         description: "Sit quietly for a moment. God speaks through peace, through His Word, and through the stillness.",
-                        color: .orange
+                        color: AJTheme.gold
                     )
 
                     HStack(spacing: 6) {
-                        Image(systemName: "text.book.closed.fill")
+                        Image(systemName: "book.closed.fill")
                             .font(.caption)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.sage)
                             .accessibilityHidden(true)
                         Text("Try praying today's scripture back to God: \(scriptureReference)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(AJTheme.captionFont)
+                            .foregroundStyle(AJTheme.secondaryText)
                     }
                     .padding(.top, 4)
                 }
@@ -562,7 +526,6 @@ struct PrayerCardView: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
-            // Start prayer button
             Button {
                 onStartPrayer()
             } label: {
@@ -572,19 +535,15 @@ struct PrayerCardView: View {
                         .accessibilityHidden(true)
                     Text("Start Prayer Timer")
                 }
-                .font(.subheadline.bold())
+                .font(.system(.subheadline, design: .serif, weight: .semibold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.accentColor)
+                .background(AJTheme.sage)
                 .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -598,28 +557,29 @@ struct DailyLimitReachedCard: View {
         VStack(spacing: 14) {
             Image(systemName: "moon.stars.fill")
                 .font(.system(size: 36))
-                .foregroundStyle(.indigo)
+                .foregroundStyle(AJTheme.sageDark)
 
             Text("You've done great today!")
-                .font(.headline)
+                .font(AJTheme.subheadlineFont)
+                .foregroundColor(AJTheme.primaryText)
 
             Text("This journey is meant to be savored — one day at a time. Come back tomorrow and pick up right where you left off.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(AJTheme.bodyFont)
+                .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
                 .lineSpacing(3)
 
             if !isPremium {
                 Text("Premium members can complete up to 3 days per day.")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
+                    .font(AJTheme.captionFont)
+                    .foregroundStyle(AJTheme.gold)
                     .multilineTextAlignment(.center)
             }
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.indigo.opacity(0.08))
+            RoundedRectangle(cornerRadius: AJTheme.cornerRadius)
+                .fill(AJTheme.sage.opacity(0.08))
         )
     }
 }
@@ -640,9 +600,10 @@ struct FreeUserUpgradeCard: View {
         VStack(spacing: 12) {
             HStack {
                 Image(systemName: "crown.fill")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(AJTheme.gold)
                 Text("Go Deeper with Premium")
-                    .font(.subheadline.bold())
+                    .font(.system(.subheadline, design: .serif, weight: .semibold))
+                    .foregroundColor(AJTheme.primaryText)
                 Spacer()
             }
 
@@ -651,10 +612,10 @@ struct FreeUserUpgradeCard: View {
                     VStack(spacing: 6) {
                         Image(systemName: icon)
                             .font(.body)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(AJTheme.sage)
                         Text(label)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .font(.system(.caption2, design: .serif))
+                            .foregroundStyle(AJTheme.secondaryText)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                     }
@@ -666,19 +627,10 @@ struct FreeUserUpgradeCard: View {
                 onTap()
             } label: {
                 Text("Upgrade to Premium")
-                    .font(.subheadline.bold())
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+            .buttonStyle(AJPremiumButtonStyle())
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-        )
+        .ajCard()
         .padding(.horizontal)
     }
 }
@@ -691,17 +643,17 @@ struct PremiumFeatureHintsCard: View {
     private var hint: (icon: String, color: Color, title: String, subtitle: String)? {
         switch dayNumber {
         case 1...3:
-            return ("mic.fill", .purple, "Try Voice Journaling", "Tap the mic button when journaling to speak your reflections instead of typing.")
+            return ("mic.fill", AJTheme.sandstone, "Try Voice Journaling", "Tap the mic button when journaling to speak your reflections instead of typing.")
         case 4...7:
-            return ("map.fill", .teal, "Explore Your Faith Map", "Check the Progress tab to see your spiritual growth visualized over time.")
+            return ("map.fill", AJTheme.sage, "Explore Your Faith Map", "Check the Progress tab to see your spiritual growth visualized over time.")
         case 8...14:
-            return ("person.2.fill", .green, "Invite an Accountability Partner", "Go to Settings to invite a friend to walk alongside you on this journey.")
+            return ("person.2.fill", AJTheme.success, "Invite an Accountability Partner", "Go to Settings to invite a friend to walk alongside you on this journey.")
         case 15...21:
-            return ("heart.circle.fill", .pink, "Try a Couples Journey", "Walk through 40 days with your partner — find it in Settings under Journey.")
+            return ("heart.circle.fill", AJTheme.sandstone, "Try a Couples Journey", "Walk through 40 days with your partner — find it in Settings under Journey.")
         case 22...30:
-            return ("wand.and.stars", .orange, "Create a Custom Journey", "Describe what you're going through and we'll build a journey just for you. Find it in Settings.")
+            return ("wand.and.stars", AJTheme.gold, "Create a Custom Journey", "Describe what you're going through and we'll build a journey just for you. Find it in Settings.")
         case 31...40:
-            return ("gift.fill", .orange, "Gift a Journey", "Know someone who could use encouragement? Send them a journey from Settings.")
+            return ("gift.fill", AJTheme.gold, "Gift a Journey", "Know someone who could use encouragement? Send them a journey from Settings.")
         default:
             return nil
         }
@@ -710,27 +662,28 @@ struct PremiumFeatureHintsCard: View {
     var body: some View {
         if let hint {
             HStack(spacing: 14) {
-                Image(systemName: hint.icon)
-                    .font(.title3)
-                    .foregroundStyle(hint.color)
-                    .frame(width: 32)
+                ZStack {
+                    Circle()
+                        .fill(hint.color.opacity(0.15))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: hint.icon)
+                        .font(.body)
+                        .foregroundStyle(hint.color)
+                }
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(hint.title)
-                        .font(.subheadline.bold())
+                        .font(.system(.subheadline, design: .serif, weight: .semibold))
+                        .foregroundColor(AJTheme.primaryText)
                     Text(hint.subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(AJTheme.captionFont)
+                        .foregroundStyle(AJTheme.secondaryText)
                         .lineSpacing(2)
                 }
 
                 Spacer(minLength: 0)
             }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(hint.color.opacity(0.08))
-            )
+            .ajCard()
             .padding(.horizontal)
         }
     }

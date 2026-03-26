@@ -11,7 +11,7 @@ struct MainTabView: View {
 
         var icon: String {
             switch self {
-            case .today: return "sun.max.fill"
+            case .today: return "sunrise.fill"
             case .progress: return "chart.bar.fill"
             case .journal: return "book.fill"
             case .settings: return "gearshape.fill"
@@ -45,7 +45,7 @@ struct MainTabView: View {
                 }
                 .tag(Tab.settings)
         }
-        .tint(Color.accentColor)
+        .tint(AJTheme.sage)
     }
 }
 

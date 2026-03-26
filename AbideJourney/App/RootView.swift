@@ -26,8 +26,6 @@ struct RootView: View {
             } else {
                 OnboardingFlowView()
                     .onAppear {
-                        // AppStorage says done but SwiftData has no profile —
-                        // clear the flag so onboarding runs to completion cleanly.
                         if hasCompletedOnboarding && profiles.isEmpty {
                             hasCompletedOnboarding = false
                         }
@@ -41,7 +39,6 @@ struct RootView: View {
             }
         }
         .onAppear {
-            // Brief branded splash, then fade out
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 withAnimation(.easeOut(duration: 0.4)) {
                     showSplash = false
@@ -61,17 +58,23 @@ struct SplashView: View {
 
     var body: some View {
         ZStack {
-            Color.accentColor
+            AJTheme.splashGradient
                 .ignoresSafeArea()
 
-            VStack(spacing: 12) {
-                Text("\u{2720}")
-                    .font(.system(size: 64, weight: .thin))
-                    .foregroundStyle(.white)
+            VStack(spacing: 16) {
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: 56))
+                    .foregroundStyle(.white.opacity(0.9))
 
-                Text("Abide in Him.")
-                    .font(.system(size: 18, weight: .light))
-                    .foregroundStyle(.white.opacity(0.85))
+                VStack(spacing: 6) {
+                    Text("Abide Journey")
+                        .font(.system(.title2, design: .serif, weight: .bold))
+                        .foregroundStyle(.white)
+
+                    Text("Abide in Him.")
+                        .font(.system(.subheadline, design: .serif))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
             }
             .opacity(opacity)
         }
@@ -90,33 +93,35 @@ struct WelcomeGuideView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(spacing: AJTheme.paddingLarge) {
                 Spacer()
 
-                Text("\u{2720}")
-                    .font(.system(size: 48, weight: .thin))
-                    .foregroundStyle(.accent)
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: 48))
+                    .foregroundStyle(AJTheme.sage)
 
                 Text("Welcome to Abide Journey")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 Text("Your personalized 40-day walk with God. Each day includes Scripture, a short devotional, action steps, and a reflection prompt — designed just for you.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
+                    .lineSpacing(4)
+                    .padding(.horizontal, AJTheme.paddingLarge)
 
                 VStack(alignment: .leading, spacing: 16) {
-                    guideRow(icon: "sun.max.fill", color: .orange,
+                    guideRow(icon: "sunrise.fill", color: AJTheme.gold,
                              text: "Open the Today tab each day for your devotional")
-                    guideRow(icon: "checkmark.circle.fill", color: .green,
+                    guideRow(icon: "checkmark.circle.fill", color: AJTheme.success,
                              text: "Complete action steps to build daily habits")
-                    guideRow(icon: "book.fill", color: .blue,
+                    guideRow(icon: "book.fill", color: AJTheme.sage,
                              text: "Journal your reflections to track your growth")
-                    guideRow(icon: "chart.bar.fill", color: .purple,
+                    guideRow(icon: "chart.bar.fill", color: AJTheme.sandstone,
                              text: "Check Progress to see how far you've come")
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, AJTheme.paddingXLarge)
 
                 Spacer()
 
@@ -124,28 +129,29 @@ struct WelcomeGuideView: View {
                     onDismiss()
                 } label: {
                     Text("Let's Begin")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .padding(.horizontal, 32)
-                .padding(.bottom, 32)
+                .buttonStyle(AJPrimaryButtonStyle())
+                .padding(.horizontal, AJTheme.paddingXLarge)
+                .padding(.bottom, AJTheme.paddingXLarge)
             }
+            .background(AJTheme.background.ignoresSafeArea())
             .interactiveDismissDisabled()
         }
     }
 
     private func guideRow(icon: String, color: Color, text: String) -> some View {
         HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(color)
-                .frame(width: 28)
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(color)
+            }
             Text(text)
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .serif))
+                .foregroundColor(AJTheme.primaryText)
         }
     }
 }

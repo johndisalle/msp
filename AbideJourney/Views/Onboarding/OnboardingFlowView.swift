@@ -9,21 +9,15 @@ struct OnboardingFlowView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color("AccentGold", default: .orange).opacity(0.1), Color("AccentBlue", default: .blue).opacity(0.15)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            AJTheme.morningGradient
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Progress bar
                 ProgressView(value: viewModel.progress)
-                    .tint(Color.accentColor)
+                    .tint(AJTheme.sage)
                     .padding(.horizontal)
                     .padding(.top, 8)
 
-                // Content
                 TabView(selection: $viewModel.currentStep) {
                     WelcomeStepView(viewModel: viewModel)
                         .tag(OnboardingViewModel.OnboardingStep.welcome)
@@ -64,41 +58,51 @@ struct WelcomeStepView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: AJTheme.paddingXLarge) {
             Spacer()
 
             VStack(spacing: 20) {
-                Image(systemName: "book.circle.fill")
-                    .font(.system(size: 80))
-                    .foregroundStyle(.accent)
-                    .symbolEffect(.pulse)
-                    .accessibilityHidden(true)
-                    .scaleEffect(appeared ? 1 : 0.5)
-                    .opacity(appeared ? 1 : 0)
+                ZStack {
+                    Circle()
+                        .stroke(AJTheme.sage.opacity(0.2), lineWidth: 2)
+                        .frame(width: 140, height: 140)
+
+                    Circle()
+                        .fill(AJTheme.sage.opacity(0.1))
+                        .frame(width: 120, height: 120)
+
+                    Image(systemName: "book.closed.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(AJTheme.sage)
+                }
+                .scaleEffect(appeared ? 1 : 0.5)
+                .opacity(appeared ? 1 : 0)
+                .accessibilityHidden(true)
 
                 Text("Abide Journey")
-                    .font(.largeTitle.bold())
+                    .font(AJTheme.titleFont)
+                    .foregroundColor(AJTheme.primaryText)
                     .opacity(appeared ? 1 : 0)
 
                 Text("40 days that will change\nhow you walk with God.")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
+                    .font(.system(.title3, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
                     .multilineTextAlignment(.center)
+                    .lineSpacing(4)
                     .opacity(appeared ? 1 : 0)
             }
 
             VStack(spacing: 12) {
-                featureRow(icon: "flame.fill", color: .orange, text: "Daily devotionals written for you")
-                featureRow(icon: "hands.sparkles.fill", color: .purple, text: "Guided prayer and reflection")
-                featureRow(icon: "chart.line.uptrend.xyaxis", color: .blue, text: "Track your spiritual growth")
+                featureRow(icon: "sunrise.fill", color: AJTheme.gold, text: "Daily devotionals written for you")
+                featureRow(icon: "hands.sparkles.fill", color: AJTheme.sage, text: "Guided prayer and reflection")
+                featureRow(icon: "chart.line.uptrend.xyaxis", color: AJTheme.sandstone, text: "Track your spiritual growth")
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, AJTheme.paddingLarge)
             .opacity(appeared ? 1 : 0)
 
             Spacer()
 
             VStack(spacing: 14) {
-                // Sign in with Apple
                 SignInWithAppleButton(.signUp, onRequest: { request in
                     request.requestedScopes = [.fullName, .email]
                 }, onCompletion: { result in
@@ -106,24 +110,23 @@ struct WelcomeStepView: View {
                 })
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
                 .frame(height: 52)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .padding(.horizontal, 32)
+                .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
+                .padding(.horizontal, AJTheme.paddingXLarge)
 
-                // Continue without account
                 Button {
                     viewModel.nextStep()
                 } label: {
                     Text("Continue without Account")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.system(.subheadline, design: .serif))
+                        .foregroundStyle(AJTheme.secondaryText)
                 }
 
                 if let authError {
                     Text(authError)
-                        .font(.caption)
-                        .foregroundStyle(.red)
+                        .font(AJTheme.captionFont)
+                        .foregroundStyle(AJTheme.destructive)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, AJTheme.paddingXLarge)
                 }
             }
             .padding(.bottom, 48)
@@ -140,13 +143,12 @@ struct WelcomeStepView: View {
     private func handleSignInResult(_ result: Result<ASAuthorization, Error>) {
         do {
             try AuthService.shared.handleAuthorization(result)
-            // Pre-fill name if Apple provided it
             if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
                 viewModel.userName = fullName
             }
             viewModel.nextStep()
         } catch let error as ASAuthorizationError where error.code == .canceled {
-            // User cancelled — do nothing
+            // User cancelled
         } catch {
             authError = error.localizedDescription
         }
@@ -154,13 +156,17 @@ struct WelcomeStepView: View {
 
     private func featureRow(icon: String, color: Color, text: String) -> some View {
         HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.body)
-                .foregroundStyle(color)
-                .frame(width: 28)
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(color)
+            }
             Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.system(.subheadline, design: .serif))
+                .foregroundStyle(AJTheme.secondaryText)
             Spacer()
         }
     }
@@ -173,27 +179,35 @@ struct NameEntryStepView: View {
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: AJTheme.paddingXLarge) {
             Spacer()
 
-            VStack(spacing: 16) {
+            VStack(spacing: AJTheme.paddingMedium) {
                 Image(systemName: "person.circle")
                     .font(.system(size: 48))
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.sage)
                     .accessibilityHidden(true)
 
                 Text("What should we call you?")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 Text("Your journey will be personally crafted for you.")
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .multilineTextAlignment(.center)
             }
 
             TextField("Your name", text: $viewModel.userName)
-                .textFieldStyle(.roundedBorder)
-                .font(.title3)
+                .font(.system(.title3, design: .serif))
                 .multilineTextAlignment(.center)
+                .padding()
+                .background(AJTheme.softWhite)
+                .cornerRadius(AJTheme.cornerRadiusSmall)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                        .stroke(AJTheme.sage.opacity(0.3), lineWidth: 1)
+                )
                 .padding(.horizontal, 48)
                 .focused($isFocused)
                 .onAppear { isFocused = true }
@@ -202,7 +216,8 @@ struct NameEntryStepView: View {
 
             HStack {
                 Button("Back") { viewModel.previousStep() }
-                    .foregroundStyle(.secondary)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
 
                 Spacer()
 
@@ -210,12 +225,16 @@ struct NameEntryStepView: View {
                     isFocused = false
                     viewModel.nextStep()
                 } label: {
-                    Label("Next", systemImage: "arrow.right")
-                        .font(.headline)
+                    HStack(spacing: 6) {
+                        Text("Next")
+                        Image(systemName: "arrow.right")
+                    }
+                    .font(.system(.body, design: .serif, weight: .semibold))
+                    .foregroundColor(AJTheme.sage)
                 }
                 .disabled(viewModel.userName.trimmingCharacters(in: .whitespaces).isEmpty)
             }
-            .padding(.horizontal, 32)
+            .padding(.horizontal, AJTheme.paddingXLarge)
             .padding(.bottom, 48)
         }
         .padding()
@@ -233,16 +252,18 @@ struct MaturityStepView: View {
     @Bindable var viewModel: OnboardingViewModel
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: AJTheme.paddingLarge) {
             Spacer()
 
             VStack(spacing: 12) {
                 Text("Where are you in your walk with God?")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
                     .multilineTextAlignment(.center)
 
                 Text("No wrong answers — this helps us meet you where you are.")
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .multilineTextAlignment(.center)
             }
 
@@ -253,21 +274,22 @@ struct MaturityStepView: View {
                     } label: {
                         HStack {
                             Text(maturity.rawValue)
-                                .font(.body)
+                                .font(.system(.body, design: .serif))
+                                .foregroundColor(AJTheme.primaryText)
                             Spacer()
                             if viewModel.selectedMaturity == maturity {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(AJTheme.sage)
                             }
                         }
                         .padding()
                         .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(viewModel.selectedMaturity == maturity ? Color.accentColor.opacity(0.1) : Color(.systemGray6))
+                            RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                                .fill(viewModel.selectedMaturity == maturity ? AJTheme.sage.opacity(0.1) : AJTheme.cardBackground)
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(viewModel.selectedMaturity == maturity ? Color.accentColor : .clear, lineWidth: 2)
+                            RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                                .stroke(viewModel.selectedMaturity == maturity ? AJTheme.sage : .clear, lineWidth: 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -281,16 +303,21 @@ struct MaturityStepView: View {
 
             HStack {
                 Button("Back") { viewModel.previousStep() }
-                    .foregroundStyle(.secondary)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
                 Spacer()
                 Button {
                     viewModel.nextStep()
                 } label: {
-                    Label("Next", systemImage: "arrow.right")
-                        .font(.headline)
+                    HStack(spacing: 6) {
+                        Text("Next")
+                        Image(systemName: "arrow.right")
+                    }
+                    .font(.system(.body, design: .serif, weight: .semibold))
+                    .foregroundColor(AJTheme.sage)
                 }
             }
-            .padding(.horizontal, 32)
+            .padding(.horizontal, AJTheme.paddingXLarge)
             .padding(.bottom, 48)
         }
         .padding()
@@ -304,33 +331,33 @@ struct QuizStepView: View {
     @State private var sliderValue: Double = 5
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: AJTheme.paddingLarge) {
             if let question = viewModel.currentQuestion {
-                // Quiz progress
                 HStack {
                     Text("Question \(viewModel.currentQuestionIndex + 1) of \(viewModel.questions.count)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(AJTheme.captionFont)
+                        .foregroundStyle(AJTheme.secondaryText)
                     Spacer()
                 }
                 .padding(.horizontal)
 
                 ProgressView(value: viewModel.quizProgress)
-                    .tint(.accent)
+                    .tint(AJTheme.sage)
                     .padding(.horizontal)
 
                 Spacer()
 
                 VStack(spacing: 6) {
                     Text(question.text)
-                        .font(.title3.bold())
+                        .font(.system(.title3, design: .serif, weight: .bold))
+                        .foregroundColor(AJTheme.primaryText)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
 
                     if case .slider = question.type {
                         Text("Slide to where you feel you are right now.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(AJTheme.bodyFont)
+                            .foregroundStyle(AJTheme.secondaryText)
                     }
                 }
 
@@ -342,10 +369,13 @@ struct QuizStepView: View {
                                 viewModel.answerQuestion(option)
                             } label: {
                                 Text(option)
+                                    .font(.system(.body, design: .serif))
+                                    .foregroundColor(AJTheme.primaryText)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding()
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .background(AJTheme.cardBackground)
+                                    .cornerRadius(AJTheme.cornerRadiusSmall)
+                                    .shadow(color: AJTheme.cardShadow, radius: 4, x: 0, y: 1)
                             }
                             .buttonStyle(.plain)
                         }
@@ -355,34 +385,32 @@ struct QuizStepView: View {
                 case .slider(let min, let max, let step):
                     VStack(spacing: 16) {
                         Text("\(Int(sliderValue))")
-                            .font(.system(size: 48, weight: .bold, design: .rounded))
-                            .foregroundStyle(.accent)
+                            .font(.system(size: 48, weight: .bold, design: .serif))
+                            .foregroundStyle(AJTheme.sage)
                             .contentTransition(.numericText())
 
                         Slider(value: $sliderValue, in: min...max, step: step)
-                            .tint(.accent)
-                            .padding(.horizontal, 32)
+                            .tint(AJTheme.sage)
+                            .padding(.horizontal, AJTheme.paddingXLarge)
 
                         HStack {
                             Text("Not much")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(AJTheme.captionFont)
+                                .foregroundStyle(AJTheme.secondaryText)
                             Spacer()
                             Text("A lot")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(AJTheme.captionFont)
+                                .foregroundStyle(AJTheme.secondaryText)
                         }
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, AJTheme.paddingXLarge)
 
                         Button {
                             viewModel.answerQuestion("\(Int(sliderValue))", numericValue: sliderValue)
                         } label: {
                             Text("Continue")
-                                .font(.headline)
-                                .padding(.horizontal, 32)
-                                .padding(.vertical, 10)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(AJPrimaryButtonStyle())
+                        .padding(.horizontal, 80)
                     }
 
                 case .multiSelect:
@@ -397,10 +425,11 @@ struct QuizStepView: View {
                     Button("Back") {
                         viewModel.previousQuestion()
                     }
-                    .foregroundStyle(.secondary)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
                     Spacer()
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, AJTheme.paddingXLarge)
                 .padding(.bottom, 48)
             }
         }
@@ -425,15 +454,17 @@ struct MultiSelectQuizView: View {
                 } label: {
                     HStack {
                         Text(option)
+                            .font(.system(.body, design: .serif))
+                            .foregroundColor(AJTheme.primaryText)
                         Spacer()
                         Image(systemName: selected.contains(option) ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(selected.contains(option) ? .accent : .secondary)
+                            .foregroundStyle(selected.contains(option) ? AJTheme.sage : AJTheme.secondaryText)
                             .accessibilityHidden(true)
                     }
                     .padding()
                     .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(selected.contains(option) ? Color.accentColor.opacity(0.1) : Color(.systemGray6))
+                        RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                            .fill(selected.contains(option) ? AJTheme.sage.opacity(0.1) : AJTheme.cardBackground)
                     )
                 }
                 .buttonStyle(.plain)
@@ -443,7 +474,7 @@ struct MultiSelectQuizView: View {
             Button("Continue") {
                 onComplete(Array(selected))
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(AJPrimaryButtonStyle())
             .disabled(selected.isEmpty)
             .padding(.top)
         }
@@ -457,20 +488,22 @@ struct TranslationStepView: View {
     @Bindable var viewModel: OnboardingViewModel
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: AJTheme.paddingLarge) {
             Spacer()
 
             VStack(spacing: 12) {
-                Image(systemName: "text.book.closed.fill")
+                Image(systemName: "book.closed.fill")
                     .font(.system(size: 48))
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.gold)
                     .accessibilityHidden(true)
 
                 Text("Choose Your Bible Translation")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 Text("You can change this anytime.")
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
             }
 
             VStack(spacing: 10) {
@@ -481,22 +514,27 @@ struct TranslationStepView: View {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(translation.rawValue)
-                                    .font(.headline)
+                                    .font(.system(.headline, design: .serif))
+                                    .foregroundColor(AJTheme.primaryText)
                                 Text(translation.fullName)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(AJTheme.captionFont)
+                                    .foregroundStyle(AJTheme.secondaryText)
                             }
                             Spacer()
                             if viewModel.selectedTranslation == translation {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(AJTheme.sage)
                                     .accessibilityHidden(true)
                             }
                         }
                         .padding()
                         .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(viewModel.selectedTranslation == translation ? Color.accentColor.opacity(0.1) : Color(.systemGray6))
+                            RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                                .fill(viewModel.selectedTranslation == translation ? AJTheme.sage.opacity(0.1) : AJTheme.cardBackground)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                                .stroke(viewModel.selectedTranslation == translation ? AJTheme.sage : .clear, lineWidth: 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -510,17 +548,21 @@ struct TranslationStepView: View {
 
             HStack {
                 Button("Back") { viewModel.previousStep() }
-                    .foregroundStyle(.secondary)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(AJTheme.secondaryText)
                 Spacer()
                 Button {
                     viewModel.nextStep()
                 } label: {
-                    Label("Generate My Journey", systemImage: "sparkles")
-                        .font(.headline)
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                        Text("Generate My Journey")
+                    }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AJPrimaryButtonStyle())
+                .frame(width: 220)
             }
-            .padding(.horizontal, 32)
+            .padding(.horizontal, AJTheme.paddingXLarge)
             .padding(.bottom, 48)
         }
         .padding()
@@ -544,45 +586,49 @@ struct GeneratingStepView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: AJTheme.paddingXLarge) {
             Spacer()
 
             if let errorMessage = viewModel.generationError {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 64))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(AJTheme.warning)
                     .accessibilityHidden(true)
 
                 Text("Something went wrong")
-                    .font(.title3.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 Text(errorMessage)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .multilineTextAlignment(.center)
 
                 Button("Try Again") {
                     viewModel.generationError = nil
                     hasStarted = false
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AJPrimaryButtonStyle())
+                .padding(.horizontal, 80)
             } else {
                 Image(systemName: "sparkles")
                     .font(.system(size: 64))
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AJTheme.gold)
                     .symbolEffect(.variableColor)
                     .accessibilityHidden(true)
 
                 Text("Crafting Your Journey")
-                    .font(.title2.bold())
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
 
                 Text(messages[messageIndex])
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
                     .contentTransition(.opacity)
                     .animation(.easeInOut, value: messageIndex)
 
                 ProgressView()
+                    .tint(AJTheme.sage)
                     .scaleEffect(1.2)
                     .padding(.top, 8)
             }
@@ -594,7 +640,6 @@ struct GeneratingStepView: View {
             hasStarted = true
             viewModel.generateJourney(context: modelContext)
 
-            // Cycle through messages while generating
             for i in 1..<messages.count {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.6) {
                     withAnimation { messageIndex = i }
@@ -620,30 +665,39 @@ struct ReadyStepView: View {
         VStack(spacing: 28) {
             Spacer()
 
-            Image(systemName: "sun.max.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.orange)
-                .symbolEffect(.bounce, value: appeared)
-                .accessibilityHidden(true)
+            ZStack {
+                Circle()
+                    .fill(AJTheme.gold.opacity(0.15))
+                    .frame(width: 120, height: 120)
+                    .scaleEffect(appeared ? 1 : 0.3)
+
+                Image(systemName: "sunrise.fill")
+                    .font(.system(size: 56))
+                    .foregroundStyle(AJTheme.gold)
+                    .symbolEffect(.bounce, value: appeared)
+            }
+            .accessibilityHidden(true)
 
             VStack(spacing: 12) {
                 if let name = viewModel.userName.trimmingCharacters(in: .whitespaces).components(separatedBy: " ").first,
                    !name.isEmpty {
                     Text("\(name), you're all set!")
-                        .font(.largeTitle.bold())
+                        .font(AJTheme.titleFont)
+                        .foregroundColor(AJTheme.primaryText)
                 } else {
                     Text("You're all set!")
-                        .font(.largeTitle.bold())
+                        .font(AJTheme.titleFont)
+                        .foregroundColor(AJTheme.primaryText)
                 }
 
                 if let journey = viewModel.generatedJourney {
                     Text(journey.title)
-                        .font(.title3)
-                        .foregroundStyle(.accent)
+                        .font(.system(.title3, design: .serif))
+                        .foregroundStyle(AJTheme.sage)
 
                     Text(journey.subtitle)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+                        .font(AJTheme.bodyFont)
+                        .foregroundStyle(AJTheme.secondaryText)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -654,8 +708,8 @@ struct ReadyStepView: View {
                 Label("Daily Scripture, prayer & reflection", systemImage: "text.quote")
                 Label("Track your growth every step of the way", systemImage: "chart.line.uptrend.xyaxis")
             }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .font(.system(.subheadline, design: .serif))
+            .foregroundStyle(AJTheme.secondaryText)
 
             Spacer()
 
@@ -663,14 +717,9 @@ struct ReadyStepView: View {
                 onStart()
             } label: {
                 Text("Start Day 1")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-            .padding(.horizontal, 32)
+            .buttonStyle(AJPrimaryButtonStyle())
+            .padding(.horizontal, AJTheme.paddingXLarge)
             .padding(.bottom, 48)
         }
         .padding()
