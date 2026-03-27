@@ -38,7 +38,11 @@ final class ContentLibrary {
         case .hearingGodsVoice:         return Self.hearingGodsVoiceContent + Self.hearingGodsVoiceContentExpansion
         case .findingPeace:             return Self.findingPeaceContent + Self.findingPeaceContentExpansion
         case .overcomingDoubt:          return Self.overcomingDoubtContent + Self.overcomingDoubtContentExpansion
-        default:                        return nil
+        case .knowingGod:              return Self.knowingGodThemeContent
+        case .obeyingGod:              return Self.obeyingGodThemeContent
+        case .sharingFaith:            return Self.sharingFaithThemeContent
+        case .bearingFruit:            return Self.bearingFruitThemeContent
+        case .spiritualGrowth:         return Self.spiritualGrowthThemeContent
         }
     }
 

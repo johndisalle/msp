@@ -82,6 +82,11 @@
 		A1B2C3D4E5F60001000126 /* ContentExpansion_HearingGod.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */; };
 		A1B2C3D4E5F60001000127 /* ContentExpansion_Peace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */; };
 		A1B2C3D4E5F60001000128 /* ContentExpansion_Doubt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */; };
+		A1B2C3D4E5F60001000129 /* ContentTheme_KnowingGod.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000129 /* ContentTheme_KnowingGod.swift */; };
+		A1B2C3D4E5F60001000130 /* ContentTheme_ObeyingGod.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000130 /* ContentTheme_ObeyingGod.swift */; };
+		A1B2C3D4E5F60001000131 /* ContentTheme_SharingFaith.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000131 /* ContentTheme_SharingFaith.swift */; };
+		A1B2C3D4E5F60001000132 /* ContentTheme_BearingFruit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000132 /* ContentTheme_BearingFruit.swift */; };
+		A1B2C3D4E5F60001000133 /* ContentTheme_SpiritualGrowth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000133 /* ContentTheme_SpiritualGrowth.swift */; };
 		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
 		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
@@ -178,6 +183,11 @@
 		A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_HearingGod.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Peace.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExpansion_Doubt.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000129 /* ContentTheme_KnowingGod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTheme_KnowingGod.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000130 /* ContentTheme_ObeyingGod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTheme_ObeyingGod.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000131 /* ContentTheme_SharingFaith.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTheme_SharingFaith.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000132 /* ContentTheme_BearingFruit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTheme_BearingFruit.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000133 /* ContentTheme_SpiritualGrowth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTheme_SpiritualGrowth.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -371,6 +381,11 @@
 				A1B2C3D4E5F60101000126 /* ContentExpansion_HearingGod.swift */,
 				A1B2C3D4E5F60101000127 /* ContentExpansion_Peace.swift */,
 				A1B2C3D4E5F60101000128 /* ContentExpansion_Doubt.swift */,
+				A1B2C3D4E5F60101000129 /* ContentTheme_KnowingGod.swift */,
+				A1B2C3D4E5F60101000130 /* ContentTheme_ObeyingGod.swift */,
+				A1B2C3D4E5F60101000131 /* ContentTheme_SharingFaith.swift */,
+				A1B2C3D4E5F60101000132 /* ContentTheme_BearingFruit.swift */,
+				A1B2C3D4E5F60101000133 /* ContentTheme_SpiritualGrowth.swift */,
 				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
 				A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */,
 				A1B2C3D4E5F60101000017 /* LiveActivityService.swift */,
@@ -671,6 +686,11 @@
 				A1B2C3D4E5F60001000126 /* ContentExpansion_HearingGod.swift in Sources */,
 				A1B2C3D4E5F60001000127 /* ContentExpansion_Peace.swift in Sources */,
 				A1B2C3D4E5F60001000128 /* ContentExpansion_Doubt.swift in Sources */,
+				A1B2C3D4E5F60001000129 /* ContentTheme_KnowingGod.swift in Sources */,
+				A1B2C3D4E5F60001000130 /* ContentTheme_ObeyingGod.swift in Sources */,
+				A1B2C3D4E5F60001000131 /* ContentTheme_SharingFaith.swift in Sources */,
+				A1B2C3D4E5F60001000132 /* ContentTheme_BearingFruit.swift in Sources */,
+				A1B2C3D4E5F60001000133 /* ContentTheme_SpiritualGrowth.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
