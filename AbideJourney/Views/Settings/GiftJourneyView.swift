@@ -248,7 +248,7 @@ struct GiftJourneyView: View {
         }
         .padding(32)
         .frame(width: 340)
-        .background(Color.white)
+        .background(AJTheme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

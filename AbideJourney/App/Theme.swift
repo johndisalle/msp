@@ -2,32 +2,68 @@ import SwiftUI
 
 // MARK: - Abide Journey Theme
 /// Warm, organic design system — gender-neutral, spiritually grounded.
-/// Palette: deep sage, burnished gold, warm cream, soft white, charcoal navy.
+/// Palette adapts between light and dark mode.
 struct AJTheme {
-    // MARK: - Primary Colors
+    // MARK: - Primary Colors (same in both modes — used for accents/buttons)
     static let sage = Color(red: 0.43, green: 0.56, blue: 0.52)             // #6E8E85
     static let sageDark = Color(red: 0.31, green: 0.43, blue: 0.40)         // #4E6E65
     static let sageLight = Color(red: 0.56, green: 0.68, blue: 0.63)        // #8FADA1
     static let gold = Color(red: 0.77, green: 0.64, blue: 0.31)             // #C4A24E
-    static let goldLight = Color(red: 0.89, green: 0.83, blue: 0.66)        // #E2D4A8
+    static let goldLight = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.45, green: 0.38, blue: 0.22, alpha: 1)         // muted gold for dark
+            : UIColor(red: 0.89, green: 0.83, blue: 0.66, alpha: 1)         // #E2D4A8
+    })
     static let sandstone = Color(red: 0.76, green: 0.68, blue: 0.58)        // #C2AD94
-    static let cream = Color(red: 0.96, green: 0.94, blue: 0.90)            // #F5F0E6
-    static let softWhite = Color(red: 0.99, green: 0.98, blue: 0.96)        // #FDFAF4
-    static let charcoal = Color(red: 0.17, green: 0.19, blue: 0.25)         // #2B3040
+
+    // MARK: - Adaptive Surface Colors
+    static let cream = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.11, green: 0.11, blue: 0.13, alpha: 1)         // dark surface
+            : UIColor(red: 0.96, green: 0.94, blue: 0.90, alpha: 1)         // #F5F0E6
+    })
+
+    static let softWhite = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.14, green: 0.14, blue: 0.16, alpha: 1)         // elevated dark surface
+            : UIColor(red: 0.99, green: 0.98, blue: 0.96, alpha: 1)         // #FDFAF4
+    })
+
+    static let charcoal = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.93, green: 0.93, blue: 0.94, alpha: 1)         // light text on dark
+            : UIColor(red: 0.17, green: 0.19, blue: 0.25, alpha: 1)         // #2B3040
+    })
 
     // MARK: - Semantic Colors
     static let primaryText = charcoal
-    static let secondaryText = Color(red: 0.44, green: 0.47, blue: 0.53)    // #717887
+    static let secondaryText = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.62, green: 0.64, blue: 0.68, alpha: 1)         // lighter secondary for dark
+            : UIColor(red: 0.44, green: 0.47, blue: 0.53, alpha: 1)         // #717887
+    })
     static let background = cream
     static let cardBackground = softWhite
     static let accent = sage
     static let accentSecondary = gold
     static let accentTertiary = sandstone
-    static let destructive = Color(red: 0.78, green: 0.38, blue: 0.38)      // #C76161
+    static let destructive = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.90, green: 0.45, blue: 0.45, alpha: 1)         // brighter red for dark
+            : UIColor(red: 0.78, green: 0.38, blue: 0.38, alpha: 1)         // #C76161
+    })
 
-    // Status colors (gender-neutral, muted)
-    static let success = Color(red: 0.42, green: 0.63, blue: 0.48)          // #6BA17A
-    static let warning = Color(red: 0.82, green: 0.68, blue: 0.35)          // #D1AD59
+    // Status colors
+    static let success = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.50, green: 0.75, blue: 0.56, alpha: 1)         // brighter green for dark
+            : UIColor(red: 0.42, green: 0.63, blue: 0.48, alpha: 1)         // #6BA17A
+    })
+    static let warning = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.90, green: 0.76, blue: 0.40, alpha: 1)         // brighter gold for dark
+            : UIColor(red: 0.82, green: 0.68, blue: 0.35, alpha: 1)         // #D1AD59
+    })
 
     // MARK: - Gradients
     static let morningGradient = LinearGradient(

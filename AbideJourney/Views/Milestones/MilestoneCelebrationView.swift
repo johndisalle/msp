@@ -188,7 +188,7 @@ struct MilestoneCelebrationView: View {
         }
         .padding(32)
         .frame(width: 360)
-        .background(Color.white)
+        .background(AJTheme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 }
