@@ -197,7 +197,7 @@
 		A1B2C3D4E5F60101000135 /* DeepLinkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptCouplesInviteView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimGiftJourneyView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000138 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000138 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = AbideJourney/Resources/en.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
 		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
