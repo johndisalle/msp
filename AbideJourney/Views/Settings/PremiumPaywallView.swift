@@ -66,8 +66,8 @@ struct PremiumPaywallView: View {
                         // Plan selection
                         planSelection
 
-                        // Error message
-                        if let error = purchaseError ?? storeService.errorMessage {
+                        // Error message (only show purchase errors, not internal StoreKit debug info)
+                        if let error = purchaseError {
                             Text(error)
                                 .font(.caption)
                                 .foregroundStyle(.red)
@@ -249,14 +249,29 @@ struct PremiumPaywallView: View {
                 ProgressView("Loading plans...")
                     .padding()
             } else if storeService.products.isEmpty {
-                VStack(spacing: 8) {
-                    Text("Unable to load subscription options.")
+                VStack(spacing: 10) {
+                    Image(systemName: "wifi.exclamationmark")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                    Text("Subscription options couldn't be loaded.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Button("Try Again") {
+                        .multilineTextAlignment(.center)
+                    Text("Please check your internet connection and try again.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button {
+                        storeService.loadAttempts = 0
                         Task { await storeService.loadProducts() }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arrow.clockwise")
+                            Text("Try Again")
+                        }
+                        .font(.subheadline.bold())
                     }
-                    .font(.subheadline.bold())
+                    .padding(.top, 4)
                 }
                 .padding()
             } else {
@@ -304,19 +319,7 @@ struct PremiumPaywallView: View {
             .frame(maxWidth: .infinity)
             .padding()
         } else if !hasProducts && !storeService.isLoading {
-            VStack(spacing: 10) {
-                Text("Subscriptions are temporarily unavailable.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-
-                Button("Try Again") {
-                    Task { await storeService.loadProducts() }
-                }
-                .font(.subheadline.bold())
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
+            EmptyView()
         } else {
             Button {
                 Task { await purchaseSelected() }

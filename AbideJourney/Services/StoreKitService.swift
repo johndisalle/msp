@@ -37,23 +37,41 @@ final class StoreKitService {
 
     // MARK: - Load Products
 
+    var loadAttempts = 0
+    private static let maxRetries = 3
+
     func loadProducts() async {
         isLoading = true
         errorMessage = nil
 
         do {
-            let requestedIDs = Self.allProductIDs
-            print("[StoreKit] Requesting products: \(requestedIDs)")
-            let loadedProducts = try await Product.products(for: requestedIDs)
-            print("[StoreKit] Loaded \(loadedProducts.count) products: \(loadedProducts.map { $0.id })")
+            let loadedProducts = try await Product.products(for: Self.allProductIDs)
             if loadedProducts.isEmpty {
-                errorMessage = "No subscription products available. Please check that Products.storekit is set in your scheme's StoreKit Configuration."
+                // Retry with backoff — App Store may not respond immediately in sandbox
+                if loadAttempts < Self.maxRetries {
+                    loadAttempts += 1
+                    let delay = UInt64(loadAttempts) * 2_000_000_000 // 2s, 4s, 6s
+                    try? await Task.sleep(nanoseconds: delay)
+                    isLoading = false
+                    await loadProducts()
+                    return
+                }
+                errorMessage = "Subscription options are currently unavailable. Please check your connection and try again."
+            } else {
+                loadAttempts = 0
             }
             products = loadedProducts.sorted { $0.price < $1.price }
             isLoading = false
         } catch {
-            print("[StoreKit] Error loading products: \(error)")
-            errorMessage = "Failed to load products: \(error.localizedDescription)"
+            if loadAttempts < Self.maxRetries {
+                loadAttempts += 1
+                let delay = UInt64(loadAttempts) * 2_000_000_000
+                try? await Task.sleep(nanoseconds: delay)
+                isLoading = false
+                await loadProducts()
+                return
+            }
+            errorMessage = "Unable to connect to the App Store. Please check your connection and try again."
             isLoading = false
         }
     }
