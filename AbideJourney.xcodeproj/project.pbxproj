@@ -16,16 +16,16 @@
 		A1B2C3D4E5F60001000007 /* JournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000007 /* JournalEntry.swift */; };
 		A1B2C3D4E5F60001000008 /* Journey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000008 /* Journey.swift */; };
 		A1B2C3D4E5F60001000009 /* JourneyDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000009 /* JourneyDay.swift */; };
-		A1B2C3D4E5F60001000010 /* PrayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000010 /* PrayerSession.swift */; };
+
 		A1B2C3D4E5F60001000011 /* QuizResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000011 /* QuizResponse.swift */; };
 		A1B2C3D4E5F60001000012 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000012 /* UserProfile.swift */; };
 		A1B2C3D4E5F60001000013 /* ContentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000013 /* ContentData.swift */; };
 		A1B2C3D4E5F60001000014 /* ContentLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000014 /* ContentLibrary.swift */; };
-		A1B2C3D4E5F60001000015 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000015 /* HealthKitService.swift */; };
+
 		A1B2C3D4E5F60001000016 /* JourneyGenerationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */; };
 		A1B2C3D4E5F60001000017 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000017 /* LiveActivityService.swift */; };
 		A1B2C3D4E5F60001000018 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000018 /* NotificationService.swift */; };
-		A1B2C3D4E5F60001000019 /* PrayerTimerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000019 /* PrayerTimerService.swift */; };
+
 		A1B2C3D4E5F60001000020 /* StoreKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000020 /* StoreKitService.swift */; };
 		A1B2C3D4E5F60001000021 /* StreakService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000021 /* StreakService.swift */; };
 		A1B2C3D4E5F60001000022 /* DailyExperienceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000022 /* DailyExperienceViewModel.swift */; };
@@ -35,7 +35,7 @@
 		A1B2C3D4E5F60001000026 /* CheckInSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000026 /* CheckInSheet.swift */; };
 		A1B2C3D4E5F60001000027 /* DailyExperienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */; };
 		A1B2C3D4E5F60001000028 /* JournalEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */; };
-		A1B2C3D4E5F60001000029 /* PrayerTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000029 /* PrayerTimerView.swift */; };
+
 		A1B2C3D4E5F60001000030 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000030 /* OnboardingFlowView.swift */; };
 		A1B2C3D4E5F60001000031 /* JournalListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000031 /* JournalListView.swift */; };
 		A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */; };
@@ -121,16 +121,16 @@
 		A1B2C3D4E5F60101000007 /* JournalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntry.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000008 /* Journey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Journey.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000009 /* JourneyDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyDay.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000010 /* PrayerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerSession.swift; sourceTree = "<group>"; };
+
 		A1B2C3D4E5F60101000011 /* QuizResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResponse.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000012 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000013 /* ContentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentData.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000014 /* ContentLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentLibrary.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000015 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+
 		A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyGenerationService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000017 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000018 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000019 /* PrayerTimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimerService.swift; sourceTree = "<group>"; };
+
 		A1B2C3D4E5F60101000020 /* StoreKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000021 /* StreakService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000022 /* DailyExperienceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyExperienceViewModel.swift; sourceTree = "<group>"; };
@@ -140,7 +140,7 @@
 		A1B2C3D4E5F60101000026 /* CheckInSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInSheet.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyExperienceView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntrySheet.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000029 /* PrayerTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimerView.swift; sourceTree = "<group>"; };
+
 		A1B2C3D4E5F60101000030 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000031 /* JournalListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalListView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDashboardView.swift; sourceTree = "<group>"; };
@@ -356,7 +356,7 @@
 				A1B2C3D4E5F60101000007 /* JournalEntry.swift */,
 				A1B2C3D4E5F60101000008 /* Journey.swift */,
 				A1B2C3D4E5F60101000009 /* JourneyDay.swift */,
-				A1B2C3D4E5F60101000010 /* PrayerSession.swift */,
+
 				A1B2C3D4E5F60101000011 /* QuizResponse.swift */,
 				A1B2C3D4E5F60101000012 /* UserProfile.swift */,
 			);
@@ -396,11 +396,11 @@
 				A1B2C3D4E5F60101000131 /* ContentTheme_SharingFaith.swift */,
 				A1B2C3D4E5F60101000132 /* ContentTheme_BearingFruit.swift */,
 				A1B2C3D4E5F60101000133 /* ContentTheme_SpiritualGrowth.swift */,
-				A1B2C3D4E5F60101000015 /* HealthKitService.swift */,
+
 				A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */,
 				A1B2C3D4E5F60101000017 /* LiveActivityService.swift */,
 				A1B2C3D4E5F60101000018 /* NotificationService.swift */,
-				A1B2C3D4E5F60101000019 /* PrayerTimerService.swift */,
+
 				A1B2C3D4E5F60101000020 /* StoreKitService.swift */,
 				A1B2C3D4E5F60101000091 /* PDFExportService.swift */,
 				A1B2C3D4E5F60101000021 /* StreakService.swift */,
@@ -454,7 +454,7 @@
 				A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */,
 				A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */,
 				A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */,
-				A1B2C3D4E5F60101000029 /* PrayerTimerView.swift */,
+
 			);
 			path = DailyExperience;
 			sourceTree = "<group>";
@@ -643,16 +643,16 @@
 				A1B2C3D4E5F60001000007 /* JournalEntry.swift in Sources */,
 				A1B2C3D4E5F60001000008 /* Journey.swift in Sources */,
 				A1B2C3D4E5F60001000009 /* JourneyDay.swift in Sources */,
-				A1B2C3D4E5F60001000010 /* PrayerSession.swift in Sources */,
+
 				A1B2C3D4E5F60001000011 /* QuizResponse.swift in Sources */,
 				A1B2C3D4E5F60001000012 /* UserProfile.swift in Sources */,
 				A1B2C3D4E5F60001000013 /* ContentData.swift in Sources */,
 				A1B2C3D4E5F60001000014 /* ContentLibrary.swift in Sources */,
-				A1B2C3D4E5F60001000015 /* HealthKitService.swift in Sources */,
+
 				A1B2C3D4E5F60001000016 /* JourneyGenerationService.swift in Sources */,
 				A1B2C3D4E5F60001000017 /* LiveActivityService.swift in Sources */,
 				A1B2C3D4E5F60001000018 /* NotificationService.swift in Sources */,
-				A1B2C3D4E5F60001000019 /* PrayerTimerService.swift in Sources */,
+
 				A1B2C3D4E5F60001000020 /* StoreKitService.swift in Sources */,
 				A1B2C3D4E5F60001000021 /* StreakService.swift in Sources */,
 				A1B2C3D4E5F60001000022 /* DailyExperienceViewModel.swift in Sources */,
@@ -662,7 +662,7 @@
 				A1B2C3D4E5F60001000026 /* CheckInSheet.swift in Sources */,
 				A1B2C3D4E5F60001000027 /* DailyExperienceView.swift in Sources */,
 				A1B2C3D4E5F60001000028 /* JournalEntrySheet.swift in Sources */,
-				A1B2C3D4E5F60001000029 /* PrayerTimerView.swift in Sources */,
+
 				A1B2C3D4E5F60001000030 /* OnboardingFlowView.swift in Sources */,
 				A1B2C3D4E5F60001000031 /* JournalListView.swift in Sources */,
 				A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */,
