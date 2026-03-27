@@ -111,11 +111,30 @@ struct DailyExperienceView: View {
                     }
                     } // ScrollViewReader
                 } else {
-                    ContentUnavailableView(
-                        "No Active Journey",
-                        systemImage: "book.closed",
-                        description: Text("Start a new journey from Settings to begin.")
-                    )
+                    VStack(spacing: 20) {
+                        Spacer()
+                        Image(systemName: "book.closed.fill")
+                            .font(.system(size: 56))
+                            .foregroundStyle(AJTheme.sage.opacity(0.4))
+                        Text("No Active Journey")
+                            .font(AJTheme.headlineFont)
+                        Text("Start a new journey to begin your 40-day walk with God.")
+                            .font(AJTheme.bodyFont)
+                            .foregroundStyle(AJTheme.secondaryText)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                        NavigationLink {
+                            NewJourneyView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Start a Journey")
+                            }
+                        }
+                        .buttonStyle(AJPrimaryButtonStyle())
+                        .padding(.horizontal, 40)
+                        Spacer()
+                    }
                 }
             }
             .navigationTitle("Today")
@@ -151,6 +170,14 @@ struct DailyExperienceView: View {
                     isPremium: isPremium,
                     onStartNewJourney: { showingPremiumSheet = true }
                 )
+            }
+            .alert("Save Error", isPresented: Binding(
+                get: { viewModel.saveError != nil },
+                set: { if !$0 { viewModel.saveError = nil } }
+            )) {
+                Button("OK") { viewModel.saveError = nil }
+            } message: {
+                Text(viewModel.saveError ?? "")
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
@@ -327,6 +354,8 @@ struct DevotionalCardView: View {
                 }
                 .font(.system(.subheadline, design: .serif, weight: .semibold))
                 .foregroundColor(AJTheme.sage)
+                .accessibilityLabel("Read full devotional")
+                .accessibilityHint("Double tap to expand the devotional text")
             }
         }
         .ajCard()

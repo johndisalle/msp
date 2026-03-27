@@ -15,6 +15,7 @@ struct SettingsView: View {
     @State private var showingCouplesSheet = false
     @State private var showingDynamicSheet = false
     @State private var showingGiftSheet = false
+    @State private var showingWelcomeGuide = false
 
     private var profile: UserProfile? { profiles.first }
     private var completedJourneys: [Journey] {
@@ -280,6 +281,12 @@ struct SettingsView: View {
 
                 // About
                 Section("About") {
+                    Button {
+                        showingWelcomeGuide = true
+                    } label: {
+                        Label("Show Welcome Guide", systemImage: "questionmark.circle.fill")
+                    }
+
                     HStack {
                         Text("Version")
                         Spacer()
@@ -344,6 +351,11 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingGiftSheet) {
                 GiftJourneyView()
+            }
+            .sheet(isPresented: $showingWelcomeGuide) {
+                WelcomeGuideView {
+                    showingWelcomeGuide = false
+                }
             }
         }
     }

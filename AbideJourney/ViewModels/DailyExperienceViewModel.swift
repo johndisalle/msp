@@ -99,7 +99,7 @@ final class DailyExperienceViewModel {
     }
 
     func toggleActionStep(at index: Int, context: ModelContext) {
-        guard index < actionSteps.count else { return }
+        guard 0..<actionSteps.count ~= index else { return }
         actionSteps[index].isCompleted.toggle()
         currentDay?.actionSteps = actionSteps
         try? context.save()
