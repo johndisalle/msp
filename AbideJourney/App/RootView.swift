@@ -7,6 +7,7 @@ struct RootView: View {
     @Query private var profiles: [UserProfile]
     @State private var showSplash = true
     @State private var showWelcomeGuide = false
+    @State private var deepLinkService = DeepLinkService.shared
 
     var body: some View {
         ZStack {
@@ -16,6 +17,16 @@ struct RootView: View {
                         WelcomeGuideView {
                             hasSeenWelcomeGuide = true
                             showWelcomeGuide = false
+                        }
+                    }
+                    .sheet(isPresented: $deepLinkService.showCouplesInviteSheet) {
+                        if let invite = deepLinkService.pendingCouplesInvite {
+                            AcceptCouplesInviteView(invite: invite)
+                        }
+                    }
+                    .sheet(isPresented: $deepLinkService.showGiftClaimSheet) {
+                        if let gift = deepLinkService.pendingGiftClaim {
+                            ClaimGiftJourneyView(gift: gift)
                         }
                     }
                     .onAppear {
@@ -86,72 +97,164 @@ struct SplashView: View {
     }
 }
 
-// MARK: - Welcome Guide
+// MARK: - Welcome Guide (Feature Tour)
 
 struct WelcomeGuideView: View {
     let onDismiss: () -> Void
+    @State private var currentPage = 0
+
+    private let pages: [(icon: String, color: Color, title: String, body: String, features: [(icon: String, color: Color, text: String)])] = [
+        (
+            icon: "book.closed.fill",
+            color: AJTheme.sage,
+            title: NSLocalizedString("tour.welcome.title", comment: ""),
+            body: NSLocalizedString("tour.welcome.body", comment: ""),
+            features: []
+        ),
+        (
+            icon: "sunrise.fill",
+            color: AJTheme.gold,
+            title: NSLocalizedString("tour.today.title", comment: ""),
+            body: NSLocalizedString("tour.today.body", comment: ""),
+            features: [
+                (icon: "text.book.closed.fill", color: .blue, text: "Scripture with your preferred translation"),
+                (icon: "heart.text.square.fill", color: .orange, text: "A devotional written for your situation"),
+                (icon: "hands.sparkles.fill", color: .purple, text: "A guided prayer you can pray along with"),
+                (icon: "checklist", color: .green, text: "Two action steps to live it out today"),
+            ]
+        ),
+        (
+            icon: "chart.line.uptrend.xyaxis",
+            color: AJTheme.sandstone,
+            title: NSLocalizedString("tour.progress.title", comment: ""),
+            body: NSLocalizedString("tour.progress.body", comment: ""),
+            features: [
+                (icon: "flame.fill", color: .orange, text: "Daily streak tracking"),
+                (icon: "circle.circle", color: .blue, text: "Habit rings for prayer, word, obedience & worship"),
+                (icon: "calendar", color: .green, text: "Journey calendar showing your path"),
+            ]
+        ),
+        (
+            icon: "book.fill",
+            color: AJTheme.sage,
+            title: NSLocalizedString("tour.journal.title", comment: ""),
+            body: NSLocalizedString("tour.journal.body", comment: ""),
+            features: [
+                (icon: "pencil.line", color: .blue, text: "Write your thoughts and reflections"),
+                (icon: "mic.fill", color: .purple, text: "Voice journaling — speak your heart"),
+                (icon: "face.smiling", color: .orange, text: "Track your mood through the journey"),
+            ]
+        ),
+        (
+            icon: "gearshape.fill",
+            color: AJTheme.sandstone,
+            title: NSLocalizedString("tour.settings.title", comment: ""),
+            body: NSLocalizedString("tour.settings.body", comment: ""),
+            features: [
+                (icon: "wand.and.stars", color: .purple, text: "Create a custom journey from your situation"),
+                (icon: "heart.circle.fill", color: .pink, text: "Start a couples journey together"),
+                (icon: "gift.fill", color: .orange, text: "Gift a premium journey to a friend"),
+            ]
+        ),
+    ]
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: AJTheme.paddingLarge) {
-                Spacer()
-
-                Image(systemName: "book.closed.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(AJTheme.sage)
-
-                Text("Welcome to Abide Journey")
-                    .font(AJTheme.headlineFont)
-                    .foregroundColor(AJTheme.primaryText)
-
-                Text("Your personalized 40-day walk with God. Each day includes Scripture, a short devotional, action steps, and a reflection prompt — designed just for you.")
-                    .font(AJTheme.bodyFont)
-                    .foregroundStyle(AJTheme.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(4)
-                    .padding(.horizontal, AJTheme.paddingLarge)
-
-                VStack(alignment: .leading, spacing: 16) {
-                    guideRow(icon: "sunrise.fill", color: AJTheme.gold,
-                             text: "Open the Today tab each day for your devotional")
-                    guideRow(icon: "checkmark.circle.fill", color: AJTheme.success,
-                             text: "Complete action steps to build daily habits")
-                    guideRow(icon: "book.fill", color: AJTheme.sage,
-                             text: "Journal your reflections to track your growth")
-                    guideRow(icon: "chart.bar.fill", color: AJTheme.sandstone,
-                             text: "Check Progress to see how far you've come")
+            VStack(spacing: 0) {
+                TabView(selection: $currentPage) {
+                    ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
+                        tourPage(page: page)
+                            .tag(index)
+                    }
                 }
-                .padding(.horizontal, AJTheme.paddingXLarge)
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .animation(.easeInOut, value: currentPage)
 
-                Spacer()
-
+                // Bottom button
                 Button {
-                    onDismiss()
+                    if currentPage < pages.count - 1 {
+                        withAnimation { currentPage += 1 }
+                    } else {
+                        onDismiss()
+                    }
                 } label: {
-                    Text("Let's Begin")
+                    Text(currentPage < pages.count - 1
+                         ? NSLocalizedString("action.next", comment: "")
+                         : NSLocalizedString("action.letsBegin", comment: ""))
                 }
                 .buttonStyle(AJPrimaryButtonStyle())
                 .padding(.horizontal, AJTheme.paddingXLarge)
-                .padding(.bottom, AJTheme.paddingXLarge)
+                .padding(.bottom, 16)
+
+                if currentPage < pages.count - 1 {
+                    Button {
+                        onDismiss()
+                    } label: {
+                        Text(NSLocalizedString("action.skip", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .padding(.bottom, AJTheme.paddingLarge)
+                }
             }
             .background(AJTheme.background.ignoresSafeArea())
             .interactiveDismissDisabled()
         }
     }
 
-    private func guideRow(icon: String, color: Color, text: String) -> some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: icon)
-                    .font(.body)
-                    .foregroundStyle(color)
+    private func tourPage(page: (icon: String, color: Color, title: String, body: String, features: [(icon: String, color: Color, text: String)])) -> some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                Spacer().frame(height: 40)
+
+                ZStack {
+                    Circle()
+                        .fill(page.color.opacity(0.12))
+                        .frame(width: 100, height: 100)
+                    Image(systemName: page.icon)
+                        .font(.system(size: 40))
+                        .foregroundStyle(page.color)
+                }
+
+                Text(page.title)
+                    .font(AJTheme.headlineFont)
+                    .foregroundColor(AJTheme.primaryText)
+
+                Text(page.body)
+                    .font(AJTheme.bodyFont)
+                    .foregroundStyle(AJTheme.secondaryText)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+                    .padding(.horizontal, AJTheme.paddingLarge)
+
+                if !page.features.isEmpty {
+                    VStack(alignment: .leading, spacing: 14) {
+                        ForEach(Array(page.features.enumerated()), id: \.offset) { _, feature in
+                            HStack(spacing: 14) {
+                                ZStack {
+                                    Circle()
+                                        .fill(feature.color.opacity(0.15))
+                                        .frame(width: 36, height: 36)
+                                    Image(systemName: feature.icon)
+                                        .font(.body)
+                                        .foregroundStyle(feature.color)
+                                }
+                                Text(feature.text)
+                                    .font(.system(.subheadline, design: .serif))
+                                    .foregroundColor(AJTheme.primaryText)
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(AJTheme.cardBackground)
+                    )
+                    .padding(.horizontal, AJTheme.paddingLarge)
+                }
+
+                Spacer().frame(height: 60)
             }
-            Text(text)
-                .font(.system(.subheadline, design: .serif))
-                .foregroundColor(AJTheme.primaryText)
         }
     }
 }

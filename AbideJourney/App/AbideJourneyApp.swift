@@ -37,6 +37,9 @@ struct AbideJourneyApp: App {
             if let modelContainer {
                 RootView()
                     .modelContainer(modelContainer)
+                    .onOpenURL { url in
+                        DeepLinkService.shared.handleURL(url)
+                    }
                     .task {
                         await restorePremiumStatusIfNeeded(container: modelContainer)
                     }

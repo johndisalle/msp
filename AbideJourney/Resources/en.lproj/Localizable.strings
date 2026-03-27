@@ -1,0 +1,186 @@
+/* Localizable.strings - English (Base)
+   AbideJourney
+
+   This file contains all user-facing strings for localization.
+   To add a new language, create a new .lproj folder (e.g., es.lproj)
+   and copy this file into it with translated values.
+*/
+
+// MARK: - App General
+"app.name" = "Abide Journey";
+"app.tagline" = "Abide in Him.";
+"app.subtitle" = "40 days that will change\nhow you walk with God.";
+
+// MARK: - Common Actions
+"action.cancel" = "Cancel";
+"action.done" = "Done";
+"action.save" = "Save";
+"action.delete" = "Delete";
+"action.ok" = "OK";
+"action.skip" = "Skip";
+"action.next" = "Next";
+"action.back" = "Back";
+"action.continue" = "Continue";
+"action.tryAgain" = "Try Again";
+"action.notNow" = "Not Now";
+"action.maybeLater" = "Maybe Later";
+"action.letsBegin" = "Let's Begin";
+
+// MARK: - Onboarding
+"onboarding.welcome.title" = "Abide Journey";
+"onboarding.welcome.subtitle" = "40 days that will change\nhow you walk with God.";
+"onboarding.welcome.feature.devotionals" = "Daily devotionals written for you";
+"onboarding.welcome.feature.prayer" = "Guided prayer and reflection";
+"onboarding.welcome.feature.growth" = "Track your spiritual growth";
+"onboarding.welcome.signUpEmail" = "Sign Up with Email";
+"onboarding.welcome.signIn" = "Already have an account? Sign In";
+"onboarding.welcome.skipAuth" = "Continue without Account";
+"onboarding.name.title" = "What should we call you?";
+"onboarding.name.placeholder" = "Your name";
+"onboarding.maturity.title" = "Where are you in your faith?";
+"onboarding.maturity.subtitle" = "This helps us personalize your journey.";
+"onboarding.quiz.title" = "A Few Quick Questions";
+"onboarding.quiz.subtitle" = "Help us understand where you are so we can meet you there.";
+"onboarding.translation.title" = "Preferred Bible Translation";
+"onboarding.translation.subtitle" = "Choose which translation you'd like in your daily readings.";
+"onboarding.generating.title" = "Building Your Journey...";
+"onboarding.generating.subtitle" = "We're creating a personalized 40-day experience just for you.";
+"onboarding.ready.title" = "Your Journey Awaits";
+"onboarding.ready.subtitle" = "40 days of Scripture, devotionals, and guided prayer — designed just for you.";
+"onboarding.ready.startButton" = "Start Day 1";
+
+// MARK: - Feature Tour (Onboarding Polish)
+"tour.welcome.title" = "Welcome to Abide Journey";
+"tour.welcome.body" = "Your personalized 40-day walk with God. Each day includes Scripture, a short devotional, action steps, and a reflection prompt — designed just for you.";
+"tour.today.title" = "Your Daily Devotional";
+"tour.today.body" = "Each morning, open the Today tab for your daily Scripture, devotional, prayer guide, and action steps. Take it at your own pace.";
+"tour.progress.title" = "Track Your Growth";
+"tour.progress.body" = "See your streak, habit rings, and weekly stats. Watch your spiritual disciplines grow day by day.";
+"tour.journal.title" = "Reflect & Journal";
+"tour.journal.body" = "Capture your thoughts with text or voice journaling. Your reflections become a record of how God is working in your life.";
+"tour.settings.title" = "Make It Yours";
+"tour.settings.body" = "Start new journeys, invite a partner, adjust your Bible translation, and manage notifications from Settings.";
+
+// MARK: - Tabs
+"tab.today" = "Today";
+"tab.progress" = "Progress";
+"tab.journal" = "Journal";
+"tab.settings" = "Settings";
+
+// MARK: - Daily Experience
+"daily.scripture" = "Scripture";
+"daily.devotional" = "Devotional";
+"daily.prayer" = "Prayer";
+"daily.reflection" = "Reflection";
+"daily.actionSteps" = "Action Steps";
+"daily.checkIn" = "Check In";
+"daily.dayOf" = "Day %d of %d";
+"daily.completed" = "Completed";
+"daily.locked" = "Locked";
+
+// MARK: - Progress
+"progress.title" = "Progress";
+"progress.currentStreak" = "Current Streak";
+"progress.longestStreak" = "Longest Streak";
+"progress.totalDays" = "Total Days";
+"progress.days" = "days";
+"progress.weeklyStats" = "Weekly Stats";
+"progress.habitRings" = "Daily Habits";
+"progress.faithMap" = "Faith Map";
+
+// MARK: - Journal
+"journal.title" = "Journal";
+"journal.newEntry" = "New Entry";
+"journal.empty" = "No journal entries yet";
+"journal.emptySubtitle" = "Your reflections will appear here as you journal through your journey.";
+"journal.voiceHint" = "Try voice journaling — tap the microphone to speak your thoughts.";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.profile" = "Profile";
+"settings.account" = "Account";
+"settings.notifications" = "Notifications";
+"settings.bibleTranslation" = "Bible Translation";
+"settings.newJourney" = "Start New Journey";
+"settings.pastJourneys" = "Past Journeys";
+"settings.premium" = "Premium";
+"settings.accountability" = "Accountability Partners";
+
+// MARK: - Custom Journey
+"customJourney.title" = "Create Your Journey";
+"customJourney.subtitle" = "Tell us what you're going through, and we'll build a personalized 40-day journey just for you.";
+"customJourney.prompt" = "What's on your heart?";
+"customJourney.examples" = "Or tap an example:";
+"customJourney.includes" = "Your Journey Will Include";
+"customJourney.createButton" = "Create My Journey";
+"customJourney.creating" = "Creating your journey...";
+"customJourney.failedTitle" = "Generation Failed";
+
+// MARK: - Couples Journey
+"couples.title" = "Journey Together";
+"couples.subtitle" = "Start a shared 40-day devotional with your partner. Same daily content, couples-focused reflection prompts, and a shared sense of purpose.";
+"couples.partnerName" = "Your Partner's Name";
+"couples.chooseJourney" = "Choose Your Journey";
+"couples.howItWorks" = "How It Works";
+"couples.startButton" = "Start Our Journey";
+"couples.invited" = "%@ invited you!";
+"couples.toJourney" = "to a couples journey";
+"couples.acceptButton" = "Accept & Start Journey";
+
+// MARK: - Gift Journey
+"gift.title" = "Gift a Journey";
+"gift.subtitle" = "Give someone you care about a life-changing 40-day journey with God.";
+"gift.recipient" = "Who is this for?";
+"gift.recipientPlaceholder" = "Their name";
+"gift.chooseJourney" = "Choose a Journey";
+"gift.personalMessage" = "Add a Personal Message (optional)";
+"gift.sendButton" = "Send Gift";
+"gift.from" = "A Gift from %@";
+"gift.claimButton" = "Start My Gift Journey";
+"gift.premium" = "40-Day Premium Journey";
+
+// MARK: - Premium
+"premium.title" = "Go Premium";
+"premium.restore" = "Restore Purchases";
+"premium.monthly" = "Monthly";
+"premium.yearly" = "Yearly";
+"premium.bestValue" = "Best Value";
+
+// MARK: - Check In
+"checkIn.title" = "How was today?";
+"checkIn.great" = "Great";
+"checkIn.good" = "Good";
+"checkIn.okay" = "Okay";
+"checkIn.tough" = "Tough";
+"checkIn.missed" = "Missed";
+"checkIn.prayerMinutes" = "Minutes in prayer";
+"checkIn.notes" = "Anything on your heart?";
+
+// MARK: - Milestones
+"milestone.title" = "Milestone!";
+"milestone.day10" = "10 Days Strong";
+"milestone.day20" = "20 Days of Faithfulness";
+"milestone.day30" = "30 Days — Almost There";
+"milestone.day40" = "Journey Complete!";
+
+// MARK: - Errors
+"error.database" = "Unable to Load Data";
+"error.databaseMessage" = "Abide Journey could not open its database. Please restart the app. If the problem persists, try reinstalling.";
+"error.saveFailed" = "Save Failed";
+"error.generic" = "Something went wrong. Please try again.";
+
+// MARK: - Spiritual Maturity
+"maturity.exploring" = "Exploring";
+"maturity.newBeliever" = "New Believer";
+"maturity.growing" = "Growing";
+"maturity.mature" = "Mature";
+"maturity.leader" = "Leader";
+
+// MARK: - Discipleship Areas
+"area.prayer" = "Prayer";
+"area.scripture" = "Scripture";
+"area.obedience" = "Obedience";
+"area.worship" = "Worship";
+"area.community" = "Community";
+"area.evangelism" = "Evangelism";
+"area.service" = "Service";

@@ -186,6 +186,12 @@ struct GiftJourneyView: View {
 
     private func prepareGift() {
         Analytics.giftJourneySent()
+        let giftURL = DeepLinkService.giftUniversalURL(
+            theme: selectedTheme,
+            fromName: recipientName,
+            message: personalMessage.isEmpty ? nil : personalMessage
+        )
+
         var message = "Someone special gifted you a journey with God!\n\n"
         message += "\(selectedTheme.rawValue): \(selectedTheme.subtitle)\n\n"
 
@@ -193,8 +199,8 @@ struct GiftJourneyView: View {
             message += "They said: \"\(personalMessage)\"\n\n"
         }
 
-        message += "Download Abide Journey to start your free 40-day \(selectedTheme.rawValue) journey. This gift includes Premium access so you can dive deep.\n\n"
-        message += "Download Abide Journey to get started!"
+        message += "Tap to claim your gift: \(giftURL.absoluteString)\n\n"
+        message += "Or download Abide Journey to get started!"
 
         // Generate shareable image
         let renderer = ImageRenderer(content: giftCardForSharing)

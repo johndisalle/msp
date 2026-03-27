@@ -1,0 +1,182 @@
+/* Localizable.strings - Spanish
+   AbideJourney
+*/
+
+// MARK: - App General
+"app.name" = "Abide Journey";
+"app.tagline" = "Permanece en Él.";
+"app.subtitle" = "40 días que cambiarán\ncómo caminas con Dios.";
+
+// MARK: - Common Actions
+"action.cancel" = "Cancelar";
+"action.done" = "Listo";
+"action.save" = "Guardar";
+"action.delete" = "Eliminar";
+"action.ok" = "OK";
+"action.skip" = "Omitir";
+"action.next" = "Siguiente";
+"action.back" = "Atrás";
+"action.continue" = "Continuar";
+"action.tryAgain" = "Intentar de nuevo";
+"action.notNow" = "Ahora no";
+"action.maybeLater" = "Quizás después";
+"action.letsBegin" = "Comencemos";
+
+// MARK: - Onboarding
+"onboarding.welcome.title" = "Abide Journey";
+"onboarding.welcome.subtitle" = "40 días que cambiarán\ncómo caminas con Dios.";
+"onboarding.welcome.feature.devotionals" = "Devocionales diarios escritos para ti";
+"onboarding.welcome.feature.prayer" = "Oración y reflexión guiada";
+"onboarding.welcome.feature.growth" = "Rastrea tu crecimiento espiritual";
+"onboarding.welcome.signUpEmail" = "Registrarse con correo";
+"onboarding.welcome.signIn" = "¿Ya tienes cuenta? Inicia sesión";
+"onboarding.welcome.skipAuth" = "Continuar sin cuenta";
+"onboarding.name.title" = "¿Cómo te llamamos?";
+"onboarding.name.placeholder" = "Tu nombre";
+"onboarding.maturity.title" = "¿Dónde estás en tu fe?";
+"onboarding.maturity.subtitle" = "Esto nos ayuda a personalizar tu jornada.";
+"onboarding.quiz.title" = "Algunas preguntas rápidas";
+"onboarding.quiz.subtitle" = "Ayúdanos a entender dónde estás para poder encontrarte ahí.";
+"onboarding.translation.title" = "Traducción bíblica preferida";
+"onboarding.translation.subtitle" = "Elige qué traducción te gustaría en tus lecturas diarias.";
+"onboarding.generating.title" = "Construyendo tu jornada...";
+"onboarding.generating.subtitle" = "Estamos creando una experiencia personalizada de 40 días solo para ti.";
+"onboarding.ready.title" = "Tu jornada te espera";
+"onboarding.ready.subtitle" = "40 días de Escritura, devocionales y oración guiada — diseñados solo para ti.";
+"onboarding.ready.startButton" = "Comenzar Día 1";
+
+// MARK: - Feature Tour
+"tour.welcome.title" = "Bienvenido a Abide Journey";
+"tour.welcome.body" = "Tu caminata personalizada de 40 días con Dios. Cada día incluye Escritura, un devocional corto, pasos de acción y una reflexión — diseñados para ti.";
+"tour.today.title" = "Tu devocional diario";
+"tour.today.body" = "Cada mañana, abre la pestaña Hoy para tu Escritura diaria, devocional, guía de oración y pasos de acción.";
+"tour.progress.title" = "Rastrea tu crecimiento";
+"tour.progress.body" = "Ve tu racha, anillos de hábitos y estadísticas semanales. Observa cómo crecen tus disciplinas espirituales día a día.";
+"tour.journal.title" = "Reflexiona y escribe";
+"tour.journal.body" = "Captura tus pensamientos con texto o voz. Tus reflexiones serán un registro de cómo Dios está obrando en tu vida.";
+"tour.settings.title" = "Hazlo tuyo";
+"tour.settings.body" = "Comienza nuevas jornadas, invita a tu pareja, ajusta tu traducción bíblica y gestiona notificaciones.";
+
+// MARK: - Tabs
+"tab.today" = "Hoy";
+"tab.progress" = "Progreso";
+"tab.journal" = "Diario";
+"tab.settings" = "Ajustes";
+
+// MARK: - Daily Experience
+"daily.scripture" = "Escritura";
+"daily.devotional" = "Devocional";
+"daily.prayer" = "Oración";
+"daily.reflection" = "Reflexión";
+"daily.actionSteps" = "Pasos de acción";
+"daily.checkIn" = "Check In";
+"daily.dayOf" = "Día %d de %d";
+"daily.completed" = "Completado";
+"daily.locked" = "Bloqueado";
+
+// MARK: - Progress
+"progress.title" = "Progreso";
+"progress.currentStreak" = "Racha actual";
+"progress.longestStreak" = "Racha más larga";
+"progress.totalDays" = "Total de días";
+"progress.days" = "días";
+"progress.weeklyStats" = "Estadísticas semanales";
+"progress.habitRings" = "Hábitos diarios";
+"progress.faithMap" = "Mapa de fe";
+
+// MARK: - Journal
+"journal.title" = "Diario";
+"journal.newEntry" = "Nueva entrada";
+"journal.empty" = "Aún no hay entradas";
+"journal.emptySubtitle" = "Tus reflexiones aparecerán aquí mientras escribes en tu jornada.";
+"journal.voiceHint" = "Prueba el diario por voz — toca el micrófono para hablar tus pensamientos.";
+
+// MARK: - Settings
+"settings.title" = "Ajustes";
+"settings.profile" = "Perfil";
+"settings.account" = "Cuenta";
+"settings.notifications" = "Notificaciones";
+"settings.bibleTranslation" = "Traducción bíblica";
+"settings.newJourney" = "Iniciar nueva jornada";
+"settings.pastJourneys" = "Jornadas anteriores";
+"settings.premium" = "Premium";
+"settings.accountability" = "Compañeros de responsabilidad";
+
+// MARK: - Custom Journey
+"customJourney.title" = "Crea tu jornada";
+"customJourney.subtitle" = "Cuéntanos por lo que estás pasando, y crearemos una jornada personalizada de 40 días solo para ti.";
+"customJourney.prompt" = "¿Qué hay en tu corazón?";
+"customJourney.examples" = "O toca un ejemplo:";
+"customJourney.includes" = "Tu jornada incluirá";
+"customJourney.createButton" = "Crear mi jornada";
+"customJourney.creating" = "Creando tu jornada...";
+"customJourney.failedTitle" = "Generación fallida";
+
+// MARK: - Couples Journey
+"couples.title" = "Jornada juntos";
+"couples.subtitle" = "Comienza un devocional compartido de 40 días con tu pareja. Mismo contenido diario, reflexiones para parejas y un propósito compartido.";
+"couples.partnerName" = "Nombre de tu pareja";
+"couples.chooseJourney" = "Elige tu jornada";
+"couples.howItWorks" = "Cómo funciona";
+"couples.startButton" = "Comenzar nuestra jornada";
+"couples.invited" = "¡%@ te invitó!";
+"couples.toJourney" = "a una jornada en pareja";
+"couples.acceptButton" = "Aceptar y comenzar";
+
+// MARK: - Gift Journey
+"gift.title" = "Regala una jornada";
+"gift.subtitle" = "Dale a alguien especial una jornada transformadora de 40 días con Dios.";
+"gift.recipient" = "¿Para quién es?";
+"gift.recipientPlaceholder" = "Su nombre";
+"gift.chooseJourney" = "Elige una jornada";
+"gift.personalMessage" = "Agregar mensaje personal (opcional)";
+"gift.sendButton" = "Enviar regalo";
+"gift.from" = "Un regalo de %@";
+"gift.claimButton" = "Comenzar mi jornada de regalo";
+"gift.premium" = "Jornada Premium de 40 días";
+
+// MARK: - Premium
+"premium.title" = "Hazte Premium";
+"premium.restore" = "Restaurar compras";
+"premium.monthly" = "Mensual";
+"premium.yearly" = "Anual";
+"premium.bestValue" = "Mejor valor";
+
+// MARK: - Check In
+"checkIn.title" = "¿Cómo fue hoy?";
+"checkIn.great" = "Genial";
+"checkIn.good" = "Bien";
+"checkIn.okay" = "Normal";
+"checkIn.tough" = "Difícil";
+"checkIn.missed" = "No pude";
+"checkIn.prayerMinutes" = "Minutos en oración";
+"checkIn.notes" = "¿Algo en tu corazón?";
+
+// MARK: - Milestones
+"milestone.title" = "¡Hito!";
+"milestone.day10" = "10 días fuertes";
+"milestone.day20" = "20 días de fidelidad";
+"milestone.day30" = "30 días — ¡Casi llegas!";
+"milestone.day40" = "¡Jornada completada!";
+
+// MARK: - Errors
+"error.database" = "No se pueden cargar los datos";
+"error.databaseMessage" = "Abide Journey no pudo abrir su base de datos. Reinicia la app. Si el problema persiste, intenta reinstalar.";
+"error.saveFailed" = "Error al guardar";
+"error.generic" = "Algo salió mal. Intenta de nuevo.";
+
+// MARK: - Spiritual Maturity
+"maturity.exploring" = "Explorando";
+"maturity.newBeliever" = "Nuevo creyente";
+"maturity.growing" = "Creciendo";
+"maturity.mature" = "Maduro";
+"maturity.leader" = "Líder";
+
+// MARK: - Discipleship Areas
+"area.prayer" = "Oración";
+"area.scripture" = "Escritura";
+"area.obedience" = "Obediencia";
+"area.worship" = "Adoración";
+"area.community" = "Comunidad";
+"area.evangelism" = "Evangelismo";
+"area.service" = "Servicio";

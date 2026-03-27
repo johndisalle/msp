@@ -176,7 +176,82 @@ struct DynamicJourneyView: View {
         guard let profile else { return }
         isGenerating = true
 
-        // Analyze the user's description to pick the best theme and focus areas
+        Task {
+            // Try AI generation first, fall back to local analysis
+            let aiPlan = await AIJourneyService.shared.generateJourneyPlan(
+                description: userDescription,
+                userName: profile.name,
+                maturityLevel: profile.spiritualMaturity.rawValue
+            )
+
+            await MainActor.run {
+                if let aiPlan {
+                    createJourneyFromAIPlan(aiPlan, profile: profile)
+                } else {
+                    createJourneyFromLocalAnalysis(profile: profile)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func createJourneyFromAIPlan(_ plan: AIJourneyService.AIJourneyPlan, profile: UserProfile) {
+        // Archive existing active journeys
+        for journey in journeys where journey.isActive && !journey.isCompleted {
+            journey.isActive = false
+            journey.isCompleted = true
+        }
+
+        let theme = JourneyTheme(rawValue: plan.theme) ?? .spiritualGrowth
+        let focusAreas = plan.focusAreas.compactMap { DiscipleshipArea(rawValue: $0.capitalized) }
+        let finalFocusAreas = focusAreas.isEmpty ? Array(DiscipleshipArea.allCases.prefix(5)) : focusAreas
+
+        let newJourney = Journey(
+            title: plan.title,
+            subtitle: String(userDescription.prefix(80)),
+            totalDays: 40,
+            theme: theme,
+            focusAreas: finalFocusAreas
+        )
+        newJourney.user = profile
+
+        for aiDay in plan.days.prefix(40) {
+            let weekNumber = (aiDay.dayNumber - 1) / 7
+            let focusArea = finalFocusAreas[weekNumber % finalFocusAreas.count]
+
+            let day = JourneyDay(
+                dayNumber: aiDay.dayNumber,
+                scriptureReference: aiDay.scriptureReference,
+                scriptureText: aiDay.scriptureText,
+                devotionalTitle: aiDay.devotionalTitle,
+                devotionalText: aiDay.devotionalText,
+                prayerText: aiDay.prayerText,
+                reflectionPrompt: aiDay.reflectionPrompt,
+                focusArea: focusArea,
+                theme: theme,
+                actionSteps: aiDay.actionSteps.map { ActionStep(text: $0) }
+            )
+            day.journey = newJourney
+            modelContext.insert(day)
+        }
+
+        modelContext.insert(newJourney)
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to create your journey. Please try again."
+            isGenerating = false
+            return
+        }
+
+        Analytics.customJourneyCreated()
+        Analytics.journeyStarted(theme: theme.rawValue, isCouple: false)
+        isGenerating = false
+        dismiss()
+    }
+
+    @MainActor
+    private func createJourneyFromLocalAnalysis(profile: UserProfile) {
         let analysis = analyzeDescription(userDescription)
 
         // Archive existing active journeys
