@@ -186,7 +186,7 @@ struct GiftJourneyView: View {
 
     private func prepareGift() {
         Analytics.giftJourneySent()
-        let giftURL = DeepLinkService.giftUniversalURL(
+        let giftURL = DeepLinkService.giftURL(
             theme: selectedTheme,
             fromName: recipientName,
             message: personalMessage.isEmpty ? nil : personalMessage

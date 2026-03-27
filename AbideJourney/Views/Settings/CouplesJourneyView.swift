@@ -247,7 +247,7 @@ struct CouplesJourneyView: View {
 
         // Prepare invitation with deep link
         let userName = profile.name
-        let inviteURL = DeepLinkService.couplesInviteUniversalURL(theme: selectedTheme, fromName: userName)
+        let inviteURL = DeepLinkService.couplesInviteURL(theme: selectedTheme, fromName: userName)
         shareMessage = "Hey \(partnerName)! \(userName) wants to do a 40-day faith journey with you called \"\(title)\".\n\n\(subtitle)\n\nTap to join: \(inviteURL.absoluteString)\n\nOr download Abide Journey and we can walk through this together!"
         isGenerating = false
         showingShareSheet = true

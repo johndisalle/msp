@@ -7,10 +7,6 @@ import SwiftUI
 /// URL Scheme: `abidejourney://`
 /// - `abidejourney://couple?theme=healingRelationships&from=John`
 /// - `abidejourney://gift?theme=overcomingAnxiety&from=Sarah&message=Praying+for+you`
-///
-/// Universal Links: `https://abidejourney.app/`
-/// - `https://abidejourney.app/couple?theme=healingRelationships&from=John`
-/// - `https://abidejourney.app/gift?theme=overcomingAnxiety&from=Sarah&message=Praying+for+you`
 @Observable
 final class DeepLinkService {
     static let shared = DeepLinkService()
@@ -35,9 +31,6 @@ final class DeepLinkService {
     /// The custom URL scheme for the app
     static let urlScheme = "abidejourney"
 
-    /// The universal link domain
-    static let universalLinkHost = "abidejourney.app"
-
     // MARK: - Generate Shareable Links
 
     /// Creates a couples invitation URL that can be shared via messages/email.
@@ -50,19 +43,6 @@ final class DeepLinkService {
             URLQueryItem(name: "from", value: fromName),
         ]
         return components.url ?? URL(string: "\(urlScheme)://couple")!
-    }
-
-    /// Creates a universal link version for couples invitations.
-    static func couplesInviteUniversalURL(theme: JourneyTheme, fromName: String) -> URL {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = universalLinkHost
-        components.path = "/couple"
-        components.queryItems = [
-            URLQueryItem(name: "theme", value: theme.rawValue),
-            URLQueryItem(name: "from", value: fromName),
-        ]
-        return components.url ?? URL(string: "https://\(universalLinkHost)/couple")!
     }
 
     /// Creates a gift journey URL.
@@ -79,23 +59,6 @@ final class DeepLinkService {
         }
         components.queryItems = items
         return components.url ?? URL(string: "\(urlScheme)://gift")!
-    }
-
-    /// Creates a universal link version for gift journeys.
-    static func giftUniversalURL(theme: JourneyTheme, fromName: String, message: String?) -> URL {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = universalLinkHost
-        components.path = "/gift"
-        var items = [
-            URLQueryItem(name: "theme", value: theme.rawValue),
-            URLQueryItem(name: "from", value: fromName),
-        ]
-        if let message, !message.isEmpty {
-            items.append(URLQueryItem(name: "message", value: message))
-        }
-        components.queryItems = items
-        return components.url ?? URL(string: "https://\(universalLinkHost)/gift")!
     }
 
     // MARK: - Handle Incoming Links
