@@ -83,7 +83,7 @@ extension QuizQuestion {
         QuizQuestion(
             id: "growth_desire",
             text: "If God could grow one thing in you over the next 40 days, what would it be?",
-            type: .multipleChoice,
+            type: .multiSelect,
             options: ["A deeper prayer life", "Understanding the Bible better", "Actually living out my faith", "Real community", "Confidence to share my story", "Peace in the chaos"],
             category: .scripture
         )

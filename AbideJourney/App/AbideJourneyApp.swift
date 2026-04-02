@@ -1,11 +1,36 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Appearance Mode
+
+enum AppearanceMode: String, CaseIterable {
+    case system
+    case light
+    case dark
+
+    var label: String {
+        switch self {
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
 @main
 struct AbideJourneyApp: App {
     let modelContainer: ModelContainer?
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
 
     init() {
         // Initialize analytics
@@ -37,6 +62,7 @@ struct AbideJourneyApp: App {
             if let modelContainer {
                 RootView()
                     .modelContainer(modelContainer)
+                    .preferredColorScheme(appearanceMode.colorScheme)
                     .onOpenURL { url in
                         DeepLinkService.shared.handleURL(url)
                     }

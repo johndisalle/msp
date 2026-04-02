@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var showingDynamicSheet = false
     @State private var showingGiftSheet = false
     @State private var showingWelcomeGuide = false
+    @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
 
     private var profile: UserProfile? { profiles.first }
     private var completedJourneys: [Journey] {
@@ -136,6 +137,16 @@ struct SettingsView: View {
                             }
                         }
                     }
+                }
+
+                // Appearance
+                Section("Appearance") {
+                    Picker("App Theme", selection: $appearanceMode) {
+                        ForEach(AppearanceMode.allCases, id: \.self) { mode in
+                            Text(mode.label).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 // Journey
