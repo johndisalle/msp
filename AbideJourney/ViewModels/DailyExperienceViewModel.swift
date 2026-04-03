@@ -17,6 +17,7 @@ final class DailyExperienceViewModel {
     var saveError: String?
 
     var dailyLimitReached = false
+    var showConfetti = false
 
     let audioPlayer = AudioPlayerService.shared
 
@@ -101,6 +102,7 @@ final class DailyExperienceViewModel {
     func toggleActionStep(at index: Int, context: ModelContext) {
         guard 0..<actionSteps.count ~= index else { return }
         actionSteps[index].isCompleted.toggle()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         currentDay?.actionSteps = actionSteps
         try? context.save()
     }
@@ -135,6 +137,10 @@ final class DailyExperienceViewModel {
             journeyJustCompleted = true
         }
 
+        // Haptic feedback for completion
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        showConfetti = true
+
         // Check for milestone celebration
         if MilestoneCelebrationView.milestoneDays.contains(day.dayNumber) {
             milestoneDay = day.dayNumber
@@ -157,7 +163,7 @@ final class DailyExperienceViewModel {
             NotificationService.shared.scheduleMorningReminder(
                 at: profile.notificationMorningTime,
                 dayNumber: nextDayNumber,
-                verseSnippet: String(nextDay.scriptureText.prefix(60))
+                verseSnippet: String(nextDay.scriptureText.prefix(100))
             )
             NotificationService.shared.scheduleEveningCheckIn(
                 at: profile.notificationEveningTime,
@@ -207,9 +213,17 @@ final class DailyExperienceViewModel {
         }
     }
 
+    func toggleBookmark(context: ModelContext) {
+        guard let day = currentDay else { return }
+        day.isBookmarked.toggle()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        try? context.save()
+    }
+
     func markPrayed(context: ModelContext) {
         guard let day = currentDay else { return }
         day.hasPrayed = true
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         Analytics.prayerCompleted()
         do {
             try context.save()

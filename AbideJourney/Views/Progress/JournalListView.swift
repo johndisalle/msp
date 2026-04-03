@@ -8,11 +8,24 @@ struct JournalListView: View {
     @State private var showingPremiumSheet = false
     @State private var showingShareSheet = false
     @State private var showingNewEntrySheet = false
+    @State private var editingEntry: JournalEntry?
     @State private var exportedPDFURL: URL?
     @State private var isExporting = false
     @State private var exportError: String?
+    @State private var searchText = ""
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
+
+    private var filteredEntries: [JournalEntry] {
+        guard !searchText.isEmpty else { return entries }
+        let query = searchText.lowercased()
+        return entries.filter { entry in
+            entry.text.lowercased().contains(query) ||
+            entry.mood?.label.lowercased().contains(query) == true ||
+            entry.journeyDay?.scriptureReference.lowercased().contains(query) == true ||
+            entry.journeyDay?.reflectionPrompt.lowercased().contains(query) == true
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -26,7 +39,7 @@ struct JournalListView: View {
                 } else {
                     List {
                         // Premium users: remind them about voice journaling
-                        if isPremium && !entries.contains(where: \.isVoiceEntry) {
+                        if isPremium && !entries.contains(where: \.isVoiceEntry) && searchText.isEmpty {
                             Section {
                                 HStack(spacing: 12) {
                                     Image(systemName: "mic.fill")
@@ -48,7 +61,7 @@ struct JournalListView: View {
                         }
 
                         // Free users: export nudge after 5+ entries
-                        if !isPremium && entries.count >= 5 {
+                        if !isPremium && entries.count >= 5 && searchText.isEmpty {
                             Section {
                                 Button {
                                     showingPremiumSheet = true
@@ -80,13 +93,37 @@ struct JournalListView: View {
                             }
                         }
 
-                        Section {
-                            ForEach(entries) { entry in
-                                JournalEntryRow(entry: entry)
+                        if !searchText.isEmpty && filteredEntries.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
+                        } else {
+                            Section {
+                                ForEach(filteredEntries) { entry in
+                                    JournalEntryRow(entry: entry)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            editingEntry = entry
+                                        }
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                            Button(role: .destructive) {
+                                                deleteEntry(entry)
+                                            } label: {
+                                                Label("Delete", systemImage: "trash")
+                                            }
+                                        }
+                                        .swipeActions(edge: .leading) {
+                                            Button {
+                                                editingEntry = entry
+                                            } label: {
+                                                Label("Edit", systemImage: "pencil")
+                                            }
+                                            .tint(AJTheme.sage)
+                                        }
+                                }
                             }
                         }
                     }
                     .listStyle(.plain)
+                    .searchable(text: $searchText, prompt: "Search reflections...")
                 }
             }
             .navigationTitle("Journal")
@@ -126,6 +163,9 @@ struct JournalListView: View {
             .sheet(isPresented: $showingNewEntrySheet) {
                 StandaloneJournalSheet(modelContext: modelContext)
             }
+            .sheet(item: $editingEntry) { entry in
+                EditJournalSheet(entry: entry, modelContext: modelContext)
+            }
             .alert("Export Failed", isPresented: Binding(
                 get: { exportError != nil },
                 set: { if !$0 { exportError = nil } }
@@ -135,6 +175,11 @@ struct JournalListView: View {
                 Text(exportError ?? "")
             }
         }
+    }
+
+    private func deleteEntry(_ entry: JournalEntry) {
+        modelContext.delete(entry)
+        try? modelContext.save()
     }
 
     private func exportPDF() {
@@ -169,6 +214,105 @@ struct JournalListView: View {
     }
 }
 
+// MARK: - Edit Journal Sheet
+
+struct EditJournalSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Bindable var entry: JournalEntry
+    let modelContext: ModelContext
+    @State private var editText: String = ""
+    @State private var editMood: Mood?
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    if let day = entry.journeyDay, !day.reflectionPrompt.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Reflection Prompt")
+                                .font(AJTheme.captionFont)
+                                .foregroundStyle(AJTheme.secondaryText)
+                            Text(day.reflectionPrompt)
+                                .font(AJTheme.scriptureFont)
+                                .italic()
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(AJTheme.cream.opacity(0.5))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("How are you feeling?")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.secondaryText)
+
+                        HStack(spacing: 12) {
+                            ForEach(Mood.allCases, id: \.self) { mood in
+                                Button {
+                                    editMood = mood
+                                } label: {
+                                    VStack(spacing: 4) {
+                                        Image(systemName: mood.sfSymbol)
+                                            .font(.title2)
+                                            .foregroundStyle(mood.color)
+                                        Text(mood.label)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 6)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(editMood == mood ? AJTheme.sage.opacity(0.15) : .clear)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Your Reflection")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        TextEditor(text: $editText)
+                            .frame(minHeight: 200)
+                            .padding(8)
+                            .background(AJTheme.cardBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Edit Entry")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        entry.text = editText
+                        entry.mood = editMood
+                        entry.updatedAt = Date()
+                        try? modelContext.save()
+                        dismiss()
+                    }
+                    .bold()
+                    .disabled(editText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+            .onAppear {
+                editText = entry.text
+                editMood = entry.mood
+            }
+        }
+        .presentationDetents([.large])
+    }
+}
+
 // MARK: - Standalone Journal Entry Sheet
 
 struct StandaloneJournalSheet: View {
@@ -184,7 +328,6 @@ struct StandaloneJournalSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Mood selector
                     VStack(alignment: .leading, spacing: 8) {
                         Text("How are you feeling?")
                             .font(.caption)
@@ -211,13 +354,10 @@ struct StandaloneJournalSheet: View {
                                     )
                                 }
                                 .buttonStyle(.plain)
-                                .accessibilityLabel(mood.label)
-                                .accessibilityAddTraits(selectedMood == mood ? .isSelected : [])
                             }
                         }
                     }
 
-                    // Journal text with voice toggle
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("What's on your heart?")
@@ -241,32 +381,6 @@ struct StandaloneJournalSheet: View {
                                 )
                                 .foregroundStyle(speechService.isRecording ? AJTheme.destructive : AJTheme.sage)
                             }
-                            .accessibilityLabel(speechService.isRecording ? "Stop recording" : "Start voice entry")
-                        }
-
-                        if speechService.isRecording {
-                            HStack(spacing: 8) {
-                                Circle()
-                                    .fill(AJTheme.destructive)
-                                    .frame(width: 8, height: 8)
-                                Text("Speak your reflection — it will appear as text below")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                Button {
-                                    speechService.stopRecording()
-                                } label: {
-                                    Text("Stop")
-                                        .font(.caption.bold())
-                                        .foregroundStyle(AJTheme.destructive)
-                                }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(AJTheme.destructive.opacity(0.06))
-                            )
                         }
 
                         TextEditor(text: $journalText)
@@ -275,12 +389,6 @@ struct StandaloneJournalSheet: View {
                             .background(AJTheme.cardBackground)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .focused($isFocused)
-
-                        if let error = speechService.error {
-                            Text(error)
-                                .font(.caption)
-                                .foregroundStyle(AJTheme.destructive)
-                        }
                     }
                 }
                 .padding()

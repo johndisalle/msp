@@ -6,11 +6,16 @@ final class StreakService {
 
     private init() {}
 
+    /// Number of grace days allowed per journey (forgive missed days without breaking streak)
+    static let graceDaysPerJourney = 2
+
     struct StreakInfo {
         let currentStreak: Int
         let longestStreak: Int
         let totalDaysCompleted: Int
         let completedDates: Set<DateComponents>
+        let graceDaysUsed: Int
+        let graceDaysRemaining: Int
     }
 
     func calculateStreak(for journey: Journey) -> StreakInfo {
@@ -24,25 +29,36 @@ final class StreakService {
         })
 
         var currentStreak = 0
+        var graceDaysUsed = 0
         var longestStreak = 0
         var tempStreak = 0
 
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
+        let graceDaysAllowed = Self.graceDaysPerJourney
 
-        // Calculate current streak (consecutive days ending today or yesterday)
+        // Calculate current streak with grace days (allow 1-day gaps)
         var checkDate = today
+        var consecutiveGaps = 0
         while true {
             let components = calendar.dateComponents([.year, .month, .day], from: checkDate)
             if completedDates.contains(components) {
                 currentStreak += 1
+                consecutiveGaps = 0
                 checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
             } else {
-                break
+                // Allow grace day — 1-day gap doesn't break the streak
+                consecutiveGaps += 1
+                if consecutiveGaps <= 1 && graceDaysUsed < graceDaysAllowed && currentStreak > 0 {
+                    graceDaysUsed += 1
+                    checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
+                } else {
+                    break
+                }
             }
         }
 
-        // Calculate longest streak
+        // Calculate longest streak (with same grace logic)
         let sortedDates = completedDays.compactMap { $0.date }.sorted()
         for (index, date) in sortedDates.enumerated() {
             if index == 0 {
@@ -50,7 +66,8 @@ final class StreakService {
             } else {
                 let previousDate = sortedDates[index - 1]
                 let daysDiff = calendar.dateComponents([.day], from: calendar.startOfDay(for: previousDate), to: calendar.startOfDay(for: date)).day ?? 0
-                if daysDiff == 1 {
+                if daysDiff <= 2 {
+                    // 1 day = consecutive, 2 days = 1-day gap (grace)
                     tempStreak += 1
                 } else {
                     tempStreak = 1
@@ -63,7 +80,9 @@ final class StreakService {
             currentStreak: currentStreak,
             longestStreak: longestStreak,
             totalDaysCompleted: completedDays.count,
-            completedDates: completedDates
+            completedDates: completedDates,
+            graceDaysUsed: graceDaysUsed,
+            graceDaysRemaining: max(0, graceDaysAllowed - graceDaysUsed)
         )
     }
 

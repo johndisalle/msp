@@ -9,6 +9,7 @@ final class JourneyDay {
     var isCompleted: Bool = false
     var isUnlocked: Bool = false
     var hasBeenAdapted: Bool = false
+    var isBookmarked: Bool = false
 
     // Content
     var scriptureReference: String = ""

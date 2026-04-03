@@ -19,6 +19,7 @@ struct DailyExperienceView: View {
             Group {
                 if let day = viewModel.currentDay, let journey = viewModel.journey {
                     ScrollViewReader { scrollProxy in
+                    ZStack {
                     ScrollView {
                         VStack(spacing: AJTheme.paddingLarge) {
                             Color.clear
@@ -109,6 +110,18 @@ struct DailyExperienceView: View {
                             Text("Great work! You can complete up to 3 days today. Ready to start Day \(day.dayNumber)?")
                         }
                     }
+                    // Confetti overlay
+                    if viewModel.showConfetti {
+                        ConfettiView()
+                            .ignoresSafeArea()
+                            .allowsHitTesting(false)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                    withAnimation { viewModel.showConfetti = false }
+                                }
+                            }
+                    }
+                    } // ZStack
                     } // ScrollViewReader
                 } else {
                     VStack(spacing: 20) {
@@ -138,6 +151,29 @@ struct DailyExperienceView: View {
                 }
             }
             .navigationTitle("Today")
+            .toolbar {
+                if viewModel.currentDay != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        HStack(spacing: 16) {
+                            Button {
+                                viewModel.toggleBookmark(context: modelContext)
+                            } label: {
+                                Image(systemName: viewModel.currentDay?.isBookmarked == true ? "bookmark.fill" : "bookmark")
+                                    .foregroundStyle(viewModel.currentDay?.isBookmarked == true ? AJTheme.gold : AJTheme.secondaryText)
+                            }
+                            .accessibilityLabel(viewModel.currentDay?.isBookmarked == true ? "Remove bookmark" : "Bookmark this day")
+
+                            NavigationLink {
+                                BookmarkedDaysView()
+                            } label: {
+                                Image(systemName: "bookmark.square")
+                                    .foregroundStyle(AJTheme.sage)
+                            }
+                            .accessibilityLabel("View bookmarked days")
+                        }
+                    }
+                }
+            }
             .ajScreenBackground()
             .onAppear {
                 viewModel.loadCurrentDay(from: journeys)
@@ -268,27 +304,60 @@ struct DayHeaderView: View {
 struct ScriptureCardView: View {
     let reference: String
     let text: String
+    @State private var appeared = false
+    @State private var showShareSheet = false
+
+    private var shareText: String {
+        "\u{201C}\(text)\u{201D}\n— \(reference)\n\nAbide Journey"
+    }
 
     var body: some View {
         VStack(spacing: AJTheme.paddingMedium) {
-            Image(systemName: "book.closed.fill")
-                .font(.title2)
-                .foregroundColor(AJTheme.gold)
+            HStack {
+                Spacer()
+                Image(systemName: "book.closed.fill")
+                    .font(.title2)
+                    .foregroundColor(AJTheme.gold)
+                Spacer()
+            }
+            .overlay(alignment: .trailing) {
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    showShareSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.subheadline)
+                        .foregroundStyle(AJTheme.sage)
+                        .padding(8)
+                }
+                .accessibilityLabel("Share this verse")
+            }
 
             Text("\u{201C}\(text)\u{201D}")
                 .font(AJTheme.scriptureFont)
                 .foregroundColor(AJTheme.primaryText)
                 .multilineTextAlignment(.center)
                 .lineSpacing(4)
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 8)
 
             Text("— \(reference)")
                 .font(.system(.caption, design: .serif, weight: .semibold))
                 .foregroundColor(AJTheme.sage)
+                .opacity(appeared ? 1 : 0)
         }
         .ajCard()
         .padding(.horizontal)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Scripture from \(reference): \(text)")
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
+                appeared = true
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheet(items: [shareText])
+        }
     }
 }
 
@@ -662,6 +731,110 @@ struct PremiumFeatureHintsCard: View {
             .ajCard()
             .padding(.horizontal)
         }
+    }
+}
+
+// MARK: - Confetti View
+
+struct ConfettiView: View {
+    @State private var particles: [(id: Int, x: CGFloat, delay: Double, color: Color, size: CGFloat)] = []
+
+    private let colors: [Color] = [AJTheme.gold, AJTheme.sage, AJTheme.sageLight, AJTheme.sandstone, .yellow, .orange]
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack {
+                ForEach(particles, id: \.id) { p in
+                    Circle()
+                        .fill(p.color)
+                        .frame(width: p.size, height: p.size)
+                        .modifier(FallingParticle(x: p.x, screenHeight: geo.size.height, delay: p.delay))
+                }
+            }
+            .onAppear {
+                particles = (0..<40).map { i in
+                    (id: i,
+                     x: CGFloat.random(in: 0...geo.size.width),
+                     delay: Double.random(in: 0...0.6),
+                     color: colors.randomElement() ?? AJTheme.gold,
+                     size: CGFloat.random(in: 4...10))
+                }
+            }
+        }
+    }
+}
+
+struct FallingParticle: ViewModifier, Animatable {
+    let x: CGFloat
+    let screenHeight: CGFloat
+    let delay: Double
+    @State private var y: CGFloat = -20
+    @State private var opacity: Double = 1
+
+    func body(content: Content) -> some View {
+        content
+            .position(x: x, y: y)
+            .opacity(opacity)
+            .onAppear {
+                withAnimation(.easeIn(duration: 2.0).delay(delay)) {
+                    y = screenHeight + 20
+                    opacity = 0
+                }
+            }
+    }
+}
+
+// MARK: - Bookmarked Days View
+
+struct BookmarkedDaysView: View {
+    @Query private var journeys: [Journey]
+
+    private var bookmarkedDays: [JourneyDay] {
+        journeys.flatMap { $0.days ?? [] }
+            .filter { $0.isBookmarked }
+            .sorted { $0.dayNumber < $1.dayNumber }
+    }
+
+    var body: some View {
+        Group {
+            if bookmarkedDays.isEmpty {
+                ContentUnavailableView(
+                    "No Bookmarks Yet",
+                    systemImage: "bookmark",
+                    description: Text("Tap the bookmark icon on any day's devotional to save it here.")
+                )
+            } else {
+                List(bookmarkedDays, id: \.id) { day in
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Image(systemName: day.focusArea.icon)
+                                .foregroundStyle(AJTheme.sage)
+                            Text("Day \(day.dayNumber)")
+                                .font(AJTheme.subheadlineFont)
+                            Spacer()
+                            Image(systemName: "bookmark.fill")
+                                .foregroundStyle(AJTheme.gold)
+                                .font(.caption)
+                        }
+
+                        Text(day.devotionalTitle)
+                            .font(.system(.body, design: .serif, weight: .semibold))
+
+                        Text("\u{201C}\(day.scriptureText.prefix(100))...\u{201D}")
+                            .font(AJTheme.scriptureFont)
+                            .foregroundStyle(AJTheme.secondaryText)
+                            .lineLimit(2)
+
+                        Text("— \(day.scriptureReference)")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.sage)
+                    }
+                    .padding(.vertical, 4)
+                }
+                .listStyle(.plain)
+            }
+        }
+        .navigationTitle("Bookmarked Days")
     }
 }
 

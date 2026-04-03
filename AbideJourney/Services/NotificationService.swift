@@ -23,9 +23,9 @@ final class NotificationService {
 
     func scheduleMorningReminder(at time: Date, dayNumber: Int, verseSnippet: String) {
         let content = UNMutableNotificationContent()
-        content.title = "Good Morning ☀️"
-        content.subtitle = "Day \(dayNumber)/40"
-        content.body = "\"\(verseSnippet)\" — Your devotional is waiting."
+        content.title = "Day \(dayNumber) — Your Verse Today"
+        content.subtitle = "Good Morning ☀️"
+        content.body = "\u{201C}\(verseSnippet)\u{201D}\nTap to read today's devotional."
         content.sound = .default
         content.categoryIdentifier = "MORNING_DEVOTIONAL"
 
@@ -45,8 +45,8 @@ final class NotificationService {
 
     func scheduleEveningCheckIn(at time: Date, dayNumber: Int) {
         let content = UNMutableNotificationContent()
-        content.title = "Evening Reflection"
-        content.body = "How did today's step go? Take a moment to check in."
+        content.title = "Evening Reflection 🌙"
+        content.body = "How was Day \(dayNumber)? Take a moment to reflect and journal before the day ends."
         content.sound = .default
         content.categoryIdentifier = "EVENING_CHECKIN"
 
