@@ -437,6 +437,7 @@ struct PlanButton: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
+                }
 
                 Spacer()
 
