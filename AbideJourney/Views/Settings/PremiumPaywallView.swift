@@ -16,11 +16,13 @@ struct PremiumPaywallView: View {
     enum PremiumPlan {
         case monthly
         case yearly
+        case lifetime
 
         var productID: String {
             switch self {
             case .monthly: return StoreKitService.monthlyProductID
             case .yearly: return StoreKitService.yearlyProductID
+            case .lifetime: return StoreKitService.lifetimeProductID
             }
         }
     }
@@ -97,7 +99,7 @@ struct PremiumPaywallView: View {
 
                         // Subscription details
                         VStack(spacing: 6) {
-                            Text("Cancel anytime. Subscription auto-renews.")
+                            Text(selectedPlan == .lifetime ? "One-time purchase. No subscription." : "Cancel anytime. Subscription auto-renews.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
@@ -316,6 +318,18 @@ struct PremiumPaywallView: View {
                         selectedPlan = .monthly
                     }
                 }
+
+                if let lifetime = storeService.lifetimeProduct {
+                    PlanButton(
+                        title: "Lifetime",
+                        price: lifetime.displayPrice,
+                        badge: "Best Value",
+                        subtitle: "Pay once, keep forever",
+                        isSelected: selectedPlan == .lifetime
+                    ) {
+                        selectedPlan = .lifetime
+                    }
+                }
             }
         }
         .padding(.horizontal)
@@ -324,7 +338,11 @@ struct PremiumPaywallView: View {
     // MARK: - Subscribe Button
 
     private var hasProducts: Bool {
-        selectedPlan == .monthly ? storeService.monthlyProduct != nil : storeService.yearlyProduct != nil
+        switch selectedPlan {
+        case .monthly: return storeService.monthlyProduct != nil
+        case .yearly: return storeService.yearlyProduct != nil
+        case .lifetime: return storeService.lifetimeProduct != nil
+        }
     }
 
     @ViewBuilder
@@ -349,7 +367,7 @@ struct PremiumPaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text(selectedPlan == .yearly ? "Start Free Trial" : "Subscribe")
+                        Text(selectedPlan == .yearly ? "Start Free Trial" : selectedPlan == .lifetime ? "Buy Once, Keep Forever" : "Subscribe")
                             .font(.headline)
                     }
                 }
@@ -374,6 +392,8 @@ struct PremiumPaywallView: View {
             product = storeService.monthlyProduct
         case .yearly:
             product = storeService.yearlyProduct
+        case .lifetime:
+            product = storeService.lifetimeProduct
         }
 
         guard let product else {
@@ -389,7 +409,7 @@ struct PremiumPaywallView: View {
                     try? modelContext.save()
                 }
                 isPurchasing = false
-                Analytics.premiumPurchased(plan: selectedPlan == .yearly ? "yearly" : "monthly")
+                Analytics.premiumPurchased(plan: selectedPlan == .yearly ? "yearly" : selectedPlan == .lifetime ? "lifetime" : "monthly")
                 withAnimation(.easeInOut(duration: 0.4)) {
                     showingCelebration = true
                 }

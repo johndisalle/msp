@@ -5,6 +5,7 @@ struct ProgressDashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var journeys: [Journey]
     @Query private var profiles: [UserProfile]
+    @Query private var journalEntries: [JournalEntry]
     @State private var viewModel = ProgressViewModel()
     @State private var showingPremiumSheet = false
 
@@ -23,6 +24,15 @@ struct ProgressDashboardView: View {
                     if let streak = viewModel.streakInfo {
                         StreakCard(streakInfo: streak)
                     }
+
+                    // Achievements
+                    NavigationLink {
+                        AchievementsView()
+                    } label: {
+                        AchievementsSummaryCard(journeys: journeys, journalCount: journalEntries.count)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
 
                     // Habit rings
                     HabitRingsCard(
@@ -536,6 +546,109 @@ struct PremiumProgressCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(color.opacity(0.08))
         )
+    }
+}
+
+// MARK: - Achievements Summary Card
+
+struct AchievementsSummaryCard: View {
+    let journeys: [Journey]
+    let journalCount: Int
+
+    private var earnedCount: Int {
+        AchievementService.shared.earnedBadgeIDs.count
+    }
+
+    private var recentBadges: [AchievementBadge] {
+        let earned = AchievementService.shared.earnedBadgeIDs
+        return BadgeCatalog.all.filter { earned.contains($0.id) }.suffix(3).reversed()
+    }
+
+    private var unseenCount: Int {
+        AchievementService.shared.unseenBadgeIDs.count
+    }
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: "trophy.fill")
+                    .foregroundStyle(.yellow)
+                Text("Achievements")
+                    .font(AJTheme.subheadlineFont)
+                Spacer()
+                if unseenCount > 0 {
+                    Text("\(unseenCount) new!")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Capsule().fill(.red))
+                }
+                HStack(spacing: 2) {
+                    Text("\(earnedCount)/\(BadgeCatalog.all.count)")
+                        .font(.caption)
+                        .foregroundStyle(AJTheme.secondaryText)
+                    Image(systemName: "chevron.right")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            if recentBadges.isEmpty {
+                Text("Complete days to start earning badges!")
+                    .font(.caption)
+                    .foregroundStyle(AJTheme.secondaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack(spacing: 12) {
+                    ForEach(recentBadges) { badge in
+                        VStack(spacing: 6) {
+                            ZStack {
+                                Circle()
+                                    .fill(badge.color.opacity(0.15))
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: badge.icon)
+                                    .font(.body)
+                                    .foregroundStyle(badge.color)
+                            }
+                            Text(badge.name)
+                                .font(.caption2)
+                                .foregroundStyle(AJTheme.secondaryText)
+                                .lineLimit(1)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+
+                    if recentBadges.count < 3 {
+                        ForEach(0..<(3 - recentBadges.count), id: \.self) { _ in
+                            VStack(spacing: 6) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.gray.opacity(0.08))
+                                        .frame(width: 44, height: 44)
+                                    Image(systemName: "questionmark")
+                                        .font(.body)
+                                        .foregroundStyle(.gray.opacity(0.3))
+                                }
+                                Text("???")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray.opacity(0.3))
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
+        .onAppear {
+            AchievementService.shared.evaluate(journeys: journeys, journalEntryCount: journalCount)
+        }
     }
 }
 

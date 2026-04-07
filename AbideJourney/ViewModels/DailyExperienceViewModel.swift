@@ -18,6 +18,8 @@ final class DailyExperienceViewModel {
 
     var dailyLimitReached = false
     var showConfetti = false
+    var newBadge: AchievementBadge?
+    var shouldShowSmartPaywall = false
 
     let audioPlayer = AudioPlayerService.shared
 
@@ -169,6 +171,25 @@ final class DailyExperienceViewModel {
                 at: profile.notificationEveningTime,
                 dayNumber: nextDayNumber
             )
+        }
+
+        // Smart paywall: show after Day 3 for non-premium users (one time)
+        if !isPremium && day.dayNumber == 3 && !UserDefaults.standard.bool(forKey: "hasSeenSmartPaywall") {
+            UserDefaults.standard.set(true, forKey: "hasSeenSmartPaywall")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                self.shouldShowSmartPaywall = true
+            }
+        }
+
+        // Check for new achievement badges
+        let newBadges = AchievementService.shared.evaluate(
+            journeys: [journey],
+            journalEntryCount: -1 // can't count here; evaluated fully on Progress tab
+        )
+        if let first = newBadges.first {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.newBadge = first
+            }
         }
 
         // Reset for next day

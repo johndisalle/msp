@@ -8,9 +8,11 @@ struct DailyExperienceView: View {
     @Query private var profiles: [UserProfile]
     @State private var viewModel = DailyExperienceViewModel()
     @State private var showingPremiumSheet = false
+    @State private var showingSmartPaywall = false
     @State private var showingCompletionSheet = false
     @State private var showingMilestoneSheet = false
     @State private var showingAdvancePrompt = false
+    @State private var cardsAppeared = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -43,6 +45,9 @@ struct DailyExperienceView: View {
                                 text: day.devotionalText,
                                 isPremium: isPremium
                             )
+                            .opacity(cardsAppeared ? 1 : 0)
+                            .offset(y: cardsAppeared ? 0 : 20)
+                            .animation(.easeOut(duration: 0.5).delay(0.1), value: cardsAppeared)
 
                             ActionStepsCardView(
                                 steps: $viewModel.actionSteps,
@@ -50,6 +55,9 @@ struct DailyExperienceView: View {
                                     viewModel.toggleActionStep(at: index, context: modelContext)
                                 }
                             )
+                            .opacity(cardsAppeared ? 1 : 0)
+                            .offset(y: cardsAppeared ? 0 : 20)
+                            .animation(.easeOut(duration: 0.5).delay(0.2), value: cardsAppeared)
 
                             ReflectionCardView(
                                 prompt: day.reflectionPrompt,
@@ -57,6 +65,9 @@ struct DailyExperienceView: View {
                                     viewModel.showingJournalSheet = true
                                 }
                             )
+                            .opacity(cardsAppeared ? 1 : 0)
+                            .offset(y: cardsAppeared ? 0 : 20)
+                            .animation(.easeOut(duration: 0.5).delay(0.3), value: cardsAppeared)
 
                             if !day.prayerText.isEmpty {
                                 PrayerCardView(
@@ -66,6 +77,9 @@ struct DailyExperienceView: View {
                                         viewModel.markPrayed(context: modelContext)
                                     }
                                 )
+                                .opacity(cardsAppeared ? 1 : 0)
+                                .offset(y: cardsAppeared ? 0 : 20)
+                                .animation(.easeOut(duration: 0.5).delay(0.4), value: cardsAppeared)
                             }
 
                             if isPremium {
@@ -110,6 +124,17 @@ struct DailyExperienceView: View {
                             Text("Great work! You can complete up to 3 days today. Ready to start Day \(day.dayNumber)?")
                         }
                     }
+                    // Badge toast overlay
+                    if let badge = viewModel.newBadge {
+                        VStack {
+                            NewBadgeToast(badge: badge) {
+                                viewModel.newBadge = nil
+                            }
+                            Spacer()
+                        }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+
                     // Confetti overlay
                     if viewModel.showConfetti {
                         ConfettiView()
@@ -178,6 +203,10 @@ struct DailyExperienceView: View {
             .onAppear {
                 viewModel.loadCurrentDay(from: journeys)
                 viewModel.checkDailyLimit(isPremium: isPremium)
+                cardsAppeared = false
+                withAnimation {
+                    cardsAppeared = true
+                }
             }
             .sheet(isPresented: $viewModel.showingJournalSheet) {
                 JournalEntrySheet(
@@ -199,6 +228,15 @@ struct DailyExperienceView: View {
             }
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
+            }
+            .sheet(isPresented: $showingSmartPaywall) {
+                PremiumPaywallView()
+            }
+            .onChange(of: viewModel.shouldShowSmartPaywall) { _, show in
+                if show {
+                    showingSmartPaywall = true
+                    viewModel.shouldShowSmartPaywall = false
+                }
             }
             .sheet(isPresented: $showingCompletionSheet) {
                 JourneyCompletionView(
@@ -255,6 +293,7 @@ struct DayHeaderView: View {
     let totalDays: Int
     let focusArea: DiscipleshipArea
     let progress: Double
+    @State private var appeared = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -263,6 +302,8 @@ struct DayHeaderView: View {
                     Text("Day \(dayNumber)")
                         .font(AJTheme.titleFont)
                         .foregroundColor(AJTheme.primaryText)
+                        .scaleEffect(appeared ? 1 : 0.9, anchor: .leading)
+                        .opacity(appeared ? 1 : 0)
                     HStack(spacing: 6) {
                         Image(systemName: focusArea.icon)
                             .accessibilityHidden(true)
@@ -296,6 +337,11 @@ struct DayHeaderView: View {
         }
         .ajCard()
         .padding(.horizontal)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.6)) {
+                appeared = true
+            }
+        }
     }
 }
 
@@ -337,6 +383,7 @@ struct ScriptureCardView: View {
 
                     Button {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        AchievementService.shared.recordVerseShare()
                         showShareSheet = true
                     } label: {
                         Image(systemName: "square.and.arrow.up")
@@ -388,6 +435,17 @@ struct ScriptureCardView: View {
         }
         .ajCard()
         .padding(.horizontal)
+        .background(
+            GeometryReader { geo in
+                let midY = geo.frame(in: .global).midY
+                let screenMid = UIScreen.main.bounds.height / 2
+                let offset = (midY - screenMid) * 0.04
+                AJTheme.goldLight.opacity(0.15)
+                    .clipShape(RoundedRectangle(cornerRadius: AJTheme.cornerRadius))
+                    .offset(y: offset)
+                    .padding(.horizontal)
+            }
+        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Scripture from \(reference): \(text)")
         .onAppear {

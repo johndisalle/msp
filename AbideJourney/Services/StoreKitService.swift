@@ -15,7 +15,8 @@ final class StoreKitService {
 
     nonisolated static let monthlyProductID = "com.abidejourney.premium.monthly"
     nonisolated static let yearlyProductID = "com.abidejourney.premium.yearly"
-    nonisolated static let allProductIDs: Set<String> = [monthlyProductID, yearlyProductID]
+    nonisolated static let lifetimeProductID = "com.abidejourney.premium.lifetime"
+    nonisolated static let allProductIDs: Set<String> = [monthlyProductID, yearlyProductID, lifetimeProductID]
 
     var isPremium: Bool {
         !purchasedProductIDs.isEmpty
@@ -27,6 +28,10 @@ final class StoreKitService {
 
     var yearlyProduct: Product? {
         products.first { $0.id == Self.yearlyProductID }
+    }
+
+    var lifetimeProduct: Product? {
+        products.first { $0.id == Self.lifetimeProductID }
     }
 
     private init() {
