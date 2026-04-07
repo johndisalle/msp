@@ -44,6 +44,54 @@ struct ProgressDashboardView: View {
                         StreakCalendarView(journey: journey)
                     }
 
+                    // Scripture Memory (available to all users)
+                    NavigationLink {
+                        ScriptureMemoryView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.purple.opacity(0.12))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "brain.head.profile")
+                                    .font(.body)
+                                    .foregroundStyle(.purple)
+                            }
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Scripture Memory")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Flashcard practice for your saved verses")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+
+                            Spacer()
+
+                            let memCount = ScriptureMemoryService.shared.loadVerses().count
+                            if memCount > 0 {
+                                Text("\(memCount)")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Capsule().fill(.purple))
+                            }
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.purple.opacity(0.06))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
                     // Premium feature cards on Progress tab
                     if isPremium {
                         // Faith Map

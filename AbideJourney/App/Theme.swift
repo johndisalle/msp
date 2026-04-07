@@ -1,14 +1,88 @@
 import SwiftUI
 
+// MARK: - App Color Theme (user-selectable accent palette)
+
+enum AppColorTheme: String, CaseIterable, Codable {
+    case classic   // sage green + gold (default)
+    case midnight  // deep blue + silver
+    case ocean     // teal + coral
+    case warmth    // terracotta + amber
+
+    var label: String {
+        switch self {
+        case .classic: return "Classic"
+        case .midnight: return "Midnight"
+        case .ocean: return "Ocean"
+        case .warmth: return "Warmth"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .classic: return "leaf.fill"
+        case .midnight: return "moon.stars.fill"
+        case .ocean: return "water.waves"
+        case .warmth: return "flame.fill"
+        }
+    }
+
+    var primaryAccent: Color {
+        switch self {
+        case .classic:  return Color(red: 0.43, green: 0.56, blue: 0.52) // sage
+        case .midnight: return Color(red: 0.28, green: 0.35, blue: 0.55) // deep blue
+        case .ocean:    return Color(red: 0.20, green: 0.55, blue: 0.58) // teal
+        case .warmth:   return Color(red: 0.72, green: 0.42, blue: 0.32) // terracotta
+        }
+    }
+
+    var primaryAccentDark: Color {
+        switch self {
+        case .classic:  return Color(red: 0.31, green: 0.43, blue: 0.40)
+        case .midnight: return Color(red: 0.20, green: 0.26, blue: 0.44)
+        case .ocean:    return Color(red: 0.14, green: 0.42, blue: 0.46)
+        case .warmth:   return Color(red: 0.58, green: 0.32, blue: 0.24)
+        }
+    }
+
+    var primaryAccentLight: Color {
+        switch self {
+        case .classic:  return Color(red: 0.56, green: 0.68, blue: 0.63)
+        case .midnight: return Color(red: 0.45, green: 0.52, blue: 0.72)
+        case .ocean:    return Color(red: 0.38, green: 0.70, blue: 0.72)
+        case .warmth:   return Color(red: 0.85, green: 0.58, blue: 0.48)
+        }
+    }
+
+    var secondaryAccent: Color {
+        switch self {
+        case .classic:  return Color(red: 0.77, green: 0.64, blue: 0.31) // gold
+        case .midnight: return Color(red: 0.68, green: 0.70, blue: 0.78) // silver
+        case .ocean:    return Color(red: 0.85, green: 0.42, blue: 0.38) // coral
+        case .warmth:   return Color(red: 0.82, green: 0.68, blue: 0.35) // amber
+        }
+    }
+
+    var previewColors: [Color] {
+        [primaryAccent, secondaryAccent, primaryAccentLight]
+    }
+}
+
 // MARK: - Abide Journey Theme
 /// Warm, organic design system — gender-neutral, spiritually grounded.
 /// Palette adapts between light and dark mode.
 struct AJTheme {
-    // MARK: - Primary Colors (same in both modes — used for accents/buttons)
-    static let sage = Color(red: 0.43, green: 0.56, blue: 0.52)             // #6E8E85
-    static let sageDark = Color(red: 0.31, green: 0.43, blue: 0.40)         // #4E6E65
-    static let sageLight = Color(red: 0.56, green: 0.68, blue: 0.63)        // #8FADA1
-    static let gold = Color(red: 0.77, green: 0.64, blue: 0.31)             // #C4A24E
+    /// Current user-selected color theme. Read from UserDefaults.
+    static var currentTheme: AppColorTheme {
+        guard let raw = UserDefaults.standard.string(forKey: "appColorTheme"),
+              let theme = AppColorTheme(rawValue: raw) else { return .classic }
+        return theme
+    }
+
+    // MARK: - Primary Colors (driven by theme selection)
+    static var sage: Color { currentTheme.primaryAccent }
+    static var sageDark: Color { currentTheme.primaryAccentDark }
+    static var sageLight: Color { currentTheme.primaryAccentLight }
+    static var gold: Color { currentTheme.secondaryAccent }
     static let goldLight = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0.45, green: 0.38, blue: 0.22, alpha: 1)         // muted gold for dark

@@ -77,6 +77,24 @@ struct PremiumPaywallView: View {
                         // Subscribe button
                         subscribeButton
 
+                        // Free trial details
+                        if selectedPlan == .yearly {
+                            VStack(spacing: 4) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "gift.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(AJTheme.gold)
+                                    Text("3 days free, then auto-renews yearly")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Text("Cancel anytime during your trial — you won't be charged.")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                    .multilineTextAlignment(.center)
+                            }
+                        }
+
                         // Subscription details
                         VStack(spacing: 6) {
                             Text("Cancel anytime. Subscription auto-renews.")
@@ -279,7 +297,8 @@ struct PremiumPaywallView: View {
                     PlanButton(
                         title: "Yearly",
                         price: yearly.displayPrice + "/year",
-                        badge: "Save 33%",
+                        badge: "3-Day Free Trial",
+                        subtitle: "Then \(yearly.displayPrice)/year — Save 33%",
                         isSelected: selectedPlan == .yearly
                     ) {
                         selectedPlan = .yearly
@@ -291,6 +310,7 @@ struct PremiumPaywallView: View {
                         title: "Monthly",
                         price: monthly.displayPrice + "/month",
                         badge: nil,
+                        subtitle: nil,
                         isSelected: selectedPlan == .monthly
                     ) {
                         selectedPlan = .monthly
@@ -329,7 +349,7 @@ struct PremiumPaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text("Subscribe")
+                        Text(selectedPlan == .yearly ? "Start Free Trial" : "Subscribe")
                             .font(.headline)
                     }
                 }
@@ -387,6 +407,7 @@ struct PlanButton: View {
     let title: String
     let price: String
     let badge: String?
+    var subtitle: String? = nil
     let isSelected: Bool
     let action: () -> Void
 
@@ -407,10 +428,15 @@ struct PlanButton: View {
                                 .clipShape(Capsule())
                         }
                     }
-                    Text(price)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(price)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
 
                 Spacer()
 

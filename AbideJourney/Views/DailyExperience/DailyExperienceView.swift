@@ -306,6 +306,8 @@ struct ScriptureCardView: View {
     let text: String
     @State private var appeared = false
     @State private var showShareSheet = false
+    @State private var showVerseCard = false
+    @State private var memorizeAdded = false
 
     private var shareText: String {
         "\u{201C}\(text)\u{201D}\n— \(reference)\n\nAbide Journey"
@@ -321,16 +323,54 @@ struct ScriptureCardView: View {
                 Spacer()
             }
             .overlay(alignment: .trailing) {
-                Button {
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                    showShareSheet = true
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.subheadline)
-                        .foregroundStyle(AJTheme.sage)
-                        .padding(8)
+                HStack(spacing: 4) {
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        showVerseCard = true
+                    } label: {
+                        Image(systemName: "photo.artframe")
+                            .font(.subheadline)
+                            .foregroundStyle(AJTheme.gold)
+                            .padding(8)
+                    }
+                    .accessibilityLabel("Create verse card")
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        showShareSheet = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.subheadline)
+                            .foregroundStyle(AJTheme.sage)
+                            .padding(8)
+                    }
+                    .accessibilityLabel("Share this verse")
                 }
-                .accessibilityLabel("Share this verse")
+            }
+            .overlay(alignment: .leading) {
+                Button {
+                    ScriptureMemoryService.shared.addVerse(reference: reference, text: text)
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    withAnimation { memorizeAdded = true }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation { memorizeAdded = false }
+                    }
+                } label: {
+                    HStack(spacing: 3) {
+                        Image(systemName: memorizeAdded ? "checkmark" : "brain.head.profile")
+                            .font(.caption)
+                        Text(memorizeAdded ? "Saved" : "Memorize")
+                            .font(.caption2.bold())
+                    }
+                    .foregroundStyle(memorizeAdded ? AJTheme.success : AJTheme.sandstone)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(
+                        Capsule()
+                            .fill(memorizeAdded ? AJTheme.success.opacity(0.12) : AJTheme.sandstone.opacity(0.12))
+                    )
+                }
+                .accessibilityLabel("Save verse for memorization")
             }
 
             Text("\u{201C}\(text)\u{201D}")
@@ -357,6 +397,9 @@ struct ScriptureCardView: View {
         }
         .sheet(isPresented: $showShareSheet) {
             ShareSheet(items: [shareText])
+        }
+        .sheet(isPresented: $showVerseCard) {
+            VerseCardEditorView(reference: reference, text: text)
         }
     }
 }

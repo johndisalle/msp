@@ -109,6 +109,10 @@
 		A1B2C3D4E5F60001000046 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000046 /* UserNotifications.framework */; };
 		A1B2C3D4E5F60001000047 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000047 /* Charts.framework */; };
 		A1B2C3D4E5F60001000048 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */; };
+		A1B2C3D4E5F60001000140 /* ReferralService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000140 /* ReferralService.swift */; };
+		A1B2C3D4E5F60001000141 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000141 /* ReferralView.swift */; };
+		A1B2C3D4E5F60001000142 /* ScriptureMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */; };
+		A1B2C3D4E5F60001000143 /* VerseCardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -219,6 +223,10 @@
 		A1B2C3D4E5F60101000046 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		A1B2C3D4E5F60101000047 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
 		A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000140 /* ReferralService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000141 /* ReferralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureMemoryView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCardEditorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -411,6 +419,7 @@
 				A1B2C3D4E5F60101000103 /* FaithReportService.swift */,
 				A1B2C3D4E5F60101000134 /* AIJourneyService.swift */,
 				A1B2C3D4E5F60101000135 /* DeepLinkService.swift */,
+				A1B2C3D4E5F60101000140 /* ReferralService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -443,6 +452,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60101000025 /* DevotionalLiveActivity.swift */,
+				A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -473,6 +483,7 @@
 				A1B2C3D4E5F60101000031 /* JournalListView.swift */,
 				A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */,
 				A1B2C3D4E5F60101000102 /* FaithMapView.swift */,
+				A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -488,6 +499,7 @@
 				A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */,
 				A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */,
 				A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */,
+				A1B2C3D4E5F60101000141 /* ReferralView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -717,6 +729,10 @@
 				A1B2C3D4E5F60001000135 /* DeepLinkService.swift in Sources */,
 				A1B2C3D4E5F60001000136 /* AcceptCouplesInviteView.swift in Sources */,
 				A1B2C3D4E5F60001000137 /* ClaimGiftJourneyView.swift in Sources */,
+				A1B2C3D4E5F60001000140 /* ReferralService.swift in Sources */,
+				A1B2C3D4E5F60001000141 /* ReferralView.swift in Sources */,
+				A1B2C3D4E5F60001000142 /* ScriptureMemoryView.swift in Sources */,
+				A1B2C3D4E5F60001000143 /* VerseCardEditorView.swift in Sources */,
 				A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

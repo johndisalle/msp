@@ -15,8 +15,10 @@ struct SettingsView: View {
     @State private var showingCouplesSheet = false
     @State private var showingDynamicSheet = false
     @State private var showingGiftSheet = false
+    @State private var showingReferralSheet = false
     @State private var showingWelcomeGuide = false
     @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
+    @AppStorage("appColorTheme") private var appColorTheme: AppColorTheme = .classic
 
     private var profile: UserProfile? { profiles.first }
     private var completedJourneys: [Journey] {
@@ -141,12 +143,52 @@ struct SettingsView: View {
 
                 // Appearance
                 Section("Appearance") {
-                    Picker("App Theme", selection: $appearanceMode) {
+                    Picker("Mode", selection: $appearanceMode) {
                         ForEach(AppearanceMode.allCases, id: \.self) { mode in
                             Text(mode.label).tag(mode)
                         }
                     }
                     .pickerStyle(.segmented)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Color Theme")
+                            .font(.subheadline)
+                            .foregroundStyle(AJTheme.secondaryText)
+
+                        HStack(spacing: 12) {
+                            ForEach(AppColorTheme.allCases, id: \.self) { theme in
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        appColorTheme = theme
+                                    }
+                                } label: {
+                                    VStack(spacing: 6) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(theme.primaryAccent)
+                                                .frame(width: 36, height: 36)
+                                            Circle()
+                                                .fill(theme.secondaryAccent)
+                                                .frame(width: 16, height: 16)
+                                                .offset(x: 8, y: 8)
+                                        }
+                                        .overlay(
+                                            Circle()
+                                                .stroke(appColorTheme == theme ? theme.primaryAccent : .clear, lineWidth: 2)
+                                                .frame(width: 44, height: 44)
+                                        )
+
+                                        Text(theme.label)
+                                            .font(.caption2)
+                                            .foregroundStyle(appColorTheme == theme ? AJTheme.primaryText : AJTheme.secondaryText)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .padding(.vertical, 4)
                 }
 
                 // Journey
@@ -270,6 +312,20 @@ struct SettingsView: View {
                             Label("Gift a Journey", systemImage: "gift.fill")
                         }
 
+                        Button {
+                            showingReferralSheet = true
+                        } label: {
+                            HStack {
+                                Label("Refer a Friend", systemImage: "person.badge.plus")
+                                Spacer()
+                                if ReferralService.shared.referralCount > 0 {
+                                    Text("\(ReferralService.shared.referralCount) referred")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+
                         NavigationLink {
                             FaithReportView()
                         } label: {
@@ -286,6 +342,13 @@ struct SettingsView: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
+                        }
+
+                        Button {
+                            showingReferralSheet = true
+                        } label: {
+                            Label("Invite Friends, Get Free Premium", systemImage: "person.badge.plus")
+                                .foregroundStyle(AJTheme.sage)
                         }
                     }
                 }
@@ -362,6 +425,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingGiftSheet) {
                 GiftJourneyView()
+            }
+            .sheet(isPresented: $showingReferralSheet) {
+                ReferralView(userName: profile?.name ?? "Friend")
             }
             .sheet(isPresented: $showingWelcomeGuide) {
                 WelcomeGuideView {
