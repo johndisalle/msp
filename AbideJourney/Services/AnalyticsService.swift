@@ -1,98 +1,108 @@
 import Foundation
-import TelemetryDeck
 
-/// Lightweight analytics wrapper around TelemetryDeck.
-/// All events are anonymous — no personal data is collected.
+/// Lightweight analytics wrapper.
+/// Replace the print statements with your analytics SDK (e.g. TelemetryDeck, Mixpanel)
+/// when ready to ship.
 enum Analytics {
 
     /// Call once at app launch before any signals are sent.
     static func configure() {
-        let config = TelemetryDeck.Config(appID: "YOUR_TELEMETRYDECK_APP_ID")
-        TelemetryDeck.initialize(config: config)
+        // TODO: Initialize your analytics SDK here
+        // e.g. TelemetryDeck.initialize(config: .init(appID: "YOUR_APP_ID"))
+    }
+
+    private static func signal(_ name: String, parameters: [String: String] = [:]) {
+        #if DEBUG
+        if parameters.isEmpty {
+            print("[Analytics] \(name)")
+        } else {
+            print("[Analytics] \(name) \(parameters)")
+        }
+        #endif
     }
 
     // MARK: - Onboarding
 
     static func onboardingStarted() {
-        TelemetryDeck.signal("onboardingStarted")
+        signal("onboardingStarted")
     }
 
     static func onboardingCompleted(maturity: String) {
-        TelemetryDeck.signal("onboardingCompleted", parameters: ["maturity": maturity])
+        signal("onboardingCompleted", parameters: ["maturity": maturity])
     }
 
     // MARK: - Journey Lifecycle
 
     static func journeyStarted(theme: String, isCouple: Bool) {
-        TelemetryDeck.signal("journeyStarted", parameters: [
+        signal("journeyStarted", parameters: [
             "theme": theme,
             "isCouple": String(isCouple)
         ])
     }
 
     static func journeyDayCompleted(dayNumber: Int) {
-        TelemetryDeck.signal("journeyDayCompleted", parameters: ["dayNumber": String(dayNumber)])
+        signal("journeyDayCompleted", parameters: ["dayNumber": String(dayNumber)])
     }
 
     static func journeyCompleted(theme: String) {
-        TelemetryDeck.signal("journeyCompleted", parameters: ["theme": theme])
+        signal("journeyCompleted", parameters: ["theme": theme])
     }
 
     // MARK: - Daily Engagement
 
     static func prayerCompleted() {
-        TelemetryDeck.signal("prayerCompleted")
+        signal("prayerCompleted")
     }
 
     static func checkInSubmitted(rating: String) {
-        TelemetryDeck.signal("checkInSubmitted", parameters: ["rating": rating])
+        signal("checkInSubmitted", parameters: ["rating": rating])
     }
 
     static func journalEntryCreated(isVoice: Bool, mood: String?) {
         var params: [String: String] = ["isVoice": String(isVoice)]
         if let mood { params["mood"] = mood }
-        TelemetryDeck.signal("journalEntryCreated", parameters: params)
+        signal("journalEntryCreated", parameters: params)
     }
 
     static func actionStepCompleted() {
-        TelemetryDeck.signal("actionStepCompleted")
+        signal("actionStepCompleted")
     }
 
     // MARK: - Monetization
 
     static func paywallViewed() {
-        TelemetryDeck.signal("paywallViewed")
+        signal("paywallViewed")
     }
 
     static func premiumPurchased(plan: String) {
-        TelemetryDeck.signal("premiumPurchased", parameters: ["plan": plan])
+        signal("premiumPurchased", parameters: ["plan": plan])
     }
 
     static func premiumRestored() {
-        TelemetryDeck.signal("premiumRestored")
+        signal("premiumRestored")
     }
 
     // MARK: - Features
 
     static func couplesJourneyStarted() {
-        TelemetryDeck.signal("couplesJourneyStarted")
+        signal("couplesJourneyStarted")
     }
 
     static func customJourneyCreated() {
-        TelemetryDeck.signal("customJourneyCreated")
+        signal("customJourneyCreated")
     }
 
     static func giftJourneySent() {
-        TelemetryDeck.signal("giftJourneySent")
+        signal("giftJourneySent")
     }
 
     static func accountabilityPartnerAdded() {
-        TelemetryDeck.signal("accountabilityPartnerAdded")
+        signal("accountabilityPartnerAdded")
     }
 
     // MARK: - Milestones
 
     static func streakMilestone(days: Int) {
-        TelemetryDeck.signal("streakMilestone", parameters: ["days": String(days)])
+        signal("streakMilestone", parameters: ["days": String(days)])
     }
 }
