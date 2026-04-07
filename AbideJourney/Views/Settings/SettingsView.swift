@@ -350,6 +350,14 @@ struct SettingsView: View {
                             Label("Invite Friends, Get Free Premium", systemImage: "person.badge.plus")
                                 .foregroundStyle(AJTheme.sage)
                         }
+
+                        Button {
+                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                windowScene.presentOfferCodeRedeemSheet()
+                            }
+                        } label: {
+                            Label("Redeem Offer Code", systemImage: "ticket")
+                        }
                     }
                 }
 

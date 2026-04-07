@@ -140,6 +140,14 @@ struct PremiumPaywallView: View {
                             }
                         }
                         .font(.caption)
+
+                        // Redeem Offer Code
+                        Button("Redeem Offer Code") {
+                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                windowScene.presentOfferCodeRedeemSheet()
+                            }
+                        }
+                        .font(.caption)
                         .padding(.bottom, 32)
                     }
                 }
