@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import StoreKit
 import AuthenticationServices
 
 struct SettingsView: View {
@@ -352,8 +353,8 @@ struct SettingsView: View {
                         }
 
                         Button {
-                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                                windowScene.presentOfferCodeRedeemSheet()
+                            Task {
+                                try? await AppStore.presentOfferCodeRedeemSheet(in: UIApplication.shared.connectedScenes.first as! UIWindowScene)
                             }
                         } label: {
                             Label("Redeem Offer Code", systemImage: "ticket")

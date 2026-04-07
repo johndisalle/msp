@@ -143,8 +143,8 @@ struct PremiumPaywallView: View {
 
                         // Redeem Offer Code
                         Button("Redeem Offer Code") {
-                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                                windowScene.presentOfferCodeRedeemSheet()
+                            Task {
+                                try? await AppStore.presentOfferCodeRedeemSheet(in: UIApplication.shared.connectedScenes.first as! UIWindowScene)
                             }
                         }
                         .font(.caption)
