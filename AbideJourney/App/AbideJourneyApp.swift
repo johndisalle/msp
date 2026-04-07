@@ -31,6 +31,7 @@ struct AbideJourneyApp: App {
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
+    @AppStorage("appColorTheme") private var appColorTheme: AppColorTheme = .classic
 
     init() {
         // Initialize analytics
@@ -61,6 +62,7 @@ struct AbideJourneyApp: App {
         WindowGroup {
             if let modelContainer {
                 RootView()
+                    .id(appColorTheme)
                     .modelContainer(modelContainer)
                     .preferredColorScheme(appearanceMode.colorScheme)
                     .onOpenURL { url in
