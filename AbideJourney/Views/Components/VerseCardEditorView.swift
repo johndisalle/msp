@@ -238,25 +238,11 @@ struct VerseCardEditorView: View {
 
     private func shareCard() {
         isRendering = true
-        DispatchQueue.global(qos: .userInitiated).async {
-            let cardView = VerseCardCanvas(
-                reference: reference,
-                text: text,
-                style: selectedStyle
-            )
-            .frame(width: 1080, height: 1080)
-
-            let renderer = ImageRenderer(content: cardView)
-            renderer.scale = 1.0
-            let image = renderer.uiImage
-
-            DispatchQueue.main.async {
-                renderedImage = image
-                isRendering = false
-                if image != nil {
-                    showShareSheet = true
-                }
-            }
+        let image = renderCardToImage()
+        renderedImage = image
+        isRendering = false
+        if image != nil {
+            showShareSheet = true
         }
     }
 }
