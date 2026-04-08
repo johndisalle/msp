@@ -16,16 +16,13 @@
 		A1B2C3D4E5F60001000007 /* JournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000007 /* JournalEntry.swift */; };
 		A1B2C3D4E5F60001000008 /* Journey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000008 /* Journey.swift */; };
 		A1B2C3D4E5F60001000009 /* JourneyDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000009 /* JourneyDay.swift */; };
-
 		A1B2C3D4E5F60001000011 /* QuizResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000011 /* QuizResponse.swift */; };
 		A1B2C3D4E5F60001000012 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000012 /* UserProfile.swift */; };
 		A1B2C3D4E5F60001000013 /* ContentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000013 /* ContentData.swift */; };
 		A1B2C3D4E5F60001000014 /* ContentLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000014 /* ContentLibrary.swift */; };
-
 		A1B2C3D4E5F60001000016 /* JourneyGenerationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */; };
 		A1B2C3D4E5F60001000017 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000017 /* LiveActivityService.swift */; };
 		A1B2C3D4E5F60001000018 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000018 /* NotificationService.swift */; };
-
 		A1B2C3D4E5F60001000020 /* StoreKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000020 /* StoreKitService.swift */; };
 		A1B2C3D4E5F60001000021 /* StreakService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000021 /* StreakService.swift */; };
 		A1B2C3D4E5F60001000022 /* DailyExperienceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000022 /* DailyExperienceViewModel.swift */; };
@@ -35,35 +32,50 @@
 		A1B2C3D4E5F60001000026 /* CheckInSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000026 /* CheckInSheet.swift */; };
 		A1B2C3D4E5F60001000027 /* DailyExperienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */; };
 		A1B2C3D4E5F60001000028 /* JournalEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */; };
-
 		A1B2C3D4E5F60001000030 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000030 /* OnboardingFlowView.swift */; };
 		A1B2C3D4E5F60001000031 /* JournalListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000031 /* JournalListView.swift */; };
 		A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */; };
 		A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */; };
 		A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000034 /* SettingsView.swift */; };
+		A1B2C3D4E5F60001000035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000035 /* Assets.xcassets */; };
+		A1B2C3D4E5F60001000040 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
+		A1B2C3D4E5F60001000041 /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000041 /* SwiftData.framework */; };
+		A1B2C3D4E5F60001000042 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000042 /* StoreKit.framework */; };
+		A1B2C3D4E5F60001000043 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000043 /* HealthKit.framework */; };
+		A1B2C3D4E5F60001000044 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000044 /* ActivityKit.framework */; };
+		A1B2C3D4E5F60001000045 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000045 /* WidgetKit.framework */; };
+		A1B2C3D4E5F60001000046 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000046 /* UserNotifications.framework */; };
+		A1B2C3D4E5F60001000047 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000047 /* Charts.framework */; };
+		A1B2C3D4E5F60001000048 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */; };
+		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
+		A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */; };
+		A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000052 /* WidgetDataService.swift */; };
+		A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */; };
 		A1B2C3D4E5F60001000054 /* AccountabilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000054 /* AccountabilityView.swift */; };
-		A1B2C3D4E5F60001000090 /* AccountabilityPartner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */; };
-		A1B2C3D4E5F60001000091 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000091 /* PDFExportService.swift */; };
 		A1B2C3D4E5F60001000055 /* NewJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000055 /* NewJourneyView.swift */; };
 		A1B2C3D4E5F60001000056 /* ContentThemes_Batch1.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000056 /* ContentThemes_Batch1.swift */; };
 		A1B2C3D4E5F60001000057 /* ContentThemes_Batch2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000057 /* ContentThemes_Batch2.swift */; };
 		A1B2C3D4E5F60001000058 /* ContentThemes_Batch3.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000058 /* ContentThemes_Batch3.swift */; };
 		A1B2C3D4E5F60001000059 /* ContentThemes_Batch4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000059 /* ContentThemes_Batch4.swift */; };
-		A1B2C3D4E5F60001000050 /* AdaptiveJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */; };
-		A1B2C3D4E5F60001000051 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */; };
-		A1B2C3D4E5F60001000052 /* WidgetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000052 /* WidgetDataService.swift */; };
+		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
+		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
+		A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */; };
+		A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000045 /* WidgetKit.framework */; };
+		A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
+		A1B2C3D4E5F60001000090 /* AccountabilityPartner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */; };
+		A1B2C3D4E5F60001000091 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000091 /* PDFExportService.swift */; };
 		A1B2C3D4E5F60001000093 /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */; };
 		A1B2C3D4E5F60001000094 /* TextToSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */; };
-		A1B2C3D4E5F60001000053 /* JourneyCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */; };
+		A1B2C3D4E5F60001000095 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000095 /* PrivacyInfo.xcprivacy */; };
 		A1B2C3D4E5F60001000100 /* WatchSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000100 /* WatchSyncService.swift */; };
 		A1B2C3D4E5F60001000101 /* MilestoneCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */; };
 		A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000102 /* FaithMapView.swift */; };
 		A1B2C3D4E5F60001000103 /* FaithReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000103 /* FaithReportService.swift */; };
 		A1B2C3D4E5F60001000104 /* FaithReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000104 /* FaithReportView.swift */; };
-
 		A1B2C3D4E5F60001000107 /* GiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */; };
 		A1B2C3D4E5F60001000108 /* CouplesJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */; };
 		A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */; };
+		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
 		A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000111 /* AnalyticsService.swift */; };
 		A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000112 /* AuthService.swift */; };
 		A1B2C3D4E5F60001000113 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000113 /* Theme.swift */; };
@@ -91,30 +103,13 @@
 		A1B2C3D4E5F60001000135 /* DeepLinkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000135 /* DeepLinkService.swift */; };
 		A1B2C3D4E5F60001000136 /* AcceptCouplesInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */; };
 		A1B2C3D4E5F60001000137 /* ClaimGiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */; };
-		A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000138 /* Localizable.strings */; };
-		A1B2C3D4E5F60001000110 /* WatchSyncReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */; };
-		A1B2C3D4E5F60001000060 /* AbideJourneyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */; };
-		A1B2C3D4E5F60001000061 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000061 /* WatchHomeView.swift */; };
-		A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */; };
-		A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000045 /* WidgetKit.framework */; };
-		A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
-		A1B2C3D4E5F60001000035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000035 /* Assets.xcassets */; };
-		A1B2C3D4E5F60001000095 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000095 /* PrivacyInfo.xcprivacy */; };
-		A1B2C3D4E5F60001000040 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000040 /* SwiftUI.framework */; };
-		A1B2C3D4E5F60001000041 /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000041 /* SwiftData.framework */; };
-		A1B2C3D4E5F60001000042 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000042 /* StoreKit.framework */; };
-		A1B2C3D4E5F60001000043 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000043 /* HealthKit.framework */; };
-		A1B2C3D4E5F60001000044 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000044 /* ActivityKit.framework */; };
-		A1B2C3D4E5F60001000045 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000045 /* WidgetKit.framework */; };
-		A1B2C3D4E5F60001000046 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000046 /* UserNotifications.framework */; };
-		A1B2C3D4E5F60001000047 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000047 /* Charts.framework */; };
-		A1B2C3D4E5F60001000048 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */; };
+		A1B2C3D4E5F60001000138 /* Localizable.strings in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000138 /* Localizable.strings */; };
 		A1B2C3D4E5F60001000140 /* ReferralService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000140 /* ReferralService.swift */; };
-		A1B2C3D4E5F60001000144 /* AchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000144 /* AchievementService.swift */; };
-		A1B2C3D4E5F60001000145 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000145 /* AchievementsView.swift */; };
 		A1B2C3D4E5F60001000141 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000141 /* ReferralView.swift */; };
 		A1B2C3D4E5F60001000142 /* ScriptureMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */; };
 		A1B2C3D4E5F60001000143 /* VerseCardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */; };
+		A1B2C3D4E5F60001000144 /* AchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000144 /* AchievementService.swift */; };
+		A1B2C3D4E5F60001000145 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000145 /* AchievementsView.swift */; };
 		A1B2C3D4E5F60001000146 /* PrayerWallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000146 /* PrayerWallService.swift */; };
 		A1B2C3D4E5F60001000147 /* PrayerWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000147 /* PrayerWallView.swift */; };
 		A1B2C3D4E5F60001000148 /* GodMomentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000148 /* GodMomentsService.swift */; };
@@ -125,12 +120,6 @@
 		A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */; };
 		A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */; };
 		A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */; };
-		A1B2C3D4E5F60001000156 /* ListenModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000156 /* ListenModeView.swift */; };
-		A1B2C3D4E5F60001000157 /* ReviewPromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */; };
-		A1B2C3D4E5F60001000158 /* ChurchFinderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */; };
-		A1B2C3D4E5F60001000159 /* FindChurchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000159 /* FindChurchView.swift */; };
-		A1B2C3D4E5F60001000160 /* SeasonalJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */; };
-		A1B2C3D4E5F60001000161 /* SeasonalJourneyViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -143,16 +132,13 @@
 		A1B2C3D4E5F60101000007 /* JournalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntry.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000008 /* Journey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Journey.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000009 /* JourneyDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyDay.swift; sourceTree = "<group>"; };
-
 		A1B2C3D4E5F60101000011 /* QuizResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResponse.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000012 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000013 /* ContentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentData.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000014 /* ContentLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentLibrary.swift; sourceTree = "<group>"; };
-
 		A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyGenerationService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000017 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000018 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-
 		A1B2C3D4E5F60101000020 /* StoreKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000021 /* StreakService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000022 /* DailyExperienceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyExperienceViewModel.swift; sourceTree = "<group>"; };
@@ -162,32 +148,51 @@
 		A1B2C3D4E5F60101000026 /* CheckInSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInSheet.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyExperienceView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntrySheet.swift; sourceTree = "<group>"; };
-
 		A1B2C3D4E5F60101000030 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000031 /* JournalListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalListView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDashboardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPaywallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000034 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000036 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Products.storekit; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000037 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000038 /* AbideJourney.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourney.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60101000040 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000041 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000042 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000043 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000044 /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = System/Library/Frameworks/ActivityKit.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000045 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000046 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000047 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
+		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000052 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyCompletionView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000054 /* AccountabilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityPartner.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000091 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000055 /* NewJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000056 /* ContentThemes_Batch1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch1.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000057 /* ContentThemes_Batch2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch2.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000058 /* ContentThemes_Batch3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch3.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000059 /* ContentThemes_Batch4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentThemes_Batch4.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveJourneyService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000052 /* WidgetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWidgets.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AbideJourneyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60101000080 /* AbideJourney.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbideJourney.entitlements; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000081 /* AbideJourneyWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbideJourneyWidgets.entitlements; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000090 /* AccountabilityPartner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountabilityPartner.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000091 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000093 /* SpeechRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000094 /* TextToSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToSpeechService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyCompletionView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000095 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000100 /* WatchSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000101 /* MilestoneCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneCelebrationView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000102 /* FaithMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithMapView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000103 /* FaithReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000104 /* FaithReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithReportView.swift; sourceTree = "<group>"; };
-
 		A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouplesJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicJourneyView.swift; sourceTree = "<group>"; };
@@ -220,33 +225,12 @@
 		A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptCouplesInviteView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimGiftJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000138 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = AbideJourney/Resources/en.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
-		A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWatchApp.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000061 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourneyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyWidgets.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AbideJourneyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C3D4E5F60101000035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000036 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Products.storekit; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000037 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000095 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000080 /* AbideJourney.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbideJourney.entitlements; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000081 /* AbideJourneyWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbideJourneyWidgets.entitlements; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000038 /* AbideJourney.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbideJourney.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C3D4E5F60101000040 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000041 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000042 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000043 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000044 /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = System/Library/Frameworks/ActivityKit.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000045 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000046 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000047 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
-		A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		A1B2C3D4E5F60101000140 /* ReferralService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000144 /* AchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000145 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000141 /* ReferralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureMemoryView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCardEditorView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000144 /* AchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000145 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000146 /* PrayerWallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerWallService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000147 /* PrayerWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerWallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000148 /* GodMomentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GodMomentsService.swift; sourceTree = "<group>"; };
@@ -257,12 +241,6 @@
 		A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestimonyWallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithWrappedView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000156 /* ListenModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenModeView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchFinderService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000159 /* FindChurchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindChurchView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,10 +260,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1B2C3D4E5F60201000011 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000021 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */,
+				A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A1B2C3D4E5F60301000001 /* = */ = {
+		8C4A6F8B2F86CACE007452AF /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000138 /* Localizable.strings */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000001 = {
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60301000002 /* AbideJourney */,
@@ -293,68 +295,8 @@
 				A1B2C3D4E5F60301000040 /* AbideJourneyWidgets */,
 				A1B2C3D4E5F60301000020 /* Frameworks */,
 				A1B2C3D4E5F60301000021 /* Products */,
+				8C4A6F8B2F86CACE007452AF /* Recovered References */,
 			);
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000021 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000038 /* AbideJourney.app */,
-				A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */,
-				A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000030 /* AbideJourneyWatch */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60301000031 /* App */,
-				A1B2C3D4E5F60301000033 /* Services */,
-				A1B2C3D4E5F60301000032 /* Views */,
-			);
-			path = AbideJourneyWatch;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000031 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000032 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000061 /* WatchHomeView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000040 /* AbideJourneyWidgets */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000081 /* AbideJourneyWidgets.entitlements */,
-				A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */,
-			);
-			path = AbideJourneyWidgets;
-			sourceTree = "<group>";
-		};
-		A1B2C3D4E5F60301000020 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000040 /* SwiftUI.framework */,
-				A1B2C3D4E5F60101000041 /* SwiftData.framework */,
-				A1B2C3D4E5F60101000042 /* StoreKit.framework */,
-				A1B2C3D4E5F60101000043 /* HealthKit.framework */,
-				A1B2C3D4E5F60101000044 /* ActivityKit.framework */,
-				A1B2C3D4E5F60101000045 /* WidgetKit.framework */,
-				A1B2C3D4E5F60101000046 /* UserNotifications.framework */,
-				A1B2C3D4E5F60101000047 /* Charts.framework */,
-				A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A1B2C3D4E5F60301000002 /* AbideJourney */ = {
@@ -400,7 +342,6 @@
 				A1B2C3D4E5F60101000007 /* JournalEntry.swift */,
 				A1B2C3D4E5F60101000008 /* Journey.swift */,
 				A1B2C3D4E5F60101000009 /* JourneyDay.swift */,
-
 				A1B2C3D4E5F60101000011 /* QuizResponse.swift */,
 				A1B2C3D4E5F60101000012 /* UserProfile.swift */,
 			);
@@ -440,11 +381,9 @@
 				A1B2C3D4E5F60101000131 /* ContentTheme_SharingFaith.swift */,
 				A1B2C3D4E5F60101000132 /* ContentTheme_BearingFruit.swift */,
 				A1B2C3D4E5F60101000133 /* ContentTheme_SpiritualGrowth.swift */,
-
 				A1B2C3D4E5F60101000016 /* JourneyGenerationService.swift */,
 				A1B2C3D4E5F60101000017 /* LiveActivityService.swift */,
 				A1B2C3D4E5F60101000018 /* NotificationService.swift */,
-
 				A1B2C3D4E5F60101000020 /* StoreKitService.swift */,
 				A1B2C3D4E5F60101000091 /* PDFExportService.swift */,
 				A1B2C3D4E5F60101000021 /* StreakService.swift */,
@@ -460,9 +399,6 @@
 				A1B2C3D4E5F60101000146 /* PrayerWallService.swift */,
 				A1B2C3D4E5F60101000148 /* GodMomentsService.swift */,
 				A1B2C3D4E5F60101000152 /* TestimonyService.swift */,
-				A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */,
-				A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */,
-				A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -507,9 +443,6 @@
 				A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */,
 				A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */,
 				A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */,
-				A1B2C3D4E5F60101000156 /* ListenModeView.swift */,
-				A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */,
-
 			);
 			path = DailyExperience;
 			sourceTree = "<group>";
@@ -536,7 +469,6 @@
 				A1B2C3D4E5F60101000151 /* SanctuaryView.swift */,
 				A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */,
 				A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */,
-				A1B2C3D4E5F60101000159 /* FindChurchView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -558,15 +490,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		A1B2C3D4E5F60301000015 /* DeepLink */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */,
-				A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */,
-			);
-			path = DeepLink;
-			sourceTree = "<group>";
-		};
 		A1B2C3D4E5F60301000014 /* Milestones */ = {
 			isa = PBXGroup;
 			children = (
@@ -575,12 +498,13 @@
 			path = Milestones;
 			sourceTree = "<group>";
 		};
-		A1B2C3D4E5F60301000033 /* Services */ = {
+		A1B2C3D4E5F60301000015 /* DeepLink */ = {
 			isa = PBXGroup;
 			children = (
-				A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */,
+				A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */,
+				A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */,
 			);
-			path = Services;
+			path = DeepLink;
 			sourceTree = "<group>";
 		};
 		A1B2C3D4E5F60301000019 /* Resources */ = {
@@ -592,6 +516,75 @@
 				A1B2C3D4E5F60101000095 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000020 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000040 /* SwiftUI.framework */,
+				A1B2C3D4E5F60101000041 /* SwiftData.framework */,
+				A1B2C3D4E5F60101000042 /* StoreKit.framework */,
+				A1B2C3D4E5F60101000043 /* HealthKit.framework */,
+				A1B2C3D4E5F60101000044 /* ActivityKit.framework */,
+				A1B2C3D4E5F60101000045 /* WidgetKit.framework */,
+				A1B2C3D4E5F60101000046 /* UserNotifications.framework */,
+				A1B2C3D4E5F60101000047 /* Charts.framework */,
+				A1B2C3D4E5F60101000048 /* WatchConnectivity.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000021 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000038 /* AbideJourney.app */,
+				A1B2C3D4E5F60101000062 /* AbideJourneyWatch.app */,
+				A1B2C3D4E5F60101000071 /* AbideJourneyWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000030 /* AbideJourneyWatch */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60301000031 /* App */,
+				A1B2C3D4E5F60301000033 /* Services */,
+				A1B2C3D4E5F60301000032 /* Views */,
+			);
+			path = AbideJourneyWatch;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000031 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000060 /* AbideJourneyWatchApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000032 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000061 /* WatchHomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000033 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000110 /* WatchSyncReceiver.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60301000040 /* AbideJourneyWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60101000081 /* AbideJourneyWidgets.entitlements */,
+				A1B2C3D4E5F60101000070 /* AbideJourneyWidgets.swift */,
+			);
+			path = AbideJourneyWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -656,7 +649,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					A1B2C3D4E5F60401000001 = {
 						CreatedOnToolsVersion = 15.0;
@@ -671,7 +664,7 @@
 				en,
 				Base,
 			);
-			mainGroup = A1B2C3D4E5F60301000001 /* */;
+			mainGroup = A1B2C3D4E5F60301000001;
 			productRefGroup = A1B2C3D4E5F60301000021 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -693,6 +686,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1B2C3D4E5F60201000012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F60201000022 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -709,16 +716,13 @@
 				A1B2C3D4E5F60001000007 /* JournalEntry.swift in Sources */,
 				A1B2C3D4E5F60001000008 /* Journey.swift in Sources */,
 				A1B2C3D4E5F60001000009 /* JourneyDay.swift in Sources */,
-
 				A1B2C3D4E5F60001000011 /* QuizResponse.swift in Sources */,
 				A1B2C3D4E5F60001000012 /* UserProfile.swift in Sources */,
 				A1B2C3D4E5F60001000013 /* ContentData.swift in Sources */,
 				A1B2C3D4E5F60001000014 /* ContentLibrary.swift in Sources */,
-
 				A1B2C3D4E5F60001000016 /* JourneyGenerationService.swift in Sources */,
 				A1B2C3D4E5F60001000017 /* LiveActivityService.swift in Sources */,
 				A1B2C3D4E5F60001000018 /* NotificationService.swift in Sources */,
-
 				A1B2C3D4E5F60001000020 /* StoreKitService.swift in Sources */,
 				A1B2C3D4E5F60001000021 /* StreakService.swift in Sources */,
 				A1B2C3D4E5F60001000022 /* DailyExperienceViewModel.swift in Sources */,
@@ -728,7 +732,6 @@
 				A1B2C3D4E5F60001000026 /* CheckInSheet.swift in Sources */,
 				A1B2C3D4E5F60001000027 /* DailyExperienceView.swift in Sources */,
 				A1B2C3D4E5F60001000028 /* JournalEntrySheet.swift in Sources */,
-
 				A1B2C3D4E5F60001000030 /* OnboardingFlowView.swift in Sources */,
 				A1B2C3D4E5F60001000031 /* JournalListView.swift in Sources */,
 				A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */,
@@ -799,13 +802,7 @@
 				A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */,
 				A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */,
-				A1B2C3D4E5F60001000156 /* ListenModeView.swift in Sources */,
-				A1B2C3D4E5F60001000157 /* ReviewPromptService.swift in Sources */,
-				A1B2C3D4E5F60001000158 /* ChurchFinderService.swift in Sources */,
-				A1B2C3D4E5F60001000159 /* FindChurchView.swift in Sources */,
-				A1B2C3D4E5F60001000160 /* SeasonalJourneyService.swift in Sources */,
-				A1B2C3D4E5F60001000161 /* SeasonalJourneyViews.swift in Sources */,
-				A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */,
+				A1B2C3D4E5F60001000138 /* Localizable.strings in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -824,36 +821,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1B2C3D4E5F60001000070 /* AbideJourneyWidgets.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1B2C3D4E5F60201000011 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1B2C3D4E5F60201000021 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A1B2C3D4E5F60001000071 /* WidgetKit.framework in Frameworks */,
-				A1B2C3D4E5F60001000072 /* SwiftUI.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1B2C3D4E5F60201000012 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1B2C3D4E5F60201000022 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -918,6 +885,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -974,6 +942,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
