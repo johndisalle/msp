@@ -45,15 +45,15 @@ struct SanctuaryView: View {
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.5).delay(0.1), value: appeared)
 
-                    // Breathe with Scripture
+                    // Testimony Wall
                     NavigationLink {
-                        BreathingMeditationView()
+                        TestimonyWallView()
                     } label: {
                         SanctuaryCard(
-                            icon: "wind",
-                            color: .teal,
-                            title: "Breathe with Scripture",
-                            subtitle: "Guided breathing exercises paired with God's Word",
+                            icon: "text.quote",
+                            color: .pink,
+                            title: "Testimony Wall",
+                            subtitle: "Real stories of God changing lives — share yours",
                             badgeCount: 0
                         )
                     }
@@ -81,6 +81,24 @@ struct SanctuaryView: View {
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.5).delay(0.3), value: appeared)
 
+                    // Breathe with Scripture
+                    NavigationLink {
+                        BreathingMeditationView()
+                    } label: {
+                        SanctuaryCard(
+                            icon: "wind",
+                            color: .teal,
+                            title: "Breathe with Scripture",
+                            subtitle: "Guided breathing exercises paired with God's Word",
+                            badgeCount: 0
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .offset(y: appeared ? 0 : 20)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeOut(duration: 0.5).delay(0.4), value: appeared)
+
                     // Scripture Memory
                     NavigationLink {
                         ScriptureMemoryView()
@@ -97,25 +115,19 @@ struct SanctuaryView: View {
                     .padding(.horizontal)
                     .offset(y: appeared ? 0 : 20)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.4), value: appeared)
+                    .animation(.easeOut(duration: 0.5).delay(0.5), value: appeared)
 
-                    // Testimony Wall
+                    // Seasonal Journeys
                     NavigationLink {
-                        TestimonyWallView()
+                        SeasonalJourneysBrowseView()
                     } label: {
-                        SanctuaryCard(
-                            icon: "text.quote",
-                            color: .pink,
-                            title: "Testimony Wall",
-                            subtitle: "Real stories of God changing lives — share yours",
-                            badgeCount: 0
-                        )
+                        seasonalCard
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
                     .offset(y: appeared ? 0 : 20)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.5), value: appeared)
+                    .animation(.easeOut(duration: 0.5).delay(0.55), value: appeared)
 
                     // Find a Church
                     NavigationLink {
@@ -128,18 +140,6 @@ struct SanctuaryView: View {
                             subtitle: "Discover churches near you to worship and connect",
                             badgeCount: 0
                         )
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal)
-                    .offset(y: appeared ? 0 : 20)
-                    .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.55), value: appeared)
-
-                    // Seasonal Journeys
-                    NavigationLink {
-                        SeasonalJourneysBrowseView()
-                    } label: {
-                        seasonalCard
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
