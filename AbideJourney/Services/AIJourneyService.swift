@@ -1,10 +1,18 @@
 import Foundation
 
-/// Generates personalized journey content using the Claude API.
-/// Falls back to the local NLP-lite keyword matching if the API call fails.
+/// Generates personalized journey content using a Firebase Cloud Function proxy.
+/// Falls back to direct API call if Firebase is not configured, then to local generation.
 actor AIJourneyService {
     static let shared = AIJourneyService()
 
+    /// Firebase Cloud Function URL — set this after deploying your functions.
+    /// Format: "https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/generateJourney"
+    private let cloudFunctionURL: String? = {
+        Bundle.main.object(forInfoDictionaryKey: "CLOUD_FUNCTION_URL") as? String
+    }()
+
+    /// Direct API key — only used as fallback if Cloud Function is not configured.
+    /// Remove this entirely once Cloud Function is deployed.
     private let apiKey: String? = {
         Bundle.main.object(forInfoDictionaryKey: "CLAUDE_API_KEY") as? String
     }()
@@ -30,9 +38,65 @@ actor AIJourneyService {
     }
 
     /// Generates a personalized journey plan from the user's description.
-    /// Returns nil if the API is unavailable or the call fails, signaling
-    /// the caller to fall back to local generation.
+    /// Tries Cloud Function first (secure), then direct API (fallback), then returns nil for local generation.
     func generateJourneyPlan(
+        description: String,
+        userName: String,
+        maturityLevel: String
+    ) async -> AIJourneyPlan? {
+        // Try Cloud Function proxy first (recommended — API key never leaves your server)
+        if let plan = await generateViaCloudFunction(description: description) {
+            return plan
+        }
+
+        // Fallback to direct API call (remove once Cloud Function is deployed)
+        return await generateViaDirectAPI(description: description, userName: userName, maturityLevel: maturityLevel)
+    }
+
+    /// Calls the Firebase Cloud Function proxy to generate a journey.
+    private func generateViaCloudFunction(description: String) async -> AIJourneyPlan? {
+        guard let urlString = cloudFunctionURL,
+              !urlString.isEmpty,
+              urlString != "YOUR_CLOUD_FUNCTION_URL",
+              let url = URL(string: urlString) else {
+            return nil
+        }
+
+        let body: [String: Any] = [
+            "data": [
+                "description": description,
+                "theme": "spiritualGrowth"
+            ]
+        ]
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "content-type")
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                return nil
+            }
+
+            // Cloud Function returns { "result": { ...journey... } }
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let result = json["result"] as? [String: Any] else {
+                return nil
+            }
+
+            let resultData = try JSONSerialization.data(withJSONObject: result)
+            return try JSONDecoder().decode(AIJourneyPlan.self, from: resultData)
+        } catch {
+            return nil
+        }
+    }
+
+    /// Direct API call fallback — remove once Cloud Function is deployed.
+    private func generateViaDirectAPI(
         description: String,
         userName: String,
         maturityLevel: String

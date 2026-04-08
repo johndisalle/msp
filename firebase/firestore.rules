@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Community prayers: anyone authenticated can read, only author can update/delete
+    match /communityPrayers/{prayerId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && request.auth.uid == resource.data.authorId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.authorId;
+    }
+
+    // Community testimonies: anyone authenticated can read
+    match /communityTestimonies/{testimonyId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && request.auth.uid == resource.data.authorId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.authorId;
+    }
+
+    // Prayer interactions: anyone authenticated can create, read own
+    match /prayerInteractions/{interactionId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+    }
+
+    // User FCM tokens: only the user themselves
+    match /userTokens/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Rate limits: only Cloud Functions (admin) can write
+    match /rateLimits/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // Journey generation logs: only Cloud Functions
+    match /journeyGenerations/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
