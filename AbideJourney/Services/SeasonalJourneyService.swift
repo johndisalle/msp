@@ -11,19 +11,24 @@ struct SeasonalJourney: Identifiable {
     let totalDays: Int
     let icon: String
     let gradient: [Color]
-    let startMonth: Int
-    let startDay: Int
-    let endMonth: Int
-    let endDay: Int
+    let startDate: Date
+    let endDate: Date
     let description: String
     let themes: [String]
 
     var isCurrentlyActive: Bool {
-        SeasonalJourneyService.shared.isSeasonActive(self)
+        let now = Date()
+        return now >= startDate && now <= endDate
     }
 
     var daysUntilStart: Int? {
-        SeasonalJourneyService.shared.daysUntilStart(self)
+        let now = Date()
+        let days = Calendar.current.dateComponents([.day], from: now, to: startDate).day ?? 0
+        return days > 0 ? days : nil
+    }
+
+    var hasEnded: Bool {
+        Date() > endDate
     }
 }
 
@@ -55,10 +60,46 @@ final class SeasonalJourneyService {
 
     private let dismissedKey = "seasonalJourney_dismissed"
 
+    // MARK: - Easter Calculation (Computus Algorithm)
+
+    /// Calculates Easter Sunday for a given year using the Anonymous Gregorian algorithm.
+    private func easterDate(year: Int) -> Date {
+        let a = year % 19
+        let b = year / 100
+        let c = year % 100
+        let d = b / 4
+        let e = b % 4
+        let f = (b + 8) / 25
+        let g = (b - f + 1) / 3
+        let h = (19 * a + b - d - g + 15) % 30
+        let i = c / 4
+        let k = c % 4
+        let l = (32 + 2 * e + 2 * i - h - k) % 7
+        let m = (a + 11 * h + 22 * l) / 451
+        let month = (h + l - 7 * m + 114) / 31
+        let day = ((h + l - 7 * m + 114) % 31) + 1
+        return Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+    }
+
+    private func makeDate(year: Int, month: Int, day: Int) -> Date {
+        Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+    }
+
     // MARK: - All Seasonal Journeys
 
     var allSeasons: [SeasonalJourney] {
-        [
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: Date())
+        let easter = easterDate(year: year)
+
+        // Holy Week: Palm Sunday (6 days before Easter) through Easter Sunday
+        let palmSunday = calendar.date(byAdding: .day, value: -6, to: easter)!
+
+        // Lent: Ash Wednesday (46 days before Easter) through day before Palm Sunday
+        let ashWednesday = calendar.date(byAdding: .day, value: -46, to: easter)!
+        let lentEnd = calendar.date(byAdding: .day, value: -7, to: easter)!
+
+        return [
             SeasonalJourney(
                 season: .advent,
                 title: "Advent: The Coming King",
@@ -66,8 +107,8 @@ final class SeasonalJourneyService {
                 totalDays: 25,
                 icon: "star.fill",
                 gradient: [Color(red: 0.5, green: 0.0, blue: 0.13), Color(red: 0.15, green: 0.05, blue: 0.15)],
-                startMonth: 12, startDay: 1,
-                endMonth: 12, endDay: 25,
+                startDate: makeDate(year: year, month: 12, day: 1),
+                endDate: makeDate(year: year, month: 12, day: 25),
                 description: "Journey through the prophecies, promises, and fulfillment of Christ's birth. Each day brings you closer to the manger through Scripture, reflection, and worship.",
                 themes: ["Hope", "Peace", "Joy", "Love", "The Incarnation", "Emmanuel", "Prophecy Fulfilled", "The Shepherds", "The Wise Men", "Heavenly Host"]
             ),
@@ -78,8 +119,8 @@ final class SeasonalJourneyService {
                 totalDays: 40,
                 icon: "cross.fill",
                 gradient: [Color(red: 0.3, green: 0.15, blue: 0.4), Color(red: 0.1, green: 0.05, blue: 0.2)],
-                startMonth: 2, startDay: 14,
-                endMonth: 3, endDay: 30,
+                startDate: ashWednesday,
+                endDate: lentEnd,
                 description: "Walk the ancient path of Lent. Through daily Scripture, fasting reflections, and intentional prayer, prepare your heart for the depth of Easter's joy.",
                 themes: ["Repentance", "Fasting", "Surrender", "Humility", "The Beatitudes", "Sermon on the Mount", "Forgiveness", "Sacrifice", "The Cross", "Dying to Self"]
             ),
@@ -90,8 +131,8 @@ final class SeasonalJourneyService {
                 totalDays: 7,
                 icon: "laurel.leading",
                 gradient: [Color(red: 0.55, green: 0.27, blue: 0.07), Color(red: 0.2, green: 0.1, blue: 0.05)],
-                startMonth: 4, startDay: 13,
-                endMonth: 4, endDay: 20,
+                startDate: palmSunday,
+                endDate: easter,
                 description: "From the Triumphal Entry to the Empty Tomb. Experience each day of Holy Week with vivid Scripture, guided prayer, and deep reflection on what Jesus endured for you.",
                 themes: ["Palm Sunday", "Cleansing the Temple", "Teaching in the Temple", "Passover & Betrayal", "Good Friday", "Silent Saturday", "Resurrection Sunday"]
             ),
@@ -102,8 +143,8 @@ final class SeasonalJourneyService {
                 totalDays: 21,
                 icon: "sparkles",
                 gradient: [Color(red: 0.0, green: 0.3, blue: 0.5), Color(red: 0.0, green: 0.2, blue: 0.1)],
-                startMonth: 1, startDay: 1,
-                endMonth: 1, endDay: 21,
+                startDate: makeDate(year: year, month: 1, day: 1),
+                endDate: makeDate(year: year, month: 1, day: 21),
                 description: "Start the year anchored in God's Word. Build spiritual habits that last: daily Bible reading, prayer rhythms, gratitude practice, and intentional living.",
                 themes: ["New Beginnings", "Setting Intentions", "Identity in Christ", "Spiritual Disciplines", "Purpose", "Gratitude", "Daily Prayer", "Fasting", "Community", "Faithfulness"]
             ),
@@ -114,8 +155,8 @@ final class SeasonalJourneyService {
                 totalDays: 30,
                 icon: "sun.max.fill",
                 gradient: [Color(red: 0.95, green: 0.6, blue: 0.1), Color(red: 0.85, green: 0.2, blue: 0.1)],
-                startMonth: 6, startDay: 1,
-                endMonth: 8, endDay: 31,
+                startDate: makeDate(year: year, month: 6, day: 1),
+                endDate: makeDate(year: year, month: 8, day: 31),
                 description: "Summer is a season of growth. Use these longer days to deepen your understanding of God's creation, His faithfulness, and your call to adventure with Him.",
                 themes: ["Creation", "Adventure", "Rest", "Sabbath", "Psalms of Nature", "The Promised Land", "God's Provision", "Joy", "Freedom", "Sending"]
             ),
@@ -126,8 +167,8 @@ final class SeasonalJourneyService {
                 totalDays: 21,
                 icon: "leaf.fill",
                 gradient: [Color(red: 0.2, green: 0.6, blue: 0.3), Color(red: 0.1, green: 0.35, blue: 0.15)],
-                startMonth: 3, startDay: 20,
-                endMonth: 5, endDay: 31,
+                startDate: makeDate(year: year, month: 3, day: 20),
+                endDate: makeDate(year: year, month: 5, day: 31),
                 description: "As creation springs to life, let your spirit be renewed. Explore themes of resurrection, new growth, and the Holy Spirit's transforming power.",
                 themes: ["New Life", "Resurrection Power", "The Holy Spirit", "Renewal", "Transformation", "Growth", "Abiding", "Bearing Fruit", "Living Water", "Fresh Fire"]
             )
@@ -137,45 +178,7 @@ final class SeasonalJourneyService {
     // MARK: - Active Season Detection
 
     func currentActiveSeason() -> SeasonalJourney? {
-        allSeasons.first { isSeasonActive($0) && !isDismissed($0) }
-    }
-
-    func isSeasonActive(_ season: SeasonalJourney) -> Bool {
-        let calendar = Calendar.current
-        let now = Date()
-        let year = calendar.component(.year, from: now)
-
-        guard let start = calendar.date(from: DateComponents(year: year, month: season.startMonth, day: season.startDay)),
-              let end = calendar.date(from: DateComponents(year: year, month: season.endMonth, day: season.endDay)) else {
-            return false
-        }
-
-        // Handle cross-year seasons (none currently, but future-proofing)
-        if start <= end {
-            return now >= start && now <= end
-        } else {
-            return now >= start || now <= end
-        }
-    }
-
-    func daysUntilStart(_ season: SeasonalJourney) -> Int? {
-        let calendar = Calendar.current
-        let now = Date()
-        let year = calendar.component(.year, from: now)
-
-        guard let start = calendar.date(from: DateComponents(year: year, month: season.startMonth, day: season.startDay)) else {
-            return nil
-        }
-
-        let days = calendar.dateComponents([.day], from: now, to: start).day ?? 0
-        if days < 0 {
-            // Season already passed this year, calculate for next year
-            guard let nextStart = calendar.date(from: DateComponents(year: year + 1, month: season.startMonth, day: season.startDay)) else {
-                return nil
-            }
-            return calendar.dateComponents([.day], from: now, to: nextStart).day
-        }
-        return days > 0 ? days : nil
+        allSeasons.first { $0.isCurrentlyActive && !isDismissed($0) }
     }
 
     // MARK: - Dismissal

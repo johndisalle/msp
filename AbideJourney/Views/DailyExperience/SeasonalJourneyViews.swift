@@ -390,9 +390,9 @@ struct SeasonalJourneysBrowseView: View {
                     }
                 }
 
-                // Upcoming
+                // Upcoming (not yet started)
                 let upcoming = service.allSeasons
-                    .filter { !$0.isCurrentlyActive }
+                    .filter { !$0.isCurrentlyActive && !$0.hasEnded }
                     .sorted { ($0.daysUntilStart ?? 999) < ($1.daysUntilStart ?? 999) }
 
                 if !upcoming.isEmpty {
@@ -405,6 +405,24 @@ struct SeasonalJourneysBrowseView: View {
                             SeasonBrowseCard(season: season, isActive: false)
                         }
                         .buttonStyle(.plain)
+                    }
+                }
+
+                // Past seasons (already ended this year)
+                let past = service.allSeasons
+                    .filter { !$0.isCurrentlyActive && $0.hasEnded }
+
+                if !past.isEmpty {
+                    SectionHeader(title: "Past This Year", icon: "clock.arrow.circlepath", color: AJTheme.secondaryText)
+
+                    ForEach(past) { season in
+                        NavigationLink {
+                            SeasonalJourneyDetailView(season: season)
+                        } label: {
+                            SeasonBrowseCard(season: season, isActive: false)
+                        }
+                        .buttonStyle(.plain)
+                        .opacity(0.6)
                     }
                 }
             }
