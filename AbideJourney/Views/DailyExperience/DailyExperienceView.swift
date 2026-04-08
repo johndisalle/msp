@@ -35,11 +35,12 @@ struct DailyExperienceView: View {
                                 dayNumber: day.dayNumber,
                                 totalDays: journey.totalDays,
                                 focusArea: day.focusArea,
+                                journeyTitle: journey.title,
                                 progress: journey.progress
                             )
 
-                            // Seasonal Journey banner
-                            if let season = activeSeason {
+                            // Seasonal Journey banner (hide if already in this seasonal journey)
+                            if let season = activeSeason, journey.title != season.title {
                                 SeasonalJourneyBanner(
                                     season: season,
                                     onStart: { showingSeasonalDetail = true },
@@ -448,6 +449,7 @@ struct DayHeaderView: View {
     let dayNumber: Int
     let totalDays: Int
     let focusArea: DiscipleshipArea
+    var journeyTitle: String = ""
     let progress: Double
     @State private var appeared = false
 
@@ -463,7 +465,7 @@ struct DayHeaderView: View {
                     HStack(spacing: 6) {
                         Image(systemName: focusArea.icon)
                             .accessibilityHidden(true)
-                        Text(focusArea.rawValue)
+                        Text(journeyTitle.isEmpty ? focusArea.rawValue : journeyTitle)
                     }
                     .font(.system(.subheadline, design: .serif))
                     .foregroundStyle(AJTheme.secondaryText)
