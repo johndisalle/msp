@@ -34,6 +34,59 @@ struct ProgressDashboardView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal)
 
+                    // Year in Review
+                    NavigationLink {
+                        FaithWrappedView()
+                            .navigationBarBackButtonHidden(false)
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [Color(red: 0.15, green: 0.20, blue: 0.38), Color(red: 0.30, green: 0.15, blue: 0.45)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: "sparkles")
+                                    .font(.body)
+                                    .foregroundStyle(.white)
+                            }
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("\(Calendar.current.component(.year, from: Date())) Faith Wrapped")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Your year in review — shareable!")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+
+                            Spacer()
+
+                            Text("NEW")
+                                .font(.caption2.bold())
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Capsule().fill(.red))
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(AJTheme.cardBackground)
+                                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
                     // Habit rings
                     HabitRingsCard(
                         prayer: viewModel.prayerRingProgress,

@@ -99,6 +99,24 @@ struct SanctuaryView: View {
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.5).delay(0.4), value: appeared)
 
+                    // Testimony Wall
+                    NavigationLink {
+                        TestimonyWallView()
+                    } label: {
+                        SanctuaryCard(
+                            icon: "text.quote",
+                            color: .pink,
+                            title: "Testimony Wall",
+                            subtitle: "Real stories of God changing lives — share yours",
+                            badgeCount: 0
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .offset(y: appeared ? 0 : 20)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeOut(duration: 0.5).delay(0.5), value: appeared)
+
                     // Daily verse at bottom
                     VStack(spacing: 8) {
                         Text("\"Be still, and know that I am God.\"")
@@ -111,7 +129,7 @@ struct SanctuaryView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 16)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.5), value: appeared)
+                    .animation(.easeOut(duration: 0.5).delay(0.55), value: appeared)
                 }
                 .padding(.vertical)
             }

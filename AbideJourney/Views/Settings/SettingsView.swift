@@ -14,6 +14,7 @@ struct SettingsView: View {
     @State private var showingAbandonConfirmation = false
     @State private var showingDeleteConfirmation = false
     @State private var showingCouplesSheet = false
+    @State private var showingFamilySheet = false
     @State private var showingDynamicSheet = false
     @State private var showingGiftSheet = false
     @State private var showingReferralSheet = false
@@ -252,6 +253,13 @@ struct SettingsView: View {
                             Label("Couples Journey", systemImage: "heart.circle.fill")
                                 .foregroundStyle(.pink)
                         }
+
+                        Button {
+                            showingFamilySheet = true
+                        } label: {
+                            Label("Family Journey", systemImage: "figure.2.and.child.holdinghands")
+                                .foregroundStyle(.orange)
+                        }
                     }
                 }
 
@@ -428,6 +436,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingCouplesSheet) {
                 CouplesJourneyView()
+            }
+            .sheet(isPresented: $showingFamilySheet) {
+                FamilyJourneyView()
             }
             .sheet(isPresented: $showingDynamicSheet) {
                 DynamicJourneyView()

@@ -121,6 +121,10 @@
 		A1B2C3D4E5F60001000149 /* GodMomentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000149 /* GodMomentsView.swift */; };
 		A1B2C3D4E5F60001000150 /* BreathingMeditationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */; };
 		A1B2C3D4E5F60001000151 /* SanctuaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000151 /* SanctuaryView.swift */; };
+		A1B2C3D4E5F60001000152 /* TestimonyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000152 /* TestimonyService.swift */; };
+		A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */; };
+		A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */; };
+		A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -243,6 +247,10 @@
 		A1B2C3D4E5F60101000149 /* GodMomentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GodMomentsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingMeditationView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000151 /* SanctuaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SanctuaryView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000152 /* TestimonyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestimonyService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestimonyWallView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyJourneyView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithWrappedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +447,7 @@
 				A1B2C3D4E5F60101000144 /* AchievementService.swift */,
 				A1B2C3D4E5F60101000146 /* PrayerWallService.swift */,
 				A1B2C3D4E5F60101000148 /* GodMomentsService.swift */,
+				A1B2C3D4E5F60101000152 /* TestimonyService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -508,6 +517,8 @@
 				A1B2C3D4E5F60101000149 /* GodMomentsView.swift */,
 				A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */,
 				A1B2C3D4E5F60101000151 /* SanctuaryView.swift */,
+				A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */,
+				A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -524,6 +535,7 @@
 				A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */,
 				A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */,
 				A1B2C3D4E5F60101000141 /* ReferralView.swift */,
+				A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -765,6 +777,10 @@
 				A1B2C3D4E5F60001000149 /* GodMomentsView.swift in Sources */,
 				A1B2C3D4E5F60001000150 /* BreathingMeditationView.swift in Sources */,
 				A1B2C3D4E5F60001000151 /* SanctuaryView.swift in Sources */,
+				A1B2C3D4E5F60001000152 /* TestimonyService.swift in Sources */,
+				A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */,
+				A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */,
+				A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */,
 				A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
