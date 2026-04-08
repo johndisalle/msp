@@ -171,6 +171,8 @@ struct SanctuaryView: View {
                 }
             }
         }
+    }
+
     private var seasonalCard: some View {
         let activeSeason = SeasonalJourneyService.shared.currentActiveSeason()
         return SanctuaryCard(
