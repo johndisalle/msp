@@ -121,10 +121,15 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
                     voice: selectedVoice
                 )
 
+                guard !audioData.isEmpty else {
+                    throw NSError(domain: "AudioNarration", code: 2, userInfo: [NSLocalizedDescriptionKey: "Empty audio data"])
+                }
+
                 // Cache it
                 let cachedURL = cacheAudio(data: audioData, key: cacheKey)
                 playAudioFile(url: cachedURL)
             } catch {
+                print("[AudioNarration] Cloud Function failed: \(error.localizedDescription). Falling back to device TTS.")
                 // Fallback to on-device TTS
                 fallbackToDeviceTTS(scripture: scripture, scriptureRef: scriptureRef, title: title, devotional: devotional, prayer: prayer, onComplete: onComplete)
             }
@@ -160,14 +165,17 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
     // MARK: - Audio Fetching
 
     private func fetchAudio(baseURL: String, secret: String, text: String, voice: NarrationVoice) async throws -> Data {
-        let url = URL(string: "\(baseURL)/generateAudioHTTP")!
+        guard let url = URL(string: "\(baseURL)/generateAudioHTTP") else {
+            throw NSError(domain: "AudioNarration", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
+        }
+
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
-        request.timeoutInterval = 90
+        request.timeoutInterval = 60
 
         let body: [String: Any] = [
             "text": text,
@@ -176,12 +184,23 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
+        print("[AudioNarration] Requesting audio from: \(url.absoluteString)")
         let (data, response) = try await URLSession.shared.data(for: request)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200,
-              httpResponse.mimeType?.contains("audio") == true || data.count > 1000 else {
-            throw NSError(domain: "AudioNarration", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to generate audio"])
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "AudioNarration", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
+        }
+
+        print("[AudioNarration] Response: \(httpResponse.statusCode), size: \(data.count) bytes, type: \(httpResponse.mimeType ?? "unknown")")
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data.prefix(500), encoding: .utf8) ?? "unknown"
+            print("[AudioNarration] Error body: \(errorBody)")
+            throw NSError(domain: "AudioNarration", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP \(httpResponse.statusCode): \(errorBody)"])
+        }
+
+        guard data.count > 1000 else {
+            throw NSError(domain: "AudioNarration", code: 2, userInfo: [NSLocalizedDescriptionKey: "Response too small to be audio (\(data.count) bytes)"])
         }
 
         return data
@@ -366,17 +385,50 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
         prayer: String,
         onComplete: (() -> Void)?
     ) {
-        state = .idle
-        // Delegate to the existing TTS service
+        // Use the existing TTS service and mirror its state to ours
         let tts = TextToSpeechService.shared
+        state = .playing
+        currentSection = "Scripture"
+
         tts.speakDevotional(
             scripture: scripture,
             scriptureRef: scriptureRef,
             title: title,
             devotional: devotional,
-            prayer: prayer,
-            onComplete: onComplete
-        )
+            prayer: prayer
+        ) { [weak self] in
+            self?.state = .idle
+            self?.progress = 1.0
+            self?.currentSection = ""
+            onComplete?()
+        }
+
+        // Poll TTS progress to update our state
+        usingDeviceTTS = true
+        startTTSProgressPolling()
+    }
+
+    private var usingDeviceTTS = false
+    private var ttsPollingTimer: Timer?
+
+    private func startTTSProgressPolling() {
+        ttsPollingTimer?.invalidate()
+        ttsPollingTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.usingDeviceTTS else { return }
+                let tts = TextToSpeechService.shared
+                self.progress = tts.progress
+                self.currentSection = tts.currentSection
+
+                if !tts.isSpeaking && !tts.isPaused && self.progress > 0 {
+                    self.ttsPollingTimer?.invalidate()
+                    self.ttsPollingTimer = nil
+                    self.usingDeviceTTS = false
+                    self.state = .idle
+                    self.progress = 1.0
+                }
+            }
+        }
     }
 
     // MARK: - Script Formatting

@@ -168,9 +168,7 @@ Requirements:
 // 2. ELEVENLABS AUDIO NARRATION — premium voice for Listen Mode
 // ============================================================
 
-exports.generateAudioHTTP = functions.https.onRequest(
-  { timeoutSeconds: 120, memory: "512MiB" },
-  async (req, res) => {
+exports.generateAudioHTTP = functions.runWith({ timeoutSeconds: 120, memory: "512MB" }).https.onRequest(async (req, res) => {
     // CORS
     res.set("Access-Control-Allow-Origin", "*");
     if (req.method === "OPTIONS") {
@@ -259,15 +257,15 @@ exports.generateAudioHTTP = functions.https.onRequest(
       await rateLimitRef.set({ count: currentCount + 1, date: today });
 
       // Stream the MP3 audio back to the client
-      const audioBuffer = await response.buffer();
+      const arrayBuf = await response.arrayBuffer();
+      const audioBuffer = Buffer.from(arrayBuf);
       res.set("Content-Type", "audio/mpeg");
       res.set("Content-Length", audioBuffer.length.toString());
       return res.status(200).send(audioBuffer);
     } catch (error) {
-      console.error("Audio generation error:", error);
+      console.error("Audio generation error:", error.message || error);
       return res
         .status(500)
-        .json({ error: "An unexpected error occurred. Please try again." });
+        .json({ error: error.message || "An unexpected error occurred." });
     }
-  }
-);
+  });
