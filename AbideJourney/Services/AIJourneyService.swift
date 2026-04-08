@@ -71,7 +71,7 @@ actor AIJourneyService {
         }
 
         // Unique device ID for rate limiting
-        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        let deviceId = await UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
 
         let body: [String: Any] = [
             "description": description,
