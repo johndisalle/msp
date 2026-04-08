@@ -271,15 +271,24 @@ struct BreathingPlayerView: View {
 
     private let timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
 
-    enum BreathPhase: String {
-        case ready = "Ready"
-        case inhale = "Breathe In"
-        case holdIn = "Hold"
-        case exhale = "Breathe Out"
-        case holdOut = "Hold"
-        case complete = "Complete"
+    enum BreathPhase {
+        case ready
+        case inhale
+        case holdIn
+        case exhale
+        case holdOut
+        case complete
 
-        var displayText: String { rawValue }
+        var displayText: String {
+            switch self {
+            case .ready: return "Ready"
+            case .inhale: return "Breathe In"
+            case .holdIn: return "Hold"
+            case .exhale: return "Breathe Out"
+            case .holdOut: return "Hold"
+            case .complete: return "Complete"
+            }
+        }
     }
 
     var body: some View {
@@ -328,7 +337,7 @@ struct BreathingPlayerView: View {
                 // Scripture at bottom
                 if !isComplete {
                     VStack(spacing: 6) {
-                        Text(""\(session.scripture)"")
+                        Text("\u{201C}\(session.scripture)\u{201D}")
                             .font(.caption.italic())
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -483,7 +492,7 @@ struct BreathingPlayerView: View {
                 .lineSpacing(3)
 
             VStack(spacing: 6) {
-                Text(""\(session.scripture)"")
+                Text("\u{201C}\(session.scripture)\u{201D}")
                     .font(.body.italic())
                     .foregroundStyle(AJTheme.primaryText)
                     .multilineTextAlignment(.center)
