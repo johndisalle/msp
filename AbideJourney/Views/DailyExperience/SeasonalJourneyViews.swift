@@ -139,10 +139,13 @@ struct SeasonalJourneyBanner: View {
 struct SeasonalJourneyDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Query(filter: #Predicate<Journey> { $0.isActive }) private var activeJourneys: [Journey]
     let season: SeasonalJourney
 
     @State private var appeared = false
     @State private var isStarting = false
+    @State private var showingSuccess = false
+    @State private var showingReplaceConfirm = false
 
     var body: some View {
         ZStack {
@@ -274,7 +277,11 @@ struct SeasonalJourneyDetailView: View {
 
                     // Start button
                     Button {
-                        startSeasonalJourney()
+                        if activeJourneys.first(where: { !$0.isCompleted }) != nil {
+                            showingReplaceConfirm = true
+                        } else {
+                            startSeasonalJourney()
+                        }
                     } label: {
                         HStack(spacing: 8) {
                             if isStarting {
@@ -313,6 +320,27 @@ struct SeasonalJourneyDetailView: View {
         }
         .onAppear {
             withAnimation { appeared = true }
+        }
+        .alert("Journey Started!", isPresented: $showingSuccess) {
+            Button("Go to Today") { dismiss() }
+        } message: {
+            Text("Your \(season.title) has begun! Head to the Today tab to start Day 1.")
+        }
+        .confirmationDialog(
+            "You have an active journey",
+            isPresented: $showingReplaceConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Start Seasonal Journey") {
+                // Deactivate current journey
+                if let current = activeJourneys.first(where: { !$0.isCompleted }) {
+                    current.isActive = false
+                }
+                startSeasonalJourney()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Starting this seasonal journey will pause your current journey. You can resume it later from Settings.")
         }
     }
 
@@ -359,7 +387,9 @@ struct SeasonalJourneyDetailView: View {
 
         do {
             try modelContext.save()
-            dismiss()
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            isStarting = false
+            showingSuccess = true
         } catch {
             isStarting = false
         }
