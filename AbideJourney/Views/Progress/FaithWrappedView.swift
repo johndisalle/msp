@@ -181,7 +181,7 @@ struct FaithWrappedView: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.white.opacity(0.9))
 
-            Text("Your \(year)\nFaith Journey")
+            Text(verbatim: "Your \(year)\nFaith Journey")
                 .font(.system(size: 38, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
@@ -230,7 +230,7 @@ struct FaithWrappedView: View {
 
     private func summarySlide(stats: WrappedStats) -> some View {
         VStack(spacing: 16) {
-            Text("\(stats.year) Recap")
+            Text(verbatim: "\(stats.year) Recap")
                 .font(.title2.bold())
                 .foregroundStyle(.white)
 
@@ -285,7 +285,7 @@ struct FaithWrappedView: View {
                 .font(.subheadline.bold())
                 .foregroundStyle(.white.opacity(0.5))
 
-            Text("Here's to \(year + 1)")
+            Text(verbatim: "Here's to \(year + 1)")
                 .font(.title3)
                 .foregroundStyle(.white.opacity(0.6))
                 .padding(.top, 8)
@@ -419,7 +419,7 @@ struct WrappedShareCard: View {
                         .font(.system(size: geo.size.width * 0.08))
                         .foregroundStyle(.white.opacity(0.6))
 
-                    Text("My \(stats.year) Faith Journey")
+                    Text(verbatim: "My \(stats.year) Faith Journey")
                         .font(.system(size: geo.size.width * 0.07, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
 

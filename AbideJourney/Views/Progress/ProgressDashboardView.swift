@@ -56,7 +56,7 @@ struct ProgressDashboardView: View {
                             }
 
                             VStack(alignment: .leading, spacing: 3) {
-                                Text("\(Calendar.current.component(.year, from: Date())) Faith Wrapped")
+                                Text(verbatim: "\(Calendar.current.component(.year, from: Date())) Faith Wrapped")
                                     .font(.subheadline.bold())
                                     .foregroundStyle(AJTheme.primaryText)
                                 Text("Your year in review — shareable!")
