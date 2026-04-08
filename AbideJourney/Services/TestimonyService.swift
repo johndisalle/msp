@@ -125,7 +125,7 @@ final class TestimonyService {
             story: "I'm not against medicine — I still take mine. But the anxiety that medicine managed, God actually healed. The daily breathing exercises with scripture became my anchor. The prayer wall became my lifeline. I wrote down every anxious thought and watched God answer prayer after prayer. Some He answered with 'yes,' some with 'wait,' but none with silence. I am not the same person I was 40 days ago.",
             dayCount: 40
         ),
-    ],
+    ]
 
     func loadTestimonies() -> [Testimony] {
         var all = loadUserTestimonies()
