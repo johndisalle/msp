@@ -12,6 +12,9 @@ struct DailyExperienceView: View {
     @State private var showingCompletionSheet = false
     @State private var showingMilestoneSheet = false
     @State private var showingAdvancePrompt = false
+    @State private var showingListenMode = false
+    @State private var showingSeasonalDetail = false
+    @State private var activeSeason: SeasonalJourney?
     @State private var cardsAppeared = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
@@ -34,6 +37,18 @@ struct DailyExperienceView: View {
                                 focusArea: day.focusArea,
                                 progress: journey.progress
                             )
+
+                            // Seasonal Journey banner
+                            if let season = activeSeason {
+                                SeasonalJourneyBanner(
+                                    season: season,
+                                    onStart: { showingSeasonalDetail = true },
+                                    onDismiss: {
+                                        SeasonalJourneyService.shared.dismiss(season)
+                                        withAnimation { activeSeason = nil }
+                                    }
+                                )
+                            }
 
                             // Couples Journey banner
                             if journey.isCouple, let partnerName = journey.partnerName {
@@ -189,6 +204,16 @@ struct DailyExperienceView: View {
                 if viewModel.currentDay != nil {
                     ToolbarItem(placement: .topBarTrailing) {
                         HStack(spacing: 16) {
+                            if isPremium {
+                                Button {
+                                    showingListenMode = true
+                                } label: {
+                                    Image(systemName: "headphones.circle.fill")
+                                        .foregroundStyle(AJTheme.sage)
+                                }
+                                .accessibilityLabel("Listen to today's devotional")
+                            }
+
                             Button {
                                 viewModel.toggleBookmark(context: modelContext)
                             } label: {
@@ -212,6 +237,7 @@ struct DailyExperienceView: View {
             .onAppear {
                 viewModel.loadCurrentDay(from: journeys)
                 viewModel.checkDailyLimit(isPremium: isPremium)
+                activeSeason = SeasonalJourneyService.shared.currentActiveSeason()
                 cardsAppeared = false
                 withAnimation {
                     cardsAppeared = true
@@ -233,6 +259,26 @@ struct DailyExperienceView: View {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
                     viewModel.completeDay(rating: rating, isPremium: isPremium, context: modelContext)
+                }
+            }
+            .fullScreenCover(isPresented: $showingListenMode) {
+                if let day = viewModel.currentDay {
+                    ListenModeView(
+                        scriptureRef: day.scriptureReference,
+                        scriptureText: day.scriptureText,
+                        devotionalTitle: day.devotionalTitle,
+                        devotionalText: day.devotionalText,
+                        prayerText: day.prayerText,
+                        dayNumber: day.dayNumber,
+                        focusArea: day.focusArea.rawValue
+                    )
+                }
+            }
+            .sheet(isPresented: $showingSeasonalDetail) {
+                if let season = activeSeason {
+                    NavigationStack {
+                        SeasonalJourneyDetailView(season: season)
+                    }
                 }
             }
             .sheet(isPresented: $showingPremiumSheet) {

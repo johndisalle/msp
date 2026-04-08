@@ -37,6 +37,9 @@ struct AbideJourneyApp: App {
         // Initialize analytics
         Analytics.configure()
 
+        // Record install date for smart review prompts
+        ReviewPromptService.shared.recordInstallDateIfNeeded()
+
         do {
             let schema = Schema([
                 UserProfile.self,

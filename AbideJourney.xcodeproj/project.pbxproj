@@ -125,6 +125,12 @@
 		A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */; };
 		A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */; };
 		A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */; };
+		A1B2C3D4E5F60001000156 /* ListenModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000156 /* ListenModeView.swift */; };
+		A1B2C3D4E5F60001000157 /* ReviewPromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */; };
+		A1B2C3D4E5F60001000158 /* ChurchFinderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */; };
+		A1B2C3D4E5F60001000159 /* FindChurchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000159 /* FindChurchView.swift */; };
+		A1B2C3D4E5F60001000160 /* SeasonalJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */; };
+		A1B2C3D4E5F60001000161 /* SeasonalJourneyViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -251,6 +257,12 @@
 		A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestimonyWallView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaithWrappedView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000156 /* ListenModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenModeView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchFinderService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000159 /* FindChurchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindChurchView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -448,6 +460,9 @@
 				A1B2C3D4E5F60101000146 /* PrayerWallService.swift */,
 				A1B2C3D4E5F60101000148 /* GodMomentsService.swift */,
 				A1B2C3D4E5F60101000152 /* TestimonyService.swift */,
+				A1B2C3D4E5F60101000157 /* ReviewPromptService.swift */,
+				A1B2C3D4E5F60101000158 /* ChurchFinderService.swift */,
+				A1B2C3D4E5F60101000160 /* SeasonalJourneyService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -492,6 +507,8 @@
 				A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */,
 				A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */,
 				A1B2C3D4E5F60101000053 /* JourneyCompletionView.swift */,
+				A1B2C3D4E5F60101000156 /* ListenModeView.swift */,
+				A1B2C3D4E5F60101000161 /* SeasonalJourneyViews.swift */,
 
 			);
 			path = DailyExperience;
@@ -519,6 +536,7 @@
 				A1B2C3D4E5F60101000151 /* SanctuaryView.swift */,
 				A1B2C3D4E5F60101000153 /* TestimonyWallView.swift */,
 				A1B2C3D4E5F60101000155 /* FaithWrappedView.swift */,
+				A1B2C3D4E5F60101000159 /* FindChurchView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -781,6 +799,12 @@
 				A1B2C3D4E5F60001000153 /* TestimonyWallView.swift in Sources */,
 				A1B2C3D4E5F60001000154 /* FamilyJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000155 /* FaithWrappedView.swift in Sources */,
+				A1B2C3D4E5F60001000156 /* ListenModeView.swift in Sources */,
+				A1B2C3D4E5F60001000157 /* ReviewPromptService.swift in Sources */,
+				A1B2C3D4E5F60001000158 /* ChurchFinderService.swift in Sources */,
+				A1B2C3D4E5F60001000159 /* FindChurchView.swift in Sources */,
+				A1B2C3D4E5F60001000160 /* SeasonalJourneyService.swift in Sources */,
+				A1B2C3D4E5F60001000161 /* SeasonalJourneyViews.swift in Sources */,
 				A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

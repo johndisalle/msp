@@ -192,6 +192,17 @@ final class DailyExperienceViewModel {
             }
         }
 
+        // Smart review prompts at peak emotional moments
+        ReviewPromptService.shared.checkAfterDayCompleted(dayNumber: day.dayNumber)
+        if journeyJustCompleted {
+            let completedCount = 1 // This journey just completed
+            ReviewPromptService.shared.checkAfterJourneyCompletion(journeysCompleted: completedCount)
+        }
+        if let badge = newBadges.first {
+            let _ = badge // trigger on badge count
+            ReviewPromptService.shared.checkAfterBadgeEarned(badgeCount: AchievementService.shared.earnedBadgeIDs.count)
+        }
+
         // Reset for next day
         journalText = ""
         selectedMood = nil

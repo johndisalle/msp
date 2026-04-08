@@ -55,6 +55,8 @@
 	<string>Abide Journey uses the microphone to transcribe your voice journal reflections into text.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Abide Journey uses speech recognition to convert your spoken reflections into journal entries.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Abide Journey uses your location to find churches near you so you can connect with a local faith community.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

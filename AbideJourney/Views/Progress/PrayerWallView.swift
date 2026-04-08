@@ -92,6 +92,7 @@ struct PrayerWallView: View {
                 if let id = answerRequestID {
                     service.markAnswered(id: id, note: answerNote.isEmpty ? nil : answerNote)
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    ReviewPromptService.shared.checkAfterPrayerAnswered()
                     withAnimation { requests = service.loadRequests() }
                 }
                 answerRequestID = nil

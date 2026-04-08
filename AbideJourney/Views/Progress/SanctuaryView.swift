@@ -117,6 +117,36 @@ struct SanctuaryView: View {
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.5).delay(0.5), value: appeared)
 
+                    // Find a Church
+                    NavigationLink {
+                        FindChurchView()
+                    } label: {
+                        SanctuaryCard(
+                            icon: "building.columns.fill",
+                            color: .indigo,
+                            title: "Find a Church",
+                            subtitle: "Discover churches near you to worship and connect",
+                            badgeCount: 0
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .offset(y: appeared ? 0 : 20)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeOut(duration: 0.5).delay(0.55), value: appeared)
+
+                    // Seasonal Journeys
+                    NavigationLink {
+                        SeasonalJourneysBrowseView()
+                    } label: {
+                        seasonalCard
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .offset(y: appeared ? 0 : 20)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeOut(duration: 0.5).delay(0.6), value: appeared)
+
                     // Daily verse at bottom
                     VStack(spacing: 8) {
                         Text("\"Be still, and know that I am God.\"")
@@ -129,7 +159,7 @@ struct SanctuaryView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 16)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.55), value: appeared)
+                    .animation(.easeOut(duration: 0.5).delay(0.65), value: appeared)
                 }
                 .padding(.vertical)
             }
@@ -141,6 +171,17 @@ struct SanctuaryView: View {
                 }
             }
         }
+    private var seasonalCard: some View {
+        let activeSeason = SeasonalJourneyService.shared.currentActiveSeason()
+        return SanctuaryCard(
+            icon: activeSeason?.icon ?? "calendar.badge.clock",
+            color: .orange,
+            title: "Seasonal Journeys",
+            subtitle: activeSeason != nil
+                ? "\(activeSeason!.season.rawValue) is live — \(activeSeason!.totalDays) days"
+                : "Advent, Lent, Holy Week, and more",
+            badgeCount: activeSeason != nil ? 1 : 0
+        )
     }
 }
 
