@@ -120,6 +120,7 @@
 		A1B2C3D4E5F60001000148 /* GodMomentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000148 /* GodMomentsService.swift */; };
 		A1B2C3D4E5F60001000149 /* GodMomentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000149 /* GodMomentsView.swift */; };
 		A1B2C3D4E5F60001000150 /* BreathingMeditationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */; };
+		A1B2C3D4E5F60001000151 /* SanctuaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000151 /* SanctuaryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -241,6 +242,7 @@
 		A1B2C3D4E5F60101000148 /* GodMomentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GodMomentsService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000149 /* GodMomentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GodMomentsView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingMeditationView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60101000151 /* SanctuaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SanctuaryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,6 +507,7 @@
 				A1B2C3D4E5F60101000147 /* PrayerWallView.swift */,
 				A1B2C3D4E5F60101000149 /* GodMomentsView.swift */,
 				A1B2C3D4E5F60101000150 /* BreathingMeditationView.swift */,
+				A1B2C3D4E5F60101000151 /* SanctuaryView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -761,6 +764,7 @@
 				A1B2C3D4E5F60001000148 /* GodMomentsService.swift in Sources */,
 				A1B2C3D4E5F60001000149 /* GodMomentsView.swift in Sources */,
 				A1B2C3D4E5F60001000150 /* BreathingMeditationView.swift in Sources */,
+				A1B2C3D4E5F60001000151 /* SanctuaryView.swift in Sources */,
 				A1B2C3D4E5F60001000138 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

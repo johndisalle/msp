@@ -34,73 +34,6 @@ struct ProgressDashboardView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal)
 
-                    // MARK: - Spiritual Tools (prominent placement)
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Spiritual Tools")
-                            .font(AJTheme.subheadlineFont)
-                            .padding(.horizontal)
-
-                        // Prayer Wall
-                        NavigationLink {
-                            PrayerWallView()
-                        } label: {
-                            SpiritualToolRow(
-                                icon: "hands.sparkles.fill",
-                                color: .blue,
-                                title: "Prayer Wall",
-                                subtitle: "Track prayers and celebrate answers",
-                                badgeCount: PrayerWallService.shared.activeCount
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-
-                        // God Moments
-                        NavigationLink {
-                            GodMomentsView()
-                        } label: {
-                            SpiritualToolRow(
-                                icon: "camera.viewfinder",
-                                color: .orange,
-                                title: "God Moments",
-                                subtitle: "Capture God at work in your life",
-                                badgeCount: GodMomentsService.shared.loadMoments().count
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-
-                        // Breathe with Scripture
-                        NavigationLink {
-                            BreathingMeditationView()
-                        } label: {
-                            SpiritualToolRow(
-                                icon: "wind",
-                                color: .teal,
-                                title: "Breathe with Scripture",
-                                subtitle: "Guided breathing with God's Word",
-                                badgeCount: 0
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-
-                        // Scripture Memory
-                        NavigationLink {
-                            ScriptureMemoryView()
-                        } label: {
-                            SpiritualToolRow(
-                                icon: "brain.head.profile",
-                                color: .purple,
-                                title: "Scripture Memory",
-                                subtitle: "Flashcard practice for your saved verses",
-                                badgeCount: ScriptureMemoryService.shared.loadVerses().count
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-                    }
-
                     // Habit rings
                     HabitRingsCard(
                         prayer: viewModel.prayerRingProgress,
@@ -668,59 +601,6 @@ struct AchievementsSummaryCard: View {
         .onAppear {
             AchievementService.shared.evaluate(journeys: journeys, journalEntryCount: journalCount)
         }
-    }
-}
-
-// MARK: - Spiritual Tool Row
-
-struct SpiritualToolRow: View {
-    let icon: String
-    let color: Color
-    let title: String
-    let subtitle: String
-    let badgeCount: Int
-
-    var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.15))
-                    .frame(width: 44, height: 44)
-                Image(systemName: icon)
-                    .font(.body)
-                    .foregroundStyle(color)
-            }
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.subheadline.bold())
-                    .foregroundStyle(AJTheme.primaryText)
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(AJTheme.secondaryText)
-            }
-
-            Spacer()
-
-            if badgeCount > 0 {
-                Text("\(badgeCount)")
-                    .font(.caption.bold())
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(color))
-            }
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(AJTheme.cardBackground)
-                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
-        )
     }
 }
 

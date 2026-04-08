@@ -5,6 +5,7 @@ struct MainTabView: View {
 
     enum Tab: String, CaseIterable {
         case today = "Today"
+        case sanctuary = "Sanctuary"
         case progress = "Progress"
         case journal = "Journal"
         case settings = "Settings"
@@ -12,6 +13,7 @@ struct MainTabView: View {
         var icon: String {
             switch self {
             case .today: return "sunrise.fill"
+            case .sanctuary: return "sparkles"
             case .progress: return "chart.bar.fill"
             case .journal: return "book.fill"
             case .settings: return "gearshape.fill"
@@ -26,6 +28,12 @@ struct MainTabView: View {
                     Label(Tab.today.rawValue, systemImage: Tab.today.icon)
                 }
                 .tag(Tab.today)
+
+            SanctuaryView()
+                .tabItem {
+                    Label(Tab.sanctuary.rawValue, systemImage: Tab.sanctuary.icon)
+                }
+                .tag(Tab.sanctuary)
 
             ProgressDashboardView()
                 .tabItem {
