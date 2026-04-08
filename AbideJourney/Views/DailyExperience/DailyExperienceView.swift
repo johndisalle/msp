@@ -314,6 +314,10 @@ struct DailyExperienceView: View {
                     viewModel.checkDailyLimit(isPremium: isPremium)
                 }
             }
+            .onChange(of: journeys) {
+                viewModel.loadCurrentDay(from: journeys)
+                viewModel.checkDailyLimit(isPremium: isPremium)
+            }
             .onChange(of: viewModel.journeyJustCompleted) { _, completed in
                 if completed {
                     showingCompletionSheet = true
