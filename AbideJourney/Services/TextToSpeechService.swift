@@ -162,7 +162,7 @@ final class TextToSpeechService: NSObject, AVSpeechSynthesizerDelegate {
 
         // Queue remaining sections
         for i in (index + 1)..<sections.count {
-            let (nextLabel, nextText) = sections[i]
+            let (_, nextText) = sections[i]
             let nextUtterance = createUtterance(nextText)
             if i < sections.count - 1 {
                 nextUtterance.postUtteranceDelay = 1.2
