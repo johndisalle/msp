@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C58E3F32F86E423003ACA3A /* SeasonalJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */; };
+		8C58E3F42F86E423003ACA3A /* ChurchFinderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */; };
+		8C58E3F52F86E423003ACA3A /* ReviewPromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */; };
+		8C58E3F82F86E435003ACA3A /* SeasonalJourneyViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F72F86E435003ACA3A /* SeasonalJourneyViews.swift */; };
+		8C58E3F92F86E435003ACA3A /* ListenModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F62F86E435003ACA3A /* ListenModeView.swift */; };
+		8C58E3FB2F86E447003ACA3A /* FindChurchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3FA2F86E447003ACA3A /* FindChurchView.swift */; };
 		A1B2C3D4E5F60001000001 /* AbideJourneyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000001 /* AbideJourneyApp.swift */; };
 		A1B2C3D4E5F60001000002 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000002 /* MainTabView.swift */; };
 		A1B2C3D4E5F60001000003 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000003 /* RootView.swift */; };
@@ -123,6 +129,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchFinderService.swift; sourceTree = "<group>"; };
+		8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptService.swift; sourceTree = "<group>"; };
+		8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyService.swift; sourceTree = "<group>"; };
+		8C58E3F62F86E435003ACA3A /* ListenModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenModeView.swift; sourceTree = "<group>"; };
+		8C58E3F72F86E435003ACA3A /* SeasonalJourneyViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyViews.swift; sourceTree = "<group>"; };
+		8C58E3FA2F86E447003ACA3A /* FindChurchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindChurchView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000001 /* AbideJourneyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000002 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000003 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -351,6 +363,9 @@
 		A1B2C3D4E5F60301000006 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */,
+				8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */,
+				8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */,
 				A1B2C3D4E5F60101000050 /* AdaptiveJourneyService.swift */,
 				A1B2C3D4E5F60101000111 /* AnalyticsService.swift */,
 				A1B2C3D4E5F60101000051 /* AudioPlayerService.swift */,
@@ -439,6 +454,8 @@
 		A1B2C3D4E5F60301000010 /* DailyExperience */ = {
 			isa = PBXGroup;
 			children = (
+				8C58E3F62F86E435003ACA3A /* ListenModeView.swift */,
+				8C58E3F72F86E435003ACA3A /* SeasonalJourneyViews.swift */,
 				A1B2C3D4E5F60101000026 /* CheckInSheet.swift */,
 				A1B2C3D4E5F60101000027 /* DailyExperienceView.swift */,
 				A1B2C3D4E5F60101000028 /* JournalEntrySheet.swift */,
@@ -458,6 +475,7 @@
 		A1B2C3D4E5F60301000012 /* Progress */ = {
 			isa = PBXGroup;
 			children = (
+				8C58E3FA2F86E447003ACA3A /* FindChurchView.swift */,
 				A1B2C3D4E5F60101000031 /* JournalListView.swift */,
 				A1B2C3D4E5F60101000032 /* ProgressDashboardView.swift */,
 				A1B2C3D4E5F60101000102 /* FaithMapView.swift */,
@@ -713,6 +731,7 @@
 				A1B2C3D4E5F60001000004 /* Date+Extensions.swift in Sources */,
 				A1B2C3D4E5F60001000005 /* View+Extensions.swift in Sources */,
 				A1B2C3D4E5F60001000006 /* DailyCheckIn.swift in Sources */,
+				8C58E3FB2F86E447003ACA3A /* FindChurchView.swift in Sources */,
 				A1B2C3D4E5F60001000007 /* JournalEntry.swift in Sources */,
 				A1B2C3D4E5F60001000008 /* Journey.swift in Sources */,
 				A1B2C3D4E5F60001000009 /* JourneyDay.swift in Sources */,
@@ -736,6 +755,9 @@
 				A1B2C3D4E5F60001000031 /* JournalListView.swift in Sources */,
 				A1B2C3D4E5F60001000032 /* ProgressDashboardView.swift in Sources */,
 				A1B2C3D4E5F60001000033 /* PremiumPaywallView.swift in Sources */,
+				8C58E3F32F86E423003ACA3A /* SeasonalJourneyService.swift in Sources */,
+				8C58E3F42F86E423003ACA3A /* ChurchFinderService.swift in Sources */,
+				8C58E3F52F86E423003ACA3A /* ReviewPromptService.swift in Sources */,
 				A1B2C3D4E5F60001000034 /* SettingsView.swift in Sources */,
 				A1B2C3D4E5F60001000090 /* AccountabilityPartner.swift in Sources */,
 				A1B2C3D4E5F60001000091 /* PDFExportService.swift in Sources */,
@@ -771,6 +793,8 @@
 				A1B2C3D4E5F60001000120 /* ContentExpansion_Service.swift in Sources */,
 				A1B2C3D4E5F60001000121 /* ContentExpansion_Anxiety.swift in Sources */,
 				A1B2C3D4E5F60001000122 /* ContentExpansion_Grief.swift in Sources */,
+				8C58E3F82F86E435003ACA3A /* SeasonalJourneyViews.swift in Sources */,
+				8C58E3F92F86E435003ACA3A /* ListenModeView.swift in Sources */,
 				A1B2C3D4E5F60001000123 /* ContentExpansion_Leadership.swift in Sources */,
 				A1B2C3D4E5F60001000124 /* ContentExpansion_StartingOver.swift in Sources */,
 				A1B2C3D4E5F60001000125 /* ContentExpansion_HealingRelationships.swift in Sources */,
