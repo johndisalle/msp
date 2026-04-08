@@ -174,16 +174,23 @@ struct SanctuaryView: View {
     }
 
     private var seasonalCard: some View {
-        let activeSeason = SeasonalJourneyService.shared.currentActiveSeason()
-        return SanctuaryCard(
-            icon: activeSeason?.icon ?? "calendar.badge.clock",
-            color: .orange,
-            title: "Seasonal Journeys",
-            subtitle: activeSeason != nil
-                ? "\(activeSeason!.season.rawValue) is live — \(activeSeason!.totalDays) days"
-                : "Advent, Lent, Holy Week, and more",
-            badgeCount: activeSeason != nil ? 1 : 0
-        )
+        if let season = SeasonalJourneyService.shared.currentActiveSeason() {
+            SanctuaryCard(
+                icon: season.icon,
+                color: .orange,
+                title: "Seasonal Journeys",
+                subtitle: "\(season.season.rawValue) is live — \(season.totalDays) days",
+                badgeCount: 1
+            )
+        } else {
+            SanctuaryCard(
+                icon: "calendar.badge.clock",
+                color: .orange,
+                title: "Seasonal Journeys",
+                subtitle: "Advent, Lent, Holy Week, and more",
+                badgeCount: 0
+            )
+        }
     }
 }
 

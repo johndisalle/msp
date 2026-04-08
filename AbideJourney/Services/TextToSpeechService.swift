@@ -195,12 +195,75 @@ final class TextToSpeechService: NSObject, AVSpeechSynthesizerDelegate {
         stopAmbientAudio()
         guard currentSoundscape != .none else { return }
 
-        // Generate ambient audio using AVTonePlayer (sine waves for peaceful atmosphere)
-        // In production, these would be bundled audio files
-        // For now, we use a subtle background tone approach
-        ambientPlayer?.volume = 0.08
-        ambientPlayer?.numberOfLoops = -1
-        ambientPlayer?.play()
+        // Generate a gentle ambient tone using synthesized audio data
+        // Each soundscape creates a unique frequency blend for atmosphere
+        let sampleRate: Double = 44100
+        let duration: Double = 10.0 // 10-second loop
+        let frameCount = Int(sampleRate * duration)
+
+        var audioData = [Float](repeating: 0, count: frameCount)
+        let frequencies: [Double]
+
+        switch currentSoundscape {
+        case .rain: frequencies = [220, 330, 440]
+        case .gentlePiano: frequencies = [261.63, 329.63, 392.00]
+        case .nature: frequencies = [196, 293.66, 349.23]
+        case .oceanWaves: frequencies = [174.61, 261.63, 349.23]
+        case .softWorship: frequencies = [293.66, 369.99, 440]
+        case .none: return
+        }
+
+        for i in 0..<frameCount {
+            var sample: Float = 0
+            for freq in frequencies {
+                let t = Double(i) / sampleRate
+                sample += Float(sin(2.0 * .pi * freq * t) * 0.05)
+            }
+            // Fade envelope for smooth looping
+            let fadeFrames = Int(sampleRate * 0.5)
+            if i < fadeFrames {
+                sample *= Float(i) / Float(fadeFrames)
+            } else if i > frameCount - fadeFrames {
+                sample *= Float(frameCount - i) / Float(fadeFrames)
+            }
+            audioData[i] = sample
+        }
+
+        // Create WAV data in memory
+        let bytesPerSample = 2
+        let dataSize = frameCount * bytesPerSample
+        var wavData = Data()
+
+        // WAV header
+        wavData.append(contentsOf: [UInt8]("RIFF".utf8))
+        var fileSize = UInt32(36 + dataSize).littleEndian
+        wavData.append(Data(bytes: &fileSize, count: 4))
+        wavData.append(contentsOf: [UInt8]("WAVE".utf8))
+        wavData.append(contentsOf: [UInt8]("fmt ".utf8))
+        var chunkSize: UInt32 = 16; wavData.append(Data(bytes: &chunkSize, count: 4))
+        var audioFormat: UInt16 = 1; wavData.append(Data(bytes: &audioFormat, count: 2))
+        var channels: UInt16 = 1; wavData.append(Data(bytes: &channels, count: 2))
+        var rate = UInt32(sampleRate).littleEndian; wavData.append(Data(bytes: &rate, count: 4))
+        var byteRate = UInt32(sampleRate * Double(bytesPerSample)).littleEndian; wavData.append(Data(bytes: &byteRate, count: 4))
+        var blockAlign = UInt16(bytesPerSample).littleEndian; wavData.append(Data(bytes: &blockAlign, count: 2))
+        var bitsPerSample: UInt16 = 16; wavData.append(Data(bytes: &bitsPerSample, count: 2))
+        wavData.append(contentsOf: [UInt8]("data".utf8))
+        var dataChunkSize = UInt32(dataSize).littleEndian; wavData.append(Data(bytes: &dataChunkSize, count: 4))
+
+        // Audio samples
+        for sample in audioData {
+            var intSample = Int16(max(-1, min(1, sample)) * Float(Int16.max))
+            wavData.append(Data(bytes: &intSample, count: 2))
+        }
+
+        do {
+            ambientPlayer = try AVAudioPlayer(data: wavData)
+            ambientPlayer?.volume = 0.08
+            ambientPlayer?.numberOfLoops = -1
+            ambientPlayer?.play()
+        } catch {
+            // Ambient audio is optional — continue without it
+        }
     }
 
     func stopAmbientAudio() {

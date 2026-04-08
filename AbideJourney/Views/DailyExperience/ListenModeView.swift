@@ -10,7 +10,7 @@ struct ListenModeView: View {
     let dayNumber: Int
     let focusArea: String
 
-    @State private var tts = TextToSpeechService.shared
+    private var tts: TextToSpeechService { TextToSpeechService.shared }
     @State private var selectedSoundscape: AmbientSoundscape
     @State private var isPlaying = false
     @State private var showingSoundscapePicker = false

@@ -29,12 +29,15 @@ struct PremiumPaywallView: View {
 
     private let features = [
         ("heart.fill", "Kingdom-Funded", "We tithe our profits to ministry and missions around the world"),
+        ("headphones", "Listen Mode", "Hear devotionals read aloud with premium voices and ambient soundscapes"),
         ("wand.and.stars", "Custom Journeys", "Describe what you're going through and we'll build a journey for it"),
         ("paintpalette.fill", "Deep-Dive Themes", "Anxiety, grief, leadership & 10+ premium journey themes"),
         ("heart.circle.fill", "Couples Journey", "Walk through 40 days together with your partner"),
+        ("figure.2.and.child.holdinghands", "Family Journey", "Age-appropriate faith journeys for your whole family"),
+        ("calendar.badge.clock", "Seasonal Journeys", "Advent, Lent, Holy Week, and seasonal faith experiences"),
         ("person.2.fill", "Accountability Partners", "Invite friends to encourage each other along the way"),
         ("mic.fill", "Voice Journaling", "Speak your reflections instead of typing them out"),
-        ("map.fill", "Faith Map & Reports", "Visualize your growth and get an annual faith report"),
+        ("map.fill", "Faith Map & Year in Review", "Visualize your growth with Faith Wrapped and annual reports"),
         ("gift.fill", "Gift a Journey", "Share a premium journey with someone you love"),
         ("square.and.arrow.up", "Export Journals", "Save your reflections as beautiful PDFs"),
     ]
@@ -497,13 +500,15 @@ struct PremiumCelebrationView: View {
     @State private var showFeatures = false
 
     private let unlockedFeatures: [(icon: String, color: Color, title: String, description: String)] = [
-        ("paintpalette.fill", .purple, "Deep-Dive Journeys", "Anxiety, grief, leadership & 10+ premium themes"),
+        ("headphones", .purple, "Listen Mode", "Premium voices and ambient soundscapes for devotionals"),
+        ("paintpalette.fill", .indigo, "Deep-Dive Journeys", "Anxiety, grief, leadership & 10+ premium themes"),
         ("wand.and.stars", .orange, "Custom Journeys", "Describe your situation and get a journey built for you"),
         ("heart.circle.fill", .pink, "Couples Journey", "Walk through 40 days of growth with your partner"),
+        ("figure.2.and.child.holdinghands", .orange, "Family Journey", "Age-appropriate faith journeys for your whole family"),
+        ("calendar.badge.clock", .teal, "Seasonal Journeys", "Advent, Lent, Holy Week, and seasonal experiences"),
         ("person.2.fill", .green, "Accountability Partners", "Invite friends to keep each other encouraged"),
         ("mic.fill", .red, "Voice Journaling", "Speak your reflections instead of typing"),
-        ("map.fill", .teal, "Faith Map", "Visualize your spiritual growth over time"),
-        ("sparkles.rectangle.stack.fill", .indigo, "Annual Faith Report", "A beautiful summary of your year with God"),
+        ("map.fill", .teal, "Faith Map & Year in Review", "Visualize your growth with Faith Wrapped"),
         ("gift.fill", .orange, "Gift a Journey", "Share a premium journey with someone you love"),
         ("square.and.arrow.up", .blue, "Export Journals", "Save your reflections as beautiful PDFs"),
     ]

@@ -2,7 +2,7 @@ import SwiftUI
 import MapKit
 
 struct FindChurchView: View {
-    @State private var service = ChurchFinderService.shared
+    private var service: ChurchFinderService { ChurchFinderService.shared }
     @State private var selectedDenomination: ChurchDenomination = .all
     @State private var searchRadius: Double = 25
     @State private var showingMap = false
