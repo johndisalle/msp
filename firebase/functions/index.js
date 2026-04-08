@@ -168,7 +168,7 @@ Requirements:
 // 2. ELEVENLABS AUDIO NARRATION — premium voice for Listen Mode
 // ============================================================
 
-exports.generateAudioHTTP = functions.runWith({ timeoutSeconds: 120, memory: "512MB" }).https.onRequest(async (req, res) => {
+exports.generateAudioHTTP = functions.https.onRequest(async (req, res) => {
     // CORS
     res.set("Access-Control-Allow-Origin", "*");
     if (req.method === "OPTIONS") {
