@@ -101,7 +101,7 @@ final class SeasonalJourneyService {
                 subtitle: "21 days to renew your mind, heart, and habits",
                 totalDays: 21,
                 icon: "sparkles",
-                gradient: [Color(red: 0.0, green: 0.3, blue: 0.5), Color(red: 0.0, blue: 0.1, green: 0.2)],
+                gradient: [Color(red: 0.0, green: 0.3, blue: 0.5), Color(red: 0.0, green: 0.2, blue: 0.1)],
                 startMonth: 1, startDay: 1,
                 endMonth: 1, endDay: 21,
                 description: "Start the year anchored in God's Word. Build spiritual habits that last: daily Bible reading, prayer rhythms, gratitude practice, and intentional living.",
