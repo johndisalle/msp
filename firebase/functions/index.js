@@ -1,9 +1,13 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
+const { defineString } = require("firebase-functions/params");
 
 admin.initializeApp();
 const db = admin.firestore();
+
+// API key stored as Firebase environment parameter (set via .env file)
+const claudeApiKey = defineString("CLAUDE_API_KEY");
 
 // ============================================================
 // 1. CLAUDE API PROXY — keeps API key off the client
@@ -44,9 +48,9 @@ exports.generateJourney = functions.https.onCall(async (data, context) => {
     );
   }
 
-  // Get Claude API key from Firebase environment config
-  const apiKey = functions.config().claude?.api_key;
-  if (!apiKey) {
+  // Get Claude API key from environment parameter
+  const apiKey = claudeApiKey.value();
+  if (!apiKey || apiKey === "YOUR_CLAUDE_API_KEY") {
     throw new functions.https.HttpsError(
       "internal",
       "AI service is not configured."
