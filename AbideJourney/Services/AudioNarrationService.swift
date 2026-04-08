@@ -161,7 +161,7 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
 
     private func fetchAudio(baseURL: String, secret: String, text: String, voice: NarrationVoice) async throws -> Data {
         let url = URL(string: "\(baseURL)/generateAudioHTTP")!
-        let deviceId = await UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
