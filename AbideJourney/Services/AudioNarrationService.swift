@@ -58,7 +58,8 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
     }()
 
     private let appSecret: String? = {
-        Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String
+        (Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }()
 
     private override init() {

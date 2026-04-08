@@ -14,7 +14,8 @@ actor AIJourneyService {
 
     /// App secret for authenticating with the Cloud Function (must match APP_SECRET in .env).
     private let appSecret: String? = {
-        Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String
+        (Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }()
 
     /// Direct API key — only used as fallback if Cloud Function is not configured.
