@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Generates personalized journey content using a Firebase Cloud Function proxy.
 /// Falls back to direct API call if Firebase is not configured, then to local generation.
@@ -6,9 +7,14 @@ actor AIJourneyService {
     static let shared = AIJourneyService()
 
     /// Firebase Cloud Function URL — set this after deploying your functions.
-    /// Format: "https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/generateJourney"
+    /// Format: "https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/generateJourneyHTTP"
     private let cloudFunctionURL: String? = {
         Bundle.main.object(forInfoDictionaryKey: "CLOUD_FUNCTION_URL") as? String
+    }()
+
+    /// App secret for authenticating with the Cloud Function (must match APP_SECRET in .env).
+    private let appSecret: String? = {
+        Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String
     }()
 
     /// Direct API key — only used as fallback if Cloud Function is not configured.
@@ -53,25 +59,31 @@ actor AIJourneyService {
         return await generateViaDirectAPI(description: description, userName: userName, maturityLevel: maturityLevel)
     }
 
-    /// Calls the Firebase Cloud Function proxy to generate a journey.
+    /// Calls the Firebase Cloud Function HTTP proxy to generate a journey.
     private func generateViaCloudFunction(description: String) async -> AIJourneyPlan? {
         guard let urlString = cloudFunctionURL,
               !urlString.isEmpty,
               urlString != "YOUR_CLOUD_FUNCTION_URL",
-              let url = URL(string: urlString) else {
+              let url = URL(string: urlString),
+              let secret = appSecret,
+              !secret.isEmpty else {
             return nil
         }
 
+        // Unique device ID for rate limiting
+        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+
         let body: [String: Any] = [
-            "data": [
-                "description": description,
-                "theme": "spiritualGrowth"
-            ]
+            "description": description,
+            "theme": "spiritualGrowth",
+            "deviceId": deviceId
         ]
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "content-type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
+        request.timeoutInterval = 120 // AI generation can take a while
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -82,14 +94,8 @@ actor AIJourneyService {
                 return nil
             }
 
-            // Cloud Function returns { "result": { ...journey... } }
-            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let result = json["result"] as? [String: Any] else {
-                return nil
-            }
-
-            let resultData = try JSONSerialization.data(withJSONObject: result)
-            return try JSONDecoder().decode(AIJourneyPlan.self, from: resultData)
+            // HTTP endpoint returns the journey JSON directly
+            return try JSONDecoder().decode(AIJourneyPlan.self, from: data)
         } catch {
             return nil
         }
