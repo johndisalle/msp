@@ -206,10 +206,10 @@ final class TextToSpeechService: NSObject, AVSpeechSynthesizerDelegate {
 
         switch currentSoundscape {
         case .rain: frequencies = [220, 330, 440]
-        case .gentlePiano: frequencies = [261.63, 329.63, 392.00]
+        case .piano: frequencies = [261.63, 329.63, 392.00]
         case .nature: frequencies = [196, 293.66, 349.23]
-        case .oceanWaves: frequencies = [174.61, 261.63, 349.23]
-        case .softWorship: frequencies = [293.66, 369.99, 440]
+        case .ocean: frequencies = [174.61, 261.63, 349.23]
+        case .worship: frequencies = [293.66, 369.99, 440]
         case .none: return
         }
 
