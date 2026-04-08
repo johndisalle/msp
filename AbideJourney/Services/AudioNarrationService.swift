@@ -130,7 +130,9 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
                 let cachedURL = cacheAudio(data: audioData, key: cacheKey)
                 playAudioFile(url: cachedURL)
             } catch {
+                #if DEBUG
                 print("[AudioNarration] Cloud Function failed: \(error.localizedDescription). Falling back to device TTS.")
+                #endif
                 // Fallback to on-device TTS
                 fallbackToDeviceTTS(scripture: scripture, scriptureRef: scriptureRef, title: title, devotional: devotional, prayer: prayer, onComplete: onComplete)
             }
@@ -186,21 +188,25 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let secretPreview = secret.count > 8 ? "\(secret.prefix(4))...\(secret.suffix(4))" : "too short"
+        #if DEBUG
         print("[AudioNarration] Requesting audio from: \(url.absoluteString)")
-        print("[AudioNarration] Secret: \(secretPreview) (length: \(secret.count))")
         print("[AudioNarration] Text length: \(text.count), voice: \(voice.rawValue)")
+        #endif
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw NSError(domain: "AudioNarration", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
         }
 
-        print("[AudioNarration] Response: \(httpResponse.statusCode), size: \(data.count) bytes, type: \(httpResponse.mimeType ?? "unknown")")
+        #if DEBUG
+        print("[AudioNarration] Response: \(httpResponse.statusCode), size: \(data.count) bytes")
+        #endif
 
         guard httpResponse.statusCode == 200 else {
             let errorBody = String(data: data.prefix(500), encoding: .utf8) ?? "unknown"
-            print("[AudioNarration] Error body: \(errorBody)")
+            #if DEBUG
+            print("[AudioNarration] Error: \(errorBody)")
+            #endif
             throw NSError(domain: "AudioNarration", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP \(httpResponse.statusCode): \(errorBody)"])
         }
 
