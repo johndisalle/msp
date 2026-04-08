@@ -1,5 +1,6 @@
 import StoreKit
 import Foundation
+import UIKit
 
 /// Strategically requests App Store reviews at peak emotional moments
 /// to maximize positive ratings.
