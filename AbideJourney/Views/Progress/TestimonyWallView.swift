@@ -3,11 +3,19 @@ import SwiftUI
 // MARK: - Testimony Wall View
 
 struct TestimonyWallView: View {
+    enum TestimonyTab: String, CaseIterable {
+        case local = "My Stories"
+        case community = "Community"
+    }
+
+    @State private var selectedTab: TestimonyTab = .local
     @State private var testimonies: [Testimony] = []
     @State private var selectedCategory: TestimonyCategory?
     @State private var showingSubmitSheet = false
     @State private var selectedTestimony: Testimony?
     @State private var showingShareCard = false
+
+    private var community: CommunityService { CommunityService.shared }
 
     private var filteredTestimonies: [Testimony] {
         let approved = testimonies.filter { $0.isApproved || $0.isFeatured }
@@ -22,6 +30,44 @@ struct TestimonyWallView: View {
     }
 
     var body: some View {
+        VStack(spacing: 0) {
+            // Tab picker
+            Picker("", selection: $selectedTab) {
+                ForEach(TestimonyTab.allCases, id: \.self) { tab in
+                    Text(tab.rawValue).tag(tab)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 8)
+
+            if selectedTab == .local {
+                localTestimoniesContent
+            } else {
+                communityTestimoniesContent
+            }
+        }
+        .ajScreenBackground()
+        .navigationTitle("Testimonies")
+        .onAppear {
+            testimonies = TestimonyService.shared.loadTestimonies()
+            Task { await community.loadCommunityTestimonies() }
+        }
+        .sheet(isPresented: $showingSubmitSheet, onDismiss: {
+            testimonies = TestimonyService.shared.loadTestimonies()
+        }) {
+            SubmitTestimonySheet()
+        }
+        .sheet(isPresented: $showingShareCard) {
+            if let testimony = selectedTestimony {
+                TestimonyCardShareView(testimony: testimony)
+            }
+        }
+    }
+
+    // MARK: - Local Testimonies Tab
+
+    private var localTestimoniesContent: some View {
         ScrollView {
             VStack(spacing: 20) {
                 // Header
@@ -132,18 +178,84 @@ struct TestimonyWallView: View {
             }
             .padding(.vertical)
         }
-        .ajScreenBackground()
-        .navigationTitle("Testimonies")
-        .onAppear { testimonies = TestimonyService.shared.loadTestimonies() }
-        .sheet(isPresented: $showingSubmitSheet, onDismiss: {
-            testimonies = TestimonyService.shared.loadTestimonies()
-        }) {
-            SubmitTestimonySheet()
-        }
-        .sheet(isPresented: $showingShareCard) {
-            if let testimony = selectedTestimony {
-                TestimonyCardShareView(testimony: testimony)
+    }
+
+    // MARK: - Community Testimonies Tab
+
+    private var communityTestimoniesContent: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                VStack(spacing: 6) {
+                    Image(systemName: "person.3.fill")
+                        .font(.title2)
+                        .foregroundStyle(AJTheme.gold)
+                    Text("Stories from believers everywhere")
+                        .font(.subheadline)
+                        .foregroundStyle(AJTheme.secondaryText)
+                }
+                .padding(.top, 12)
+
+                // Submit CTA for community
+                Button {
+                    showingSubmitSheet = true
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Share Your Story")
+                                .font(.subheadline.bold())
+                            Text("Encourage believers around the world")
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [AJTheme.gold, AJTheme.gold.opacity(0.8)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .padding(.horizontal)
+
+                if community.isLoadingTestimonies {
+                    ProgressView("Loading testimonies...")
+                        .padding(.top, 40)
+                } else if community.communityTestimonies.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "text.quote")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.gray.opacity(0.3))
+                        Text("No community testimonies yet")
+                            .font(.subheadline)
+                            .foregroundStyle(AJTheme.secondaryText)
+                        Text("Be the first to share your story!")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .padding(.vertical, 40)
+                } else {
+                    LazyVStack(spacing: 16) {
+                        ForEach(community.communityTestimonies) { testimony in
+                            CommunityTestimonyCard(testimony: testimony)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
             }
+            .padding(.vertical)
+        }
+        .refreshable {
+            await community.loadCommunityTestimonies()
         }
     }
 }
@@ -313,6 +425,7 @@ struct SubmitTestimonySheet: View {
     @State private var journeyTheme = ""
     @State private var dayCount = 40
     @State private var submitted = false
+    @State private var shareToCommunity = true
 
     var body: some View {
         NavigationStack {
@@ -419,6 +532,25 @@ struct SubmitTestimonySheet: View {
                                 .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                         )
                 }
+                .padding(.horizontal)
+
+                // Share to community toggle
+                Toggle(isOn: $shareToCommunity) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "person.3.fill")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.gold)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Share with Community")
+                                .font(.subheadline.bold())
+                                .foregroundStyle(AJTheme.primaryText)
+                            Text("Encourage believers around the world")
+                                .font(.caption)
+                                .foregroundStyle(AJTheme.secondaryText)
+                        }
+                    }
+                }
+                .tint(AJTheme.gold)
                 .padding(.horizontal)
 
                 // Guidelines
@@ -529,15 +661,34 @@ struct SubmitTestimonySheet: View {
     }
 
     private func submitTestimony() {
+        let trimmedName = authorName.trimmingCharacters(in: .whitespaces)
+        let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
+        let trimmedStory = story.trimmingCharacters(in: .whitespaces)
+        let theme = journeyTheme.isEmpty ? selectedCategory.rawValue : journeyTheme
+
         let testimony = Testimony(
-            authorName: authorName.trimmingCharacters(in: .whitespaces),
-            journeyTheme: journeyTheme.isEmpty ? selectedCategory.rawValue : journeyTheme,
+            authorName: trimmedName,
+            journeyTheme: theme,
             category: selectedCategory,
-            title: title.trimmingCharacters(in: .whitespaces),
-            story: story.trimmingCharacters(in: .whitespaces),
+            title: trimmedTitle,
+            story: trimmedStory,
             dayCount: dayCount
         )
         TestimonyService.shared.submitTestimony(testimony)
+
+        if shareToCommunity {
+            Task {
+                await CommunityService.shared.submitCommunityTestimony(
+                    title: trimmedTitle,
+                    story: trimmedStory,
+                    category: selectedCategory.rawValue,
+                    authorName: trimmedName,
+                    journeyTheme: theme,
+                    dayCount: dayCount
+                )
+            }
+        }
+
         withAnimation { submitted = true }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
@@ -737,6 +888,126 @@ struct TestimonyShareCanvas: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
+    }
+}
+
+// MARK: - Community Testimony Card
+
+private struct CommunityTestimonyCard: View {
+    let testimony: CommunityTestimony
+    @State private var expanded = false
+    private var community: CommunityService { CommunityService.shared }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack(spacing: 10) {
+                ZStack {
+                    Circle()
+                        .fill(AJTheme.gold.opacity(0.15))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "person.circle.fill")
+                        .font(.body)
+                        .foregroundStyle(AJTheme.gold)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(testimony.authorName)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(AJTheme.primaryText)
+                    HStack(spacing: 4) {
+                        if let theme = testimony.journeyTheme, !theme.isEmpty {
+                            Text(theme)
+                                .font(.caption2)
+                                .foregroundStyle(AJTheme.secondaryText)
+                            Text("\u{00B7}")
+                                .foregroundStyle(AJTheme.secondaryText)
+                        }
+                        if let days = testimony.dayCount {
+                            Text("\(days) days")
+                                .font(.caption2)
+                                .foregroundStyle(AJTheme.secondaryText)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                if testimony.isFeatured {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundStyle(.yellow)
+                }
+
+                Text(testimony.relativeDate)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            // Title
+            Text(testimony.title)
+                .font(.headline)
+                .foregroundStyle(AJTheme.primaryText)
+
+            // Story
+            Text(testimony.story)
+                .font(.subheadline)
+                .foregroundStyle(AJTheme.secondaryText)
+                .lineSpacing(4)
+                .lineLimit(expanded ? nil : 4)
+
+            if testimony.story.count > 200 {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        expanded.toggle()
+                    }
+                } label: {
+                    Text(expanded ? "Read Less" : "Read More")
+                        .font(.caption.bold())
+                        .foregroundStyle(AJTheme.gold)
+                }
+            }
+
+            Divider()
+
+            // Actions
+            HStack(spacing: 20) {
+                Button {
+                    Task { await community.prayForTestimony(id: testimony.id) }
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: community.hasPrayedForTestimony(testimony.id) ? "hands.sparkles.fill" : "hands.sparkles")
+                            .font(.caption)
+                        Text(community.hasPrayedForTestimony(testimony.id) ? "Prayed" : "Pray")
+                            .font(.caption.bold())
+                        if testimony.prayerCount > 0 {
+                            Text("\(testimony.prayerCount)")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .foregroundStyle(community.hasPrayedForTestimony(testimony.id) ? AJTheme.sage : AJTheme.secondaryText)
+                }
+                .disabled(community.hasPrayedForTestimony(testimony.id))
+
+                Spacer()
+
+                Text(testimony.category)
+                    .font(.caption2)
+                    .foregroundStyle(AJTheme.gold)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(AJTheme.gold.opacity(0.1))
+                    .clipShape(Capsule())
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
     }
 }
 

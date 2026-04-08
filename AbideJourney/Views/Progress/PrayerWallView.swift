@@ -1,6 +1,12 @@
 import SwiftUI
 
 struct PrayerWallView: View {
+    enum PrayerTab: String, CaseIterable {
+        case myPrayers = "My Prayers"
+        case community = "Community"
+    }
+
+    @State private var selectedTab: PrayerTab = .myPrayers
     @State private var requests: [PrayerRequest] = []
     @State private var showingNewRequest = false
     @State private var showingAnswered = false
@@ -9,6 +15,7 @@ struct PrayerWallView: View {
     @State private var answerNote = ""
 
     private let service = PrayerWallService.shared
+    private var community: CommunityService { CommunityService.shared }
 
     private var activeRequests: [PrayerRequest] {
         let active = requests.filter { !$0.isAnswered }
@@ -23,15 +30,72 @@ struct PrayerWallView: View {
     }
 
     var body: some View {
+        VStack(spacing: 0) {
+            // Tab picker
+            Picker("", selection: $selectedTab) {
+                ForEach(PrayerTab.allCases, id: \.self) { tab in
+                    Text(tab.rawValue).tag(tab)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 8)
+
+            if selectedTab == .myPrayers {
+                myPrayersContent
+            } else {
+                communityPrayersContent
+            }
+        }
+        .ajScreenBackground()
+        .navigationTitle("Prayer Wall")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingNewRequest = true
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(AJTheme.sage)
+                }
+            }
+        }
+        .onAppear {
+            requests = service.loadRequests()
+            Task { await community.loadCommunityPrayers() }
+        }
+        .sheet(isPresented: $showingNewRequest, onDismiss: {
+            requests = service.loadRequests()
+        }) {
+            NewPrayerRequestSheet()
+        }
+        .alert("Prayer Answered!", isPresented: Binding(
+            get: { answerRequestID != nil },
+            set: { if !$0 { answerRequestID = nil } }
+        )) {
+            TextField("How did God answer? (optional)", text: $answerNote)
+            Button("Mark Answered") {
+                if let id = answerRequestID {
+                    service.markAnswered(id: id, note: answerNote.isEmpty ? nil : answerNote)
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    ReviewPromptService.shared.checkAfterPrayerAnswered()
+                    withAnimation { requests = service.loadRequests() }
+                }
+                answerRequestID = nil
+            }
+            Button("Cancel", role: .cancel) { answerRequestID = nil }
+        } message: {
+            Text("How did God answer this prayer?")
+        }
+    }
+
+    // MARK: - My Prayers Tab
+
+    private var myPrayersContent: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Stats header
                 statsHeader
-
-                // Category filter
                 categoryFilter
 
-                // Active prayers
                 if activeRequests.isEmpty {
                     emptyState
                 } else {
@@ -58,48 +122,59 @@ struct PrayerWallView: View {
                     .padding(.horizontal)
                 }
 
-                // Answered prayers section
                 if !answeredRequests.isEmpty {
                     answeredSection
                 }
             }
             .padding(.vertical)
         }
-        .ajScreenBackground()
-        .navigationTitle("Prayer Wall")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingNewRequest = true
-                } label: {
-                    Image(systemName: "plus.circle.fill")
+    }
+
+    // MARK: - Community Prayers Tab
+
+    private var communityPrayersContent: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                // Community header
+                VStack(spacing: 6) {
+                    Image(systemName: "person.3.fill")
+                        .font(.title2)
                         .foregroundStyle(AJTheme.sage)
+                    Text("Pray with believers around the world")
+                        .font(.subheadline)
+                        .foregroundStyle(AJTheme.secondaryText)
+                }
+                .padding(.top, 12)
+
+                if community.isLoadingPrayers {
+                    ProgressView("Loading prayers...")
+                        .padding(.top, 40)
+                } else if community.communityPrayers.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "hands.sparkles.fill")
+                            .font(.system(size: 40))
+                            .foregroundStyle(AJTheme.sage.opacity(0.3))
+                        Text("No community prayers yet")
+                            .font(.subheadline)
+                            .foregroundStyle(AJTheme.secondaryText)
+                        Text("Be the first to share a prayer request!")
+                            .font(.caption)
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .padding(.vertical, 40)
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(community.communityPrayers) { prayer in
+                            CommunityPrayerCard(prayer: prayer)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
             }
+            .padding(.vertical)
         }
-        .onAppear { requests = service.loadRequests() }
-        .sheet(isPresented: $showingNewRequest, onDismiss: {
-            requests = service.loadRequests()
-        }) {
-            NewPrayerRequestSheet()
-        }
-        .alert("Prayer Answered!", isPresented: Binding(
-            get: { answerRequestID != nil },
-            set: { if !$0 { answerRequestID = nil } }
-        )) {
-            TextField("How did God answer? (optional)", text: $answerNote)
-            Button("Mark Answered") {
-                if let id = answerRequestID {
-                    service.markAnswered(id: id, note: answerNote.isEmpty ? nil : answerNote)
-                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-                    ReviewPromptService.shared.checkAfterPrayerAnswered()
-                    withAnimation { requests = service.loadRequests() }
-                }
-                answerRequestID = nil
-            }
-            Button("Cancel", role: .cancel) { answerRequestID = nil }
-        } message: {
-            Text("How did God answer this prayer?")
+        .refreshable {
+            await community.loadCommunityPrayers()
         }
     }
 
@@ -341,6 +416,9 @@ private struct NewPrayerRequestSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
     @State private var selectedCategory: PrayerRequest.PrayerCategory = .personal
+    @State private var shareToCommunity = false
+    @State private var authorName = ""
+    @State private var isAnonymous = false
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -432,17 +510,68 @@ private struct NewPrayerRequestSheet: View {
                     }
                     .padding(.top, 4)
 
+                    // Share to community toggle
+                    Toggle(isOn: $shareToCommunity) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "person.3.fill")
+                                .font(.caption)
+                                .foregroundStyle(AJTheme.sage)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Share with Community")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Let others pray with you")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+                        }
+                    }
+                    .tint(AJTheme.sage)
+                    .padding(.horizontal)
+
+                    if shareToCommunity {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Display Name")
+                                .font(.caption)
+                                .foregroundStyle(AJTheme.secondaryText)
+                            TextField("Your first name (or 'Anonymous')", text: $authorName)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        .padding(.horizontal)
+
+                        Toggle(isOn: $isAnonymous) {
+                            Text("Post anonymously")
+                                .font(.subheadline)
+                                .foregroundStyle(AJTheme.secondaryText)
+                        }
+                        .tint(AJTheme.sage)
+                        .padding(.horizontal)
+                    }
+
                     // Submit
                     Button {
                         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
                         guard !trimmed.isEmpty else { return }
                         PrayerWallService.shared.addRequest(text: trimmed, category: selectedCategory)
+
+                        if shareToCommunity {
+                            let name = authorName.trimmingCharacters(in: .whitespaces)
+                            Task {
+                                await CommunityService.shared.submitCommunityPrayer(
+                                    text: trimmed,
+                                    category: selectedCategory.rawValue,
+                                    authorName: name.isEmpty ? "A Fellow Believer" : name,
+                                    isAnonymous: isAnonymous
+                                )
+                            }
+                        }
+
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                         dismiss()
                     } label: {
                         HStack {
                             Image(systemName: "hands.sparkles.fill")
-                            Text("Add to Prayer Wall")
+                            Text(shareToCommunity ? "Add & Share Prayer" : "Add to Prayer Wall")
                         }
                     }
                     .buttonStyle(AJPrimaryButtonStyle())
@@ -515,6 +644,89 @@ private struct FilterChip: View {
             )
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Community Prayer Card
+
+private struct CommunityPrayerCard: View {
+    let prayer: CommunityPrayer
+    private var community: CommunityService { CommunityService.shared }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "person.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(AJTheme.sage)
+                Text(prayer.isAnonymous ? "Anonymous" : prayer.authorName)
+                    .font(.caption2.bold())
+                    .foregroundStyle(AJTheme.sage)
+
+                Text("\u{00B7}")
+                    .foregroundStyle(.tertiary)
+                Text(prayer.category)
+                    .font(.caption2)
+                    .foregroundStyle(AJTheme.secondaryText)
+
+                Spacer()
+
+                Text(prayer.relativeDate)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Text(prayer.text)
+                .font(.body)
+                .foregroundStyle(AJTheme.primaryText)
+                .lineSpacing(3)
+
+            HStack(spacing: 12) {
+                Button {
+                    Task { await community.prayForRequest(id: prayer.id) }
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: community.hasPrayedForPrayer(prayer.id) ? "hands.sparkles.fill" : "hands.sparkles")
+                            .font(.caption)
+                        Text(community.hasPrayedForPrayer(prayer.id) ? "Prayed" : "Pray")
+                            .font(.caption.bold())
+                        if prayer.prayerCount > 0 {
+                            Text("\(prayer.prayerCount)")
+                                .font(.caption2.bold())
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(AJTheme.sage))
+                        }
+                    }
+                    .foregroundStyle(community.hasPrayedForPrayer(prayer.id) ? AJTheme.sage : AJTheme.secondaryText)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(community.hasPrayedForPrayer(prayer.id) ? AJTheme.sage.opacity(0.15) : AJTheme.sage.opacity(0.05))
+                    .clipShape(Capsule())
+                }
+                .disabled(community.hasPrayedForPrayer(prayer.id))
+
+                Spacer()
+
+                if prayer.isAnswered {
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.caption)
+                        Text("Answered")
+                            .font(.caption2.bold())
+                    }
+                    .foregroundStyle(.green)
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
     }
 }
 

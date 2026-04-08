@@ -269,3 +269,130 @@ exports.generateAudioHTTP = functions.https.onRequest(async (req, res) => {
         .json({ error: error.message || "An unexpected error occurred." });
     }
   });
+
+// ============================================================
+// 3. COMMUNITY FEATURES — Prayer Wall & Testimony Wall
+// ============================================================
+
+exports.communityHTTP = functions.https.onRequest(async (req, res) => {
+  // CORS
+  res.set("Access-Control-Allow-Origin", "*");
+  if (req.method === "OPTIONS") {
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Content-Type, X-App-Secret");
+    return res.status(204).send("");
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const secret = req.headers["x-app-secret"] || req.body?.appSecret;
+  if (!secret || secret !== appSecret.value()) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  const { action, deviceId } = req.body;
+  const userId = deviceId || "anonymous";
+
+  try {
+    switch (action) {
+      // ---- PRAYERS ----
+      case "getPrayers": {
+        const limit = Math.min(req.body.limit || 50, 100);
+        const snapshot = await db
+          .collection("communityPrayers")
+          .orderBy("createdAt", "desc")
+          .limit(limit)
+          .get();
+        const prayers = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+        }));
+        return res.status(200).json({ prayers });
+      }
+
+      case "submitPrayer": {
+        const { text, category, authorName, isAnonymous } = req.body;
+        if (!text || text.length > 500) {
+          return res.status(400).json({ error: "Prayer text required (max 500 chars)." });
+        }
+        const prayer = {
+          text: text.trim(),
+          category: category || "Personal",
+          authorId: userId,
+          authorName: isAnonymous ? "Anonymous" : (authorName || "A Fellow Believer"),
+          isAnonymous: isAnonymous || false,
+          prayerCount: 0,
+          isAnswered: false,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        };
+        const ref = await db.collection("communityPrayers").add(prayer);
+        return res.status(200).json({ id: ref.id, ...prayer, createdAt: new Date().toISOString() });
+      }
+
+      case "prayForRequest": {
+        const { prayerId } = req.body;
+        if (!prayerId) return res.status(400).json({ error: "prayerId required." });
+        await db.collection("communityPrayers").doc(prayerId).update({
+          prayerCount: admin.firestore.FieldValue.increment(1),
+        });
+        return res.status(200).json({ success: true });
+      }
+
+      // ---- TESTIMONIES ----
+      case "getTestimonies": {
+        const tLimit = Math.min(req.body.limit || 50, 100);
+        const tSnapshot = await db
+          .collection("communityTestimonies")
+          .orderBy("createdAt", "desc")
+          .limit(tLimit)
+          .get();
+        const testimonies = tSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+        }));
+        return res.status(200).json({ testimonies });
+      }
+
+      case "submitTestimony": {
+        const { title, story, category: tCat, authorName: tAuthor, journeyTheme, dayCount } = req.body;
+        if (!title || !story || story.length > 2000) {
+          return res.status(400).json({ error: "Title and story required (max 2000 chars)." });
+        }
+        const testimony = {
+          title: title.trim(),
+          story: story.trim(),
+          category: tCat || "Faith & Doubt",
+          authorId: userId,
+          authorName: tAuthor || "A Fellow Believer",
+          journeyTheme: journeyTheme || "",
+          dayCount: dayCount || 40,
+          prayerCount: 0,
+          isApproved: true,
+          isFeatured: false,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        };
+        const tRef = await db.collection("communityTestimonies").add(testimony);
+        return res.status(200).json({ id: tRef.id, ...testimony, createdAt: new Date().toISOString() });
+      }
+
+      case "prayForTestimony": {
+        const { testimonyId } = req.body;
+        if (!testimonyId) return res.status(400).json({ error: "testimonyId required." });
+        await db.collection("communityTestimonies").doc(testimonyId).update({
+          prayerCount: admin.firestore.FieldValue.increment(1),
+        });
+        return res.status(200).json({ success: true });
+      }
+
+      default:
+        return res.status(400).json({ error: `Unknown action: ${action}` });
+    }
+  } catch (error) {
+    console.error("Community error:", error.message || error);
+    return res.status(500).json({ error: error.message || "An unexpected error occurred." });
+  }
+});

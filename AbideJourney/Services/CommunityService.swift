@@ -1,0 +1,241 @@
+import Foundation
+import UIKit
+
+/// Handles all community feature communication with the Firebase Cloud Function.
+/// Provides shared Prayer Wall and Testimony Wall data across all users.
+@MainActor
+@Observable
+final class CommunityService {
+    static let shared = CommunityService()
+
+    var communityPrayers: [CommunityPrayer] = []
+    var communityTestimonies: [CommunityTestimony] = []
+    var isLoadingPrayers = false
+    var isLoadingTestimonies = false
+    var prayedPrayerIDs: Set<String> = []
+    var prayedTestimonyIDs: Set<String> = []
+
+    private let prayedPrayersKey = "community_prayed_prayer_ids"
+    private let prayedTestimoniesKey = "community_prayed_testimony_ids"
+
+    private let baseURL: String? = {
+        guard let url = Bundle.main.object(forInfoDictionaryKey: "CLOUD_FUNCTION_URL") as? String else {
+            return nil
+        }
+        return url.replacingOccurrences(of: "/generateJourneyHTTP", with: "")
+    }()
+
+    private let appSecret: String? = {
+        (Bundle.main.object(forInfoDictionaryKey: "APP_SECRET") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }()
+
+    private var deviceId: String {
+        UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
+    }
+
+    private init() {
+        prayedPrayerIDs = Set(UserDefaults.standard.stringArray(forKey: prayedPrayersKey) ?? [])
+        prayedTestimonyIDs = Set(UserDefaults.standard.stringArray(forKey: prayedTestimoniesKey) ?? [])
+    }
+
+    // MARK: - Prayer Wall
+
+    func loadCommunityPrayers() async {
+        guard !isLoadingPrayers else { return }
+        isLoadingPrayers = true
+        defer { isLoadingPrayers = false }
+
+        guard let result: PrayerResponse = await callCommunity(action: "getPrayers", extra: ["limit": 50]) else { return }
+        communityPrayers = result.prayers
+    }
+
+    @discardableResult
+    func submitCommunityPrayer(text: String, category: String, authorName: String, isAnonymous: Bool) async -> Bool {
+        let extra: [String: Any] = [
+            "text": text,
+            "category": category,
+            "authorName": authorName,
+            "isAnonymous": isAnonymous,
+        ]
+        guard let result: CommunityPrayer = await callCommunity(action: "submitPrayer", extra: extra) else { return false }
+
+        // Add to local list immediately
+        communityPrayers.insert(result, at: 0)
+        return true
+    }
+
+    func prayForRequest(id: String) async {
+        guard !prayedPrayerIDs.contains(id) else { return }
+
+        // Optimistic update
+        prayedPrayerIDs.insert(id)
+        if let index = communityPrayers.firstIndex(where: { $0.id == id }) {
+            communityPrayers[index].prayerCount += 1
+        }
+        savePrayedPrayerIDs()
+
+        let _: SuccessResponse? = await callCommunity(action: "prayForRequest", extra: ["prayerId": id])
+    }
+
+    func hasPrayedForPrayer(_ id: String) -> Bool {
+        prayedPrayerIDs.contains(id)
+    }
+
+    // MARK: - Testimony Wall
+
+    func loadCommunityTestimonies() async {
+        guard !isLoadingTestimonies else { return }
+        isLoadingTestimonies = true
+        defer { isLoadingTestimonies = false }
+
+        guard let result: TestimonyResponse = await callCommunity(action: "getTestimonies", extra: ["limit": 50]) else { return }
+        communityTestimonies = result.testimonies
+    }
+
+    @discardableResult
+    func submitCommunityTestimony(title: String, story: String, category: String, authorName: String, journeyTheme: String, dayCount: Int) async -> Bool {
+        let extra: [String: Any] = [
+            "title": title,
+            "story": story,
+            "category": category,
+            "authorName": authorName,
+            "journeyTheme": journeyTheme,
+            "dayCount": dayCount,
+        ]
+        guard let result: CommunityTestimony = await callCommunity(action: "submitTestimony", extra: extra) else { return false }
+        communityTestimonies.insert(result, at: 0)
+        return true
+    }
+
+    func prayForTestimony(id: String) async {
+        guard !prayedTestimonyIDs.contains(id) else { return }
+
+        prayedTestimonyIDs.insert(id)
+        if let index = communityTestimonies.firstIndex(where: { $0.id == id }) {
+            communityTestimonies[index].prayerCount += 1
+        }
+        savePrayedTestimonyIDs()
+
+        let _: SuccessResponse? = await callCommunity(action: "prayForTestimony", extra: ["testimonyId": id])
+    }
+
+    func hasPrayedForTestimony(_ id: String) -> Bool {
+        prayedTestimonyIDs.contains(id)
+    }
+
+    // MARK: - Network
+
+    private func callCommunity<T: Decodable>(action: String, extra: [String: Any] = [:]) async -> T? {
+        guard let base = baseURL, let secret = appSecret, !secret.isEmpty else { return nil }
+        guard let url = URL(string: "\(base)/communityHTTP") else { return nil }
+
+        var body: [String: Any] = [
+            "action": action,
+            "deviceId": deviceId,
+            "appSecret": secret,
+        ]
+        for (key, value) in extra {
+            body[key] = value
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
+        request.timeoutInterval = 15
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                #if DEBUG
+                let errorBody = String(data: data.prefix(200), encoding: .utf8) ?? ""
+                print("[Community] \(action) failed: \(errorBody)")
+                #endif
+                return nil
+            }
+
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            #if DEBUG
+            print("[Community] \(action) error: \(error.localizedDescription)")
+            #endif
+            return nil
+        }
+    }
+
+    // MARK: - Persistence
+
+    private func savePrayedPrayerIDs() {
+        UserDefaults.standard.set(Array(prayedPrayerIDs), forKey: prayedPrayersKey)
+    }
+
+    private func savePrayedTestimonyIDs() {
+        UserDefaults.standard.set(Array(prayedTestimonyIDs), forKey: prayedTestimoniesKey)
+    }
+}
+
+// MARK: - Community Models
+
+struct CommunityPrayer: Codable, Identifiable {
+    let id: String
+    let text: String
+    let category: String
+    let authorId: String
+    let authorName: String
+    let isAnonymous: Bool
+    var prayerCount: Int
+    let isAnswered: Bool
+    let createdAt: String?
+
+    var relativeDate: String {
+        guard let dateStr = createdAt,
+              let date = ISO8601DateFormatter().date(from: dateStr) else {
+            return "Just now"
+        }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+}
+
+struct CommunityTestimony: Codable, Identifiable {
+    let id: String
+    let title: String
+    let story: String
+    let category: String
+    let authorId: String
+    let authorName: String
+    let journeyTheme: String?
+    let dayCount: Int?
+    var prayerCount: Int
+    let isApproved: Bool
+    let isFeatured: Bool
+    let createdAt: String?
+
+    var relativeDate: String {
+        guard let dateStr = createdAt,
+              let date = ISO8601DateFormatter().date(from: dateStr) else {
+            return "Just now"
+        }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+}
+
+// MARK: - Response Wrappers
+
+private struct PrayerResponse: Codable {
+    let prayers: [CommunityPrayer]
+}
+
+private struct TestimonyResponse: Codable {
+    let testimonies: [CommunityTestimony]
+}
+
+private struct SuccessResponse: Codable {
+    let success: Bool
+}
