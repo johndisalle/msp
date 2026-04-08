@@ -35,6 +35,15 @@ struct DailyExperienceView: View {
                                 progress: journey.progress
                             )
 
+                            // Couples Journey banner
+                            if journey.isCouple, let partnerName = journey.partnerName {
+                                CouplesJourneyBanner(
+                                    partnerName: partnerName,
+                                    dayNumber: day.dayNumber,
+                                    totalDays: journey.totalDays
+                                )
+                            }
+
                             ScriptureCardView(
                                 reference: day.scriptureReference,
                                 text: day.scriptureText
@@ -282,6 +291,103 @@ struct DailyExperienceView: View {
                     )
                 }
             }
+        }
+    }
+}
+
+// MARK: - Couples Journey Banner
+
+struct CouplesJourneyBanner: View {
+    let partnerName: String
+    let dayNumber: Int
+    let totalDays: Int
+    @State private var showingShareInvite = false
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(AJTheme.gold.opacity(0.15))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "heart.fill")
+                        .font(.body)
+                        .foregroundStyle(AJTheme.gold)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Couples Journey with \(partnerName)")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(AJTheme.primaryText)
+                    Text("Day \(dayNumber) of \(totalDays) together")
+                        .font(.caption)
+                        .foregroundStyle(AJTheme.secondaryText)
+                }
+
+                Spacer()
+            }
+
+            // Progress together
+            HStack(spacing: 16) {
+                HStack(spacing: 6) {
+                    Image(systemName: "person.fill")
+                        .font(.caption2)
+                        .foregroundStyle(AJTheme.sage)
+                    Text("You")
+                        .font(.caption2)
+                        .foregroundStyle(AJTheme.secondaryText)
+                    Text("Day \(dayNumber)")
+                        .font(.caption2.bold())
+                        .foregroundStyle(AJTheme.sage)
+                }
+
+                HStack(spacing: 6) {
+                    Image(systemName: "heart.fill")
+                        .font(.caption2)
+                        .foregroundStyle(AJTheme.gold)
+                    Text(partnerName)
+                        .font(.caption2)
+                        .foregroundStyle(AJTheme.secondaryText)
+                    Text("Invited")
+                        .font(.caption2.bold())
+                        .foregroundStyle(AJTheme.gold)
+                }
+
+                Spacer()
+            }
+
+            Button {
+                showingShareInvite = true
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "paperplane.fill")
+                        .font(.caption)
+                    Text("Send \(partnerName) a Reminder")
+                        .font(.caption.bold())
+                }
+                .foregroundStyle(AJTheme.gold)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(AJTheme.gold.opacity(0.1))
+                )
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(AJTheme.gold.opacity(0.2), lineWidth: 1)
+        )
+        .padding(.horizontal)
+        .sheet(isPresented: $showingShareInvite) {
+            let message = "Hey \(partnerName)! I'm on Day \(dayNumber) of our couples journey. Don't forget to open Abide Journey today so we can grow in faith together!"
+            ShareSheet(items: [message])
         }
     }
 }

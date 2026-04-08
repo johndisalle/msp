@@ -156,7 +156,9 @@ struct CouplesJourneyView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .sheet(isPresented: $showingShareSheet) {
+            .sheet(isPresented: $showingShareSheet, onDismiss: {
+                dismiss()
+            }) {
                 ShareSheet(items: [shareMessage])
             }
             .alert("Save Failed", isPresented: Binding(
@@ -251,11 +253,6 @@ struct CouplesJourneyView: View {
         shareMessage = "Hey \(partnerName)! \(userName) wants to do a 40-day faith journey with you called \"\(title)\".\n\n\(subtitle)\n\nTap to join: \(inviteURL.absoluteString)\n\nOr download Abide Journey and we can walk through this together!"
         isGenerating = false
         showingShareSheet = true
-
-        // Dismiss after sharing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            dismiss()
-        }
     }
 
     private func couplesReflectionPrompt(original: String, focusArea: DiscipleshipArea, dayNumber: Int) -> String {
