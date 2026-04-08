@@ -354,9 +354,9 @@ struct WrappedStats {
         }
 
         let completed = yearJourneys.filter { $0.isCompleted }.count
-        let streak = StreakService.shared.currentStreakInfo(from: journeys).longestStreak
+        let streak = yearJourneys.reduce(0) { max($0, StreakService.shared.calculateStreak(for: $1).longestStreak) }
 
-        let yearEntries = journalEntries.filter { $0.date >= startOfYear }
+        let yearEntries = journalEntries.filter { $0.createdAt >= startOfYear }
 
         // Theme frequency
         var themeCount: [String: Int] = [:]
