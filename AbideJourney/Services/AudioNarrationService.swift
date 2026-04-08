@@ -180,11 +180,15 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
         let body: [String: Any] = [
             "text": text,
             "voice": voice.rawValue,
-            "deviceId": deviceId
+            "deviceId": deviceId,
+            "appSecret": secret
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
+        let secretPreview = secret.count > 8 ? "\(secret.prefix(4))...\(secret.suffix(4))" : "too short"
         print("[AudioNarration] Requesting audio from: \(url.absoluteString)")
+        print("[AudioNarration] Secret: \(secretPreview) (length: \(secret.count))")
+        print("[AudioNarration] Text length: \(text.count), voice: \(voice.rawValue)")
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
