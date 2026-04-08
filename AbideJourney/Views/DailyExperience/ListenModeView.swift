@@ -9,14 +9,15 @@ struct ListenModeView: View {
     let prayerText: String
     let dayNumber: Int
     let focusArea: String
+    var journeyId: String = ""
 
-    private var tts: TextToSpeechService { TextToSpeechService.shared }
+    private var narration: AudioNarrationService { AudioNarrationService.shared }
     @State private var selectedSoundscape: AmbientSoundscape
-    @State private var isPlaying = false
     @State private var showingSoundscapePicker = false
+    @State private var showingVoicePicker = false
     @State private var pulseAnimation = false
 
-    init(scriptureRef: String, scriptureText: String, devotionalTitle: String, devotionalText: String, prayerText: String, dayNumber: Int, focusArea: String) {
+    init(scriptureRef: String, scriptureText: String, devotionalTitle: String, devotionalText: String, prayerText: String, dayNumber: Int, focusArea: String, journeyId: String = "") {
         self.scriptureRef = scriptureRef
         self.scriptureText = scriptureText
         self.devotionalTitle = devotionalTitle
@@ -24,9 +25,14 @@ struct ListenModeView: View {
         self.prayerText = prayerText
         self.dayNumber = dayNumber
         self.focusArea = focusArea
+        self.journeyId = journeyId
 
         let saved = UserDefaults.standard.string(forKey: "preferredSoundscape") ?? AmbientSoundscape.none.rawValue
         _selectedSoundscape = State(initialValue: AmbientSoundscape(rawValue: saved) ?? .none)
+    }
+
+    private var isActive: Bool {
+        narration.state == .playing || narration.state == .paused || narration.state == .loading
     }
 
     var body: some View {
@@ -80,6 +86,7 @@ struct ListenModeView: View {
 
                     Button {
                         showingSoundscapePicker.toggle()
+                        showingVoicePicker = false
                     } label: {
                         Image(systemName: selectedSoundscape.icon)
                             .font(.title3)
@@ -95,7 +102,6 @@ struct ListenModeView: View {
                 VStack(spacing: 24) {
                     // Album art style
                     ZStack {
-                        // Outer glow
                         Circle()
                             .fill(AJTheme.sage.opacity(0.08))
                             .frame(width: 200, height: 200)
@@ -106,14 +112,21 @@ struct ListenModeView: View {
                             .fill(AJTheme.sage.opacity(0.12))
                             .frame(width: 160, height: 160)
 
-                        Image(systemName: "book.circle.fill")
-                            .font(.system(size: 60))
-                            .foregroundStyle(.white.opacity(0.8))
+                        if narration.state == .loading {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(.white)
+                                .scaleEffect(1.5)
+                        } else {
+                            Image(systemName: "book.circle.fill")
+                                .font(.system(size: 60))
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
                     }
 
                     // Section label
-                    if !tts.currentSection.isEmpty {
-                        Text(tts.currentSection)
+                    if !narration.currentSection.isEmpty {
+                        Text(narration.currentSection)
                             .font(.caption.bold())
                             .foregroundStyle(AJTheme.gold)
                             .textCase(.uppercase)
@@ -132,6 +145,28 @@ struct ListenModeView: View {
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.5))
 
+                    // Voice indicator
+                    Button {
+                        withAnimation(.spring(response: 0.3)) {
+                            showingVoicePicker.toggle()
+                            showingSoundscapePicker = false
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: narration.selectedVoice.icon)
+                                .font(.caption)
+                            Text(narration.selectedVoice.label)
+                                .font(.caption.bold())
+                            Image(systemName: "chevron.down")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(AJTheme.sage)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 6)
+                        .background(AJTheme.sage.opacity(0.15))
+                        .clipShape(Capsule())
+                    }
+
                     // Progress bar
                     VStack(spacing: 8) {
                         GeometryReader { geo in
@@ -142,14 +177,14 @@ struct ListenModeView: View {
 
                                 Capsule()
                                     .fill(AJTheme.gold)
-                                    .frame(width: geo.size.width * tts.progress, height: 4)
-                                    .animation(.linear(duration: 0.3), value: tts.progress)
+                                    .frame(width: geo.size.width * narration.progress, height: 4)
+                                    .animation(.linear(duration: 0.3), value: narration.progress)
                             }
                         }
                         .frame(height: 4)
 
                         HStack {
-                            Text(tts.currentSection.isEmpty ? "Ready" : "Playing")
+                            Text(statusLabel)
                                 .font(.caption2)
                                 .foregroundStyle(.white.opacity(0.4))
                             Spacer()
@@ -173,8 +208,7 @@ struct ListenModeView: View {
                 HStack(spacing: 40) {
                     // Stop
                     Button {
-                        tts.stop()
-                        isPlaying = false
+                        narration.stop()
                     } label: {
                         Image(systemName: "stop.fill")
                             .font(.title2)
@@ -185,23 +219,33 @@ struct ListenModeView: View {
 
                     // Play/Pause
                     Button {
-                        if !isPlaying && !tts.isPaused {
+                        if narration.state == .idle {
                             startListening()
+                        } else if narration.state == .loading {
+                            // Do nothing while loading
                         } else {
-                            tts.togglePlayPause()
-                            isPlaying = tts.isSpeaking
+                            narration.togglePlayPause()
                         }
                     } label: {
-                        Image(systemName: tts.isSpeaking ? "pause.fill" : "play.fill")
-                            .font(.system(size: 28))
-                            .foregroundStyle(.white)
-                            .frame(width: 72, height: 72)
-                            .background(
-                                Circle()
-                                    .fill(AJTheme.sage)
-                            )
-                            .shadow(color: AJTheme.sage.opacity(0.4), radius: 12)
+                        Group {
+                            if narration.state == .loading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .tint(.white)
+                            } else {
+                                Image(systemName: narration.state == .playing ? "pause.fill" : "play.fill")
+                                    .font(.system(size: 28))
+                            }
+                        }
+                        .foregroundStyle(.white)
+                        .frame(width: 72, height: 72)
+                        .background(
+                            Circle()
+                                .fill(narration.state == .loading ? AJTheme.sage.opacity(0.5) : AJTheme.sage)
+                        )
+                        .shadow(color: AJTheme.sage.opacity(0.4), radius: 12)
                     }
+                    .disabled(narration.state == .loading)
 
                     // Soundscape toggle
                     Button {
@@ -215,6 +259,12 @@ struct ListenModeView: View {
                     }
                 }
                 .padding(.bottom, 20)
+
+                // Voice picker
+                if showingVoicePicker {
+                    voicePicker
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
 
                 // Soundscape picker
                 if showingSoundscapePicker {
@@ -239,25 +289,35 @@ struct ListenModeView: View {
         }
         .onAppear {
             pulseAnimation = true
-            tts.setSoundscape(selectedSoundscape)
+            narration.setSoundscape(selectedSoundscape)
         }
         .onDisappear {
-            tts.stop()
+            narration.stop()
+        }
+    }
+
+    private var statusLabel: String {
+        switch narration.state {
+        case .idle: return "Ready"
+        case .loading: return "Generating audio..."
+        case .playing: return "Playing"
+        case .paused: return "Paused"
         }
     }
 
     // MARK: - Actions
 
     private func startListening() {
-        tts.setSoundscape(selectedSoundscape)
-        tts.speakDevotional(
+        narration.setSoundscape(selectedSoundscape)
+        narration.speakDevotional(
             scripture: scriptureText,
             scriptureRef: scriptureRef,
             title: devotionalTitle,
             devotional: devotionalText,
-            prayer: prayerText
+            prayer: prayerText,
+            journeyId: journeyId,
+            dayNumber: dayNumber
         )
-        isPlaying = true
     }
 
     private func cycleSoundscape() {
@@ -265,7 +325,47 @@ struct ListenModeView: View {
         guard let current = all.firstIndex(of: selectedSoundscape) else { return }
         let next = all[(current + 1) % all.count]
         selectedSoundscape = next
-        tts.setSoundscape(next)
+        narration.setSoundscape(next)
+    }
+
+    // MARK: - Voice Picker
+
+    private var voicePicker: some View {
+        VStack(spacing: 12) {
+            Text("Narrator Voice")
+                .font(.caption.bold())
+                .foregroundStyle(.white.opacity(0.6))
+
+            HStack(spacing: 16) {
+                ForEach(AudioNarrationService.NarrationVoice.allCases, id: \.self) { voice in
+                    Button {
+                        withAnimation {
+                            narration.setVoice(voice)
+                        }
+                    } label: {
+                        VStack(spacing: 6) {
+                            Image(systemName: voice.icon)
+                                .font(.title2)
+                            Text(voice.label)
+                                .font(.caption.bold())
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(narration.selectedVoice == voice ? AJTheme.sage.opacity(0.2) : .white.opacity(0.05))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(narration.selectedVoice == voice ? AJTheme.sage : .clear, lineWidth: 1.5)
+                        )
+                        .foregroundStyle(narration.selectedVoice == voice ? AJTheme.sage : .white.opacity(0.4))
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 12)
     }
 
     // MARK: - Soundscape Picker
@@ -281,7 +381,7 @@ struct ListenModeView: View {
                     Button {
                         withAnimation {
                             selectedSoundscape = sound
-                            tts.setSoundscape(sound)
+                            narration.setSoundscape(sound)
                         }
                     } label: {
                         VStack(spacing: 6) {

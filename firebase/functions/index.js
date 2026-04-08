@@ -9,6 +9,9 @@ const db = admin.firestore();
 // Environment parameters (set via .env file)
 const claudeApiKey = defineString("CLAUDE_API_KEY");
 const appSecret = defineString("APP_SECRET");
+const elevenLabsKey = defineString("ELEVENLABS_API_KEY");
+const elevenLabsFemaleVoice = defineString("ELEVENLABS_FEMALE_VOICE_ID");
+const elevenLabsMaleVoice = defineString("ELEVENLABS_MALE_VOICE_ID");
 
 // ============================================================
 // 1. CLAUDE API PROXY (HTTP) — keeps API key off the client
@@ -160,3 +163,111 @@ Requirements:
       .json({ error: "An unexpected error occurred. Please try again." });
   }
 });
+
+// ============================================================
+// 2. ELEVENLABS AUDIO NARRATION — premium voice for Listen Mode
+// ============================================================
+
+exports.generateAudioHTTP = functions.https.onRequest(
+  { timeoutSeconds: 120, memory: "512MiB" },
+  async (req, res) => {
+    // CORS
+    res.set("Access-Control-Allow-Origin", "*");
+    if (req.method === "OPTIONS") {
+      res.set("Access-Control-Allow-Methods", "POST");
+      res.set("Access-Control-Allow-Headers", "Content-Type, X-App-Secret");
+      return res.status(204).send("");
+    }
+
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    // Verify app secret
+    const secret = req.headers["x-app-secret"] || req.body?.appSecret;
+    if (!secret || secret !== appSecret.value()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    const { text, voice, deviceId } = req.body;
+    if (!text || text.length > 5000) {
+      return res
+        .status(400)
+        .json({ error: "Text is required and must be under 5000 characters." });
+    }
+
+    // Rate limit: max 20 audio generations per device per day
+    const identifier = deviceId || "unknown";
+    const today = new Date().toISOString().split("T")[0];
+    const rateLimitRef = db
+      .collection("rateLimits")
+      .doc(`audio_${identifier}_${today}`);
+    const rateLimitDoc = await rateLimitRef.get();
+    const currentCount = rateLimitDoc.exists
+      ? rateLimitDoc.data().count || 0
+      : 0;
+
+    if (currentCount >= 20) {
+      return res.status(429).json({
+        error: "Daily audio limit reached. Please try again tomorrow.",
+      });
+    }
+
+    const apiKey = elevenLabsKey.value();
+    if (!apiKey || apiKey === "YOUR_ELEVENLABS_API_KEY") {
+      return res.status(500).json({ error: "Audio service is not configured." });
+    }
+
+    // Select voice
+    const voiceId =
+      voice === "male"
+        ? elevenLabsMaleVoice.value()
+        : elevenLabsFemaleVoice.value();
+
+    try {
+      const response = await fetch(
+        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+        {
+          method: "POST",
+          headers: {
+            "xi-api-key": apiKey,
+            "Content-Type": "application/json",
+            Accept: "audio/mpeg",
+          },
+          body: JSON.stringify({
+            text,
+            model_id: "eleven_multilingual_v2",
+            voice_settings: {
+              stability: 0.65,
+              similarity_boost: 0.8,
+              style: 0.35,
+              use_speaker_boost: true,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("ElevenLabs error:", errorText);
+        return res
+          .status(502)
+          .json({ error: "Failed to generate audio. Please try again." });
+      }
+
+      // Update rate limit
+      await rateLimitRef.set({ count: currentCount + 1, date: today });
+
+      // Stream the MP3 audio back to the client
+      const audioBuffer = await response.buffer();
+      res.set("Content-Type", "audio/mpeg");
+      res.set("Content-Length", audioBuffer.length.toString());
+      return res.status(200).send(audioBuffer);
+    } catch (error) {
+      console.error("Audio generation error:", error);
+      return res
+        .status(500)
+        .json({ error: "An unexpected error occurred. Please try again." });
+    }
+  }
+);
