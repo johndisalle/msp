@@ -54,6 +54,140 @@ struct ProgressDashboardView: View {
                         StreakCalendarView(journey: journey)
                     }
 
+                    // Prayer Wall (free)
+                    NavigationLink {
+                        PrayerWallView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.12))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "hands.sparkles.fill")
+                                    .font(.body)
+                                    .foregroundStyle(.blue)
+                            }
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Prayer Wall")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Track prayers and celebrate answers")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+
+                            Spacer()
+
+                            let prayerCount = PrayerWallService.shared.activeCount
+                            if prayerCount > 0 {
+                                Text("\(prayerCount)")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Capsule().fill(.blue))
+                            }
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.blue.opacity(0.06))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
+                    // God Moments (free)
+                    NavigationLink {
+                        GodMomentsView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.orange.opacity(0.12))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.body)
+                                    .foregroundStyle(.orange)
+                            }
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("God Moments")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Capture God at work in your life")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+
+                            Spacer()
+
+                            let momentCount = GodMomentsService.shared.loadMoments().count
+                            if momentCount > 0 {
+                                Text("\(momentCount)")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Capsule().fill(.orange))
+                            }
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.orange.opacity(0.06))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
+                    // Breathing / Meditation
+                    NavigationLink {
+                        BreathingMeditationView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.teal.opacity(0.12))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "wind")
+                                    .font(.body)
+                                    .foregroundStyle(.teal)
+                            }
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Breathe with Scripture")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Guided breathing with God's Word")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.teal.opacity(0.06))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
                     // Scripture Memory (available to all users)
                     NavigationLink {
                         ScriptureMemoryView()

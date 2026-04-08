@@ -226,6 +226,91 @@ struct SmallWidgetView: View {
     }
 }
 
+// MARK: - Lock Screen Widget (Inline / Circular / Rectangular)
+
+struct AbideJourneyLockScreenWidget: Widget {
+    let kind = "AbideJourneyLockScreenWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: AbideJourneyProvider()) { entry in
+            LockScreenWidgetView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
+        }
+        .configurationDisplayName("Daily Verse")
+        .description("Today's verse reference and streak on your Lock Screen.")
+        .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
+    }
+}
+
+struct LockScreenWidgetView: View {
+    @Environment(\.widgetFamily) var family
+    let entry: AbideJourneyEntry
+
+    var body: some View {
+        switch family {
+        case .accessoryInline:
+            HStack(spacing: 4) {
+                Image(systemName: "book.fill")
+                Text(entry.hasData ? "Day \(entry.dayNumber) · \(entry.verseReference)" : "Abide Journey")
+            }
+
+        case .accessoryCircular:
+            ZStack {
+                AccessoryWidgetBackground()
+                VStack(spacing: 2) {
+                    Image(systemName: "book.closed.fill")
+                        .font(.caption)
+                    if entry.hasData {
+                        Text("\(entry.dayNumber)")
+                            .font(.system(.title3, design: .rounded).bold())
+                        Text("of \(entry.totalDays)")
+                            .font(.system(.caption2))
+                    } else {
+                        Text("Start")
+                            .font(.caption2)
+                    }
+                }
+            }
+
+        case .accessoryRectangular:
+            if entry.hasData {
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "book.fill")
+                            .font(.caption2)
+                        Text("Day \(entry.dayNumber)/\(entry.totalDays)")
+                            .font(.caption.bold())
+                        Spacer()
+                        Text(entry.focusArea)
+                            .font(.caption2)
+                    }
+
+                    Text(entry.verseSnippet)
+                        .font(.caption2)
+                        .lineLimit(2)
+
+                    Text("— \(entry.verseReference)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "book.closed.fill")
+                        Text("Abide Journey")
+                            .font(.caption.bold())
+                    }
+                    Text("Start your 40-day walk with God")
+                        .font(.caption2)
+                }
+            }
+
+        default:
+            EmptyView()
+        }
+    }
+}
+
 // MARK: - Widget Bundle
 
 @main
@@ -233,6 +318,7 @@ struct AbideJourneyWidgetBundle: WidgetBundle {
     var body: some Widget {
         AbideJourneyLargeWidget()
         AbideJourneySmallWidget()
+        AbideJourneyLockScreenWidget()
     }
 }
 
