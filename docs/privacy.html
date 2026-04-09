@@ -14,6 +14,9 @@
         h3 { font-size: 1.1rem; margin-top: 20px; margin-bottom: 8px; }
         p, li { margin-bottom: 12px; color: #333; }
         ul { padding-left: 24px; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        th, td { text-align: left; padding: 8px 12px; border: 1px solid #e0e0e0; font-size: 0.9rem; }
+        th { background: #f5f5f5; font-weight: 600; }
         a { color: #4a6fa5; }
         .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e0e0e0; color: #999; font-size: 0.875rem; }
     </style>
@@ -24,10 +27,10 @@
         <p class="subtitle">Last updated: April 9, 2026</p>
 
         <h2>1. Introduction</h2>
-        <p>AbideJourney ("the App") is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your choices regarding your data.</p>
+        <p>AbideJourney ("the App") is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your choices regarding your data. This policy applies to the AbideJourney iOS application and its associated server services.</p>
 
         <h2>2. Information Stored on Your Device</h2>
-        <p>AbideJourney stores the following data locally on your device and, if enabled, synced via iCloud:</p>
+        <p>AbideJourney stores the following data locally on your device using Apple's SwiftData framework and, if enabled, synced via iCloud:</p>
         <ul>
             <li><strong>Journey progress:</strong> Your current day, completed days, action steps, and bookmarks</li>
             <li><strong>Journal entries:</strong> Text and voice-transcribed reflections you write during your journey</li>
@@ -35,11 +38,12 @@
             <li><strong>God Moments:</strong> Spiritual experiences you record</li>
             <li><strong>Scripture memory verses:</strong> Verses you save for memorization practice</li>
             <li><strong>Preferences and settings:</strong> Theme, notification times, Bible translation, appearance mode</li>
+            <li><strong>Profile information:</strong> Your name and spiritual maturity level from onboarding</li>
         </ul>
-        <p>This data is stored using Apple's SwiftData framework and may sync across your devices via iCloud if you have iCloud enabled. We do not have access to your iCloud data.</p>
+        <p>This data may sync across your devices via iCloud if you have iCloud enabled. We do not have access to your iCloud data.</p>
 
         <h2>3. Information Sent to Our Servers</h2>
-        <p>Certain features require communication with our secure servers (hosted on Google Cloud via Firebase). When you use these features, the following data is transmitted:</p>
+        <p>Certain features require communication with our secure servers (hosted on Google Cloud via Firebase Cloud Functions). When you use these features, the following data is transmitted:</p>
 
         <h3>Community Prayer Wall &amp; Testimony Wall</h3>
         <p>When you choose to share a prayer request or testimony with the community, the following is sent to and stored in our database (Google Cloud Firestore):</p>
@@ -48,8 +52,19 @@
             <li>The display name you provide (or "Anonymous" if you choose)</li>
             <li>The category you select</li>
             <li>A device identifier used to associate your submissions (not your Apple ID or personal identity)</li>
+            <li>A timestamp of when the post was submitted</li>
+            <li>Prayer count (how many users have prayed for a request)</li>
         </ul>
-        <p>Community posts are visible to all users of the App. You choose whether to share with the community — your private Prayer Wall remains on-device only. We reserve the right to remove community content that violates our guidelines.</p>
+        <p>Community posts are visible to all users of the App. You choose whether to share with the community — your private Prayer Wall remains on-device only.</p>
+
+        <h3>Community Reports &amp; Moderation Data</h3>
+        <p>When you report a community post, the following is recorded:</p>
+        <ul>
+            <li>Your device identifier (to prevent duplicate reports)</li>
+            <li>The report reason you selected (Inappropriate, Spam, or Harmful)</li>
+            <li>The identifier of the reported post</li>
+        </ul>
+        <p>When you block a user, the blocked user's device identifier is stored locally on your device. Block lists are not transmitted to our servers.</p>
 
         <h3>Custom AI Journey Generation</h3>
         <p>When you create a custom journey, the description you provide is sent to our server, which forwards it to an AI service (Anthropic Claude API) to generate personalized devotional content. We do not store your description after the journey is generated. The AI-generated journey content is returned to your device and stored locally.</p>
@@ -58,83 +73,194 @@
         <p>When you use Listen Mode, the text of the day's devotional content is sent to our server, which forwards it to a text-to-speech service (ElevenLabs) to generate audio narration. The audio is returned to your device and cached locally. We do not store the text or audio on our servers after delivery.</p>
 
         <h3>Device Identifier &amp; Rate Limiting</h3>
-        <p>We use your device's vendor identifier (a non-personal, device-specific ID provided by Apple) solely for rate limiting to prevent abuse of our services. This identifier is not linked to your Apple ID, name, email, or any personal information. Rate limit records are stored temporarily and automatically expire.</p>
+        <p>We use your device's vendor identifier (a non-personal, device-specific ID provided by Apple via <code>identifierForVendor</code>) for the following purposes:</p>
+        <ul>
+            <li>Rate limiting to prevent abuse of our services</li>
+            <li>Associating your community posts for moderation purposes</li>
+            <li>Processing account deletion requests</li>
+        </ul>
+        <p>This identifier is not linked to your Apple ID, name, email, or any personal information. It changes if you uninstall and reinstall the App. Rate limit records are stored temporarily and automatically expire.</p>
 
-        <h2>4. Location Data</h2>
+        <h2>4. Authentication Data</h2>
+        <p>If you choose to sign in, the following data may be collected depending on your sign-in method:</p>
+
+        <h3>Sign in with Apple</h3>
+        <ul>
+            <li>Your name (if you choose to share it with the App)</li>
+            <li>Your email address (if you choose to share it, or Apple's private relay email)</li>
+            <li>An Apple user identifier (used to verify your identity across sessions)</li>
+        </ul>
+
+        <h3>Email Sign-In</h3>
+        <ul>
+            <li>Your email address</li>
+            <li>Your name (if provided)</li>
+        </ul>
+        <p>Authentication credentials are stored securely in your device's Keychain. Your name and email are stored locally on your device to personalize your profile and are not transmitted to external servers beyond what is required for authentication.</p>
+
+        <h2>5. Location Data</h2>
         <p>The <strong>Find a Church</strong> feature requests your location to search for nearby churches using Apple's MapKit. Your location is:</p>
         <ul>
             <li>Used only at the moment of search to find churches near you</li>
             <li>Processed entirely on your device and through Apple's mapping services</li>
             <li><strong>Never stored, transmitted to our servers, or shared with third parties</strong></li>
         </ul>
-        <p>Location access is optional. The app functions fully without it. You can revoke location permission at any time in your device Settings.</p>
+        <p>Location access is optional. The app functions fully without it. You can revoke location permission at any time in your device's Settings &gt; Privacy &gt; Location Services.</p>
 
-        <h2>5. Voice and Audio Data</h2>
+        <h2>6. Voice and Audio Data</h2>
         <p>AbideJourney uses two audio-related features:</p>
         <ul>
-            <li><strong>Voice Journaling (Premium):</strong> Uses your device's microphone and Apple's Speech Recognition to transcribe spoken reflections into text journal entries. Audio is processed on-device by Apple's speech framework and is not recorded, stored, or transmitted by AbideJourney.</li>
+            <li><strong>Voice Journaling (Premium):</strong> Uses your device's microphone and Apple's Speech Recognition framework to transcribe spoken reflections into text journal entries. Audio is processed on-device by Apple's speech framework and is <strong>not recorded, stored, or transmitted</strong> by AbideJourney. Only the resulting text transcription is saved to your device.</li>
             <li><strong>Listen Mode (Premium):</strong> Generates professional AI-narrated audio of devotional content. Devotional text is sent to our server for audio generation (see Section 3). The resulting audio is cached on your device for offline playback.</li>
         </ul>
-        <p>Microphone and speech recognition permissions are requested only when you use Voice Journaling and can be revoked at any time in your device Settings.</p>
+        <p>Microphone and speech recognition permissions are requested only when you first use Voice Journaling and can be revoked at any time in your device's Settings.</p>
 
-        <h2>6. Apple Sign-In</h2>
-        <p>If you choose to sign in with Apple, we may receive your name and email address (depending on your Apple ID sharing preferences). This information is stored locally on your device to personalize your profile and is not transmitted to external servers.</p>
+        <h2>7. Subscription &amp; Purchase Information</h2>
+        <p>Subscription purchases are processed entirely by Apple through the App Store using StoreKit 2. We do not collect, store, or have access to your payment information, credit card details, or billing address. The App verifies your subscription status locally on your device using Apple's cryptographically signed transaction data (JWS). Apple's privacy policy governs the handling of your purchase data.</p>
 
-        <h2>7. Subscription Information</h2>
-        <p>Subscription purchases are processed entirely by Apple through the App Store. We do not collect, store, or have access to your payment information, Apple ID, or billing details. Apple's privacy policy governs the handling of your purchase data.</p>
+        <h2>8. Analytics</h2>
+        <p>AbideJourney uses <strong>TelemetryDeck</strong>, a privacy-first analytics service, to collect anonymous usage signals. TelemetryDeck:</p>
+        <ul>
+            <li>Does <strong>not</strong> collect personal data, device identifiers, or IP addresses</li>
+            <li>Does <strong>not</strong> use cookies or tracking pixels</li>
+            <li>Does <strong>not</strong> build user profiles or enable cross-app tracking</li>
+            <li>Is fully compliant with GDPR and does not require user consent</li>
+        </ul>
+        <p>We collect anonymous signals for events such as: app launch, journey started, journey completed, day completed, prayer completed, paywall viewed, and subscription purchased. These signals contain no personally identifiable information and are used solely to improve the App. For more information, see <a href="https://telemetrydeck.com/privacy">TelemetryDeck's Privacy Policy</a>.</p>
 
-        <h2>8. User-Generated Content</h2>
+        <h2>9. User-Generated Content</h2>
         <p>Content you create within the app falls into two categories:</p>
         <ul>
             <li><strong>Private content</strong> (journal entries, personal prayer requests, God Moments, Scripture memory) is stored locally on your device and synced via iCloud if enabled. This content is not accessible to us or any third party.</li>
-            <li><strong>Community content</strong> (prayers and testimonies you choose to share with the community) is stored on our servers and visible to other users. You can choose to post anonymously.</li>
+            <li><strong>Community content</strong> (prayers and testimonies you choose to share with the community) is stored on our servers (Google Cloud Firestore) and visible to other users. You can choose to post anonymously. Community content is subject to our content moderation policies.</li>
         </ul>
         <p>Seed testimonies displayed in the Testimony Wall are sample stories included with the app and are not from real users.</p>
 
-        <h2>9. Third-Party Services</h2>
-        <p>AbideJourney uses the following third-party services on the server side only:</p>
+        <h2>10. Third-Party Services</h2>
+        <p>AbideJourney uses the following third-party services:</p>
+
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Purpose</th>
+                <th>Data Shared</th>
+            </tr>
+            <tr>
+                <td>Google Cloud / Firebase</td>
+                <td>Server hosting, community data storage (Firestore)</td>
+                <td>Community posts, device identifiers, report data</td>
+            </tr>
+            <tr>
+                <td>Anthropic (Claude API)</td>
+                <td>AI devotional content generation for custom journeys</td>
+                <td>User-provided journey description text (not stored after generation)</td>
+            </tr>
+            <tr>
+                <td>ElevenLabs</td>
+                <td>AI text-to-speech audio narration for Listen Mode</td>
+                <td>Devotional text content (not stored after audio delivery)</td>
+            </tr>
+            <tr>
+                <td>TelemetryDeck</td>
+                <td>Privacy-first anonymous analytics</td>
+                <td>Anonymous usage signals only (no PII)</td>
+            </tr>
+            <tr>
+                <td>Apple (MapKit)</td>
+                <td>Church location search</td>
+                <td>Location coordinates (processed by Apple, not our servers)</td>
+            </tr>
+            <tr>
+                <td>Apple (Speech Recognition)</td>
+                <td>Voice journal transcription</td>
+                <td>Audio processed on-device by Apple's framework</td>
+            </tr>
+            <tr>
+                <td>Apple (StoreKit 2)</td>
+                <td>Subscription and purchase management</td>
+                <td>Transaction data handled by Apple</td>
+            </tr>
+        </table>
+
+        <p>We do not sell, rent, or share your personal information with third parties for marketing or advertising purposes.</p>
+
+        <h2>11. Data Retention</h2>
         <ul>
-            <li><strong>Google Cloud / Firebase:</strong> Hosts our server functions and community data (Firestore database)</li>
-            <li><strong>Anthropic (Claude API):</strong> Generates personalized AI devotional content for custom journeys</li>
-            <li><strong>ElevenLabs:</strong> Generates AI-narrated audio for Listen Mode</li>
+            <li><strong>Local data:</strong> Stored on your device until you delete it or uninstall the App.</li>
+            <li><strong>Community posts:</strong> Stored on our servers until you request deletion or we remove them for policy violations.</li>
+            <li><strong>Report data:</strong> Retained for as long as needed for moderation purposes.</li>
+            <li><strong>Rate limit records:</strong> Automatically expire and are deleted periodically.</li>
+            <li><strong>AI processing data:</strong> Journey descriptions and devotional text sent for AI processing are not stored on our servers after the response is delivered.</li>
+            <li><strong>Analytics data:</strong> Anonymous usage signals are retained by TelemetryDeck in accordance with their data retention policies.</li>
         </ul>
-        <p>These services process data only as needed to provide their respective features. We do not share personal information with these services — only devotional text content and anonymous device identifiers for rate limiting.</p>
 
-        <h2>10. Analytics</h2>
-        <p>AbideJourney does not use third-party analytics or tracking services. We do not collect usage statistics or behavioral data. Basic app functionality signals (such as journey completion events) are processed locally on-device only.</p>
+        <h2>12. Health and Wellness</h2>
+        <p>The Breathe with Scripture feature provides guided breathing exercises for spiritual reflection. This feature does not collect, store, or transmit any health or fitness data. No data from this feature is shared with Apple Health, HealthKit, or any external service.</p>
 
-        <h2>11. Health and Wellness</h2>
-        <p>The Breathe with Scripture feature provides guided breathing exercises for spiritual reflection. This feature does not collect, store, or transmit any health or fitness data. No data from this feature is shared with Apple Health or any external service.</p>
-
-        <h2>12. Children's Privacy</h2>
-        <p>AbideJourney includes a Family Journey feature that provides age-appropriate devotional content for children, teens, and adults. This feature:</p>
+        <h2>13. Children's Privacy</h2>
+        <p>AbideJourney is not directed at children under 13. Users must be at least 13 years old to use the App. Users between 13 and 17 must have parental consent.</p>
+        <p>The Family Journey feature provides age-appropriate devotional content for families. This feature:</p>
         <ul>
             <li>Does not collect personal information from children</li>
             <li>Stores family member names locally on the parent's device only</li>
             <li>Does not require children to create accounts or submit personal data</li>
             <li>Is designed to be set up and supervised by a parent or guardian</li>
         </ul>
-        <p>Children should not use community features (Prayer Wall, Testimony Wall) without parental supervision. We comply with the Children's Online Privacy Protection Act (COPPA). If you believe a child has provided personal information through the app, please contact us immediately.</p>
+        <p>Children should not use community features (Prayer Wall, Testimony Wall) without parental supervision. We comply with the Children's Online Privacy Protection Act (COPPA) and do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided personal information through the App, please contact us immediately at <a href="mailto:johntdisalle@outlook.com">johntdisalle@outlook.com</a> and we will promptly delete such data.</p>
 
-        <h2>13. Data We Do Not Collect</h2>
+        <h2>14. Data We Do Not Collect</h2>
         <p>We do not collect:</p>
         <ul>
-            <li>Advertising or tracking identifiers</li>
-            <li>Browsing history or cross-app tracking data</li>
+            <li>Advertising identifiers (IDFA) or cross-app tracking identifiers</li>
+            <li>Browsing history or web tracking data</li>
             <li>Contacts, photos, or camera data</li>
-            <li>Biometric data</li>
-            <li>Your Apple ID, email address, or payment information on our servers</li>
+            <li>Biometric data (Face ID / Touch ID data is handled by Apple and never accessible to us)</li>
+            <li>Health or fitness data</li>
+            <li>Financial or payment information (handled entirely by Apple)</li>
+            <li>Your Apple ID password or billing details</li>
         </ul>
 
-        <h2>14. Data Deletion</h2>
-        <p>You can delete all your local app data at any time by going to Settings > Delete All Data & Reset within the app. This permanently removes all locally stored data. If iCloud sync is enabled, data will also be removed from iCloud. Community content you have posted (prayers and testimonies shared publicly) may remain visible to other users. To request removal of community content, please contact us.</p>
+        <h2>15. Data Deletion</h2>
+        <p>You have the right to delete your data at any time:</p>
+        <ul>
+            <li><strong>In-app deletion:</strong> Go to Settings &gt; Delete Account &amp; Data within the App. This permanently deletes all locally stored data (journeys, journal entries, prayers, God Moments, settings) and requests deletion of your community content from our servers. If iCloud sync is enabled, data will also be removed from iCloud.</li>
+            <li><strong>Community content removal:</strong> To request removal of specific community posts, contact us at <a href="mailto:johntdisalle@outlook.com">johntdisalle@outlook.com</a> with a description of the content. We will remove it within 30 days.</li>
+            <li><strong>Uninstalling the App:</strong> Removing the App from your device deletes all locally stored data. Community content on our servers will persist unless you use the in-app deletion feature before uninstalling or contact us to request its removal.</li>
+        </ul>
 
-        <h2>15. Changes to This Policy</h2>
-        <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date. Continued use of the App after changes constitutes acceptance of the revised policy.</p>
+        <h2>16. Your Rights</h2>
+        <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+        <ul>
+            <li><strong>Access:</strong> Request a copy of the data we hold about you</li>
+            <li><strong>Deletion:</strong> Request deletion of your data (see Section 15)</li>
+            <li><strong>Correction:</strong> Request correction of inaccurate data</li>
+            <li><strong>Portability:</strong> Request your data in a portable format</li>
+            <li><strong>Objection:</strong> Object to certain processing of your data</li>
+        </ul>
+        <p>To exercise any of these rights, contact us at <a href="mailto:johntdisalle@outlook.com">johntdisalle@outlook.com</a>. We will respond within 30 days.</p>
+        <p><strong>California residents (CalOPPA/CCPA):</strong> We do not sell your personal information. We do not use third-party advertising or cross-site tracking. You have the right to know what data we collect and to request its deletion.</p>
+        <p><strong>European residents (GDPR):</strong> Our legal basis for processing data is legitimate interest (providing the App's features) and your consent (for optional features like community posting and location services). You may withdraw consent at any time by adjusting your settings or contacting us.</p>
 
-        <h2>16. Contact Us</h2>
-        <p>If you have questions or concerns about this Privacy Policy, please contact us at:</p>
+        <h2>17. Security</h2>
+        <p>We implement reasonable security measures to protect data transmitted to and stored on our servers, including:</p>
+        <ul>
+            <li>HTTPS encryption for all server communication</li>
+            <li>Server-side request authentication using shared secrets</li>
+            <li>Rate limiting to prevent abuse</li>
+            <li>Firebase security rules restricting database access</li>
+        </ul>
+        <p>However, no method of electronic transmission or storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
+
+        <h2>18. International Data Transfers</h2>
+        <p>Our servers are hosted in the United States via Google Cloud Platform. If you use the App from outside the United States, your data may be transferred to and processed in the United States. By using the App, you consent to this transfer. We ensure that data is handled in accordance with this Privacy Policy regardless of where it is processed.</p>
+
+        <h2>19. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date. If we make material changes, we will provide notice through the App. Continued use of the App after changes constitutes acceptance of the revised policy.</p>
+
+        <h2>20. Contact Us</h2>
+        <p>If you have questions or concerns about this Privacy Policy or our data practices, please contact us at:</p>
         <p><strong>Email:</strong> <a href="mailto:johntdisalle@outlook.com">johntdisalle@outlook.com</a></p>
+        <p>We aim to respond to all inquiries within 30 days.</p>
 
         <div class="footer">
             <p>&copy; 2026 AbideJourney. All rights reserved.</p>

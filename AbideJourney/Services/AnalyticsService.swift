@@ -6,6 +6,8 @@ import TelemetryDeck
 /// Dashboard: https://dashboard.telemetrydeck.com
 enum Analytics {
 
+    private static var isConfigured = false
+
     /// Call once at app launch before any signals are sent.
     static func configure() {
         guard let appID = Bundle.main.object(forInfoDictionaryKey: "TELEMETRYDECK_APP_ID") as? String,
@@ -18,6 +20,7 @@ enum Analytics {
         }
         let config = TelemetryDeck.Config(appID: appID)
         TelemetryDeck.initialize(config: config)
+        isConfigured = true
     }
 
     private static func signal(_ name: String, parameters: [String: String] = [:]) {
@@ -28,6 +31,7 @@ enum Analytics {
             print("[Analytics] \(name) \(parameters)")
         }
         #endif
+        guard isConfigured else { return }
         TelemetryDeck.signal(name, parameters: parameters)
     }
 
