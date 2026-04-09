@@ -37,7 +37,7 @@ exports.generateJourneyHTTP = functions.https.onRequest(async (req, res) => {
   }
 
   const { description, theme, deviceId } = req.body;
-  if (!description || description.length > 500) {
+  if (!description?.trim() || description.length > 500) {
     return res
       .status(400)
       .json({ error: "Description is required and must be under 500 characters." });
@@ -131,11 +131,17 @@ Requirements:
     }
 
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
+    if (!jsonMatch || jsonMatch.length === 0) {
       return res.status(502).json({ error: "Invalid response format." });
     }
 
-    const journey = JSON.parse(jsonMatch[0]);
+    let journey;
+    try {
+      journey = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError.message);
+      return res.status(502).json({ error: "Failed to parse AI response. Please try again." });
+    }
 
     if (!journey.title || !journey.days || journey.days.length < 40) {
       return res
@@ -188,10 +194,13 @@ exports.generateAudioHTTP = functions.https.onRequest(async (req, res) => {
     }
 
     const { text, voice, deviceId } = req.body;
-    if (!text || text.length > 5000) {
+    if (!text?.trim() || text.length > 5000) {
       return res
         .status(400)
         .json({ error: "Text is required and must be under 5000 characters." });
+    }
+    if (voice && !["male", "female"].includes(voice)) {
+      return res.status(400).json({ error: "Voice must be 'male' or 'female'." });
     }
 
     // Rate limit: max 20 audio generations per device per day

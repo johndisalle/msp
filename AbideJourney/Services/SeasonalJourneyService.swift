@@ -78,11 +78,11 @@ final class SeasonalJourneyService {
         let m = (a + 11 * h + 22 * l) / 451
         let month = (h + l - 7 * m + 114) / 31
         let day = ((h + l - 7 * m + 114) % 31) + 1
-        return Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+        return Calendar.current.date(from: DateComponents(year: year, month: month, day: day)) ?? Date()
     }
 
     private func makeDate(year: Int, month: Int, day: Int) -> Date {
-        Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+        Calendar.current.date(from: DateComponents(year: year, month: month, day: day)) ?? Date()
     }
 
     // MARK: - All Seasonal Journeys
@@ -93,11 +93,11 @@ final class SeasonalJourneyService {
         let easter = easterDate(year: year)
 
         // Holy Week: Palm Sunday (6 days before Easter) through Easter Sunday
-        let palmSunday = calendar.date(byAdding: .day, value: -6, to: easter)!
+        let palmSunday = calendar.date(byAdding: .day, value: -6, to: easter) ?? easter
 
         // Lent: Ash Wednesday (46 days before Easter) through day before Palm Sunday
-        let ashWednesday = calendar.date(byAdding: .day, value: -46, to: easter)!
-        let lentEnd = calendar.date(byAdding: .day, value: -7, to: easter)!
+        let ashWednesday = calendar.date(byAdding: .day, value: -46, to: easter) ?? easter
+        let lentEnd = calendar.date(byAdding: .day, value: -7, to: easter) ?? easter
 
         return [
             SeasonalJourney(

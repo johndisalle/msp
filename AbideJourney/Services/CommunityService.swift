@@ -110,6 +110,7 @@ final class CommunityService {
 
     @discardableResult
     func submitCommunityPrayer(text: String, category: String, authorName: String, isAnonymous: Bool) async -> Bool {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         guard contentPassesFilter(text) else { return false }
         let extra: [String: Any] = [
             "text": text,
@@ -154,6 +155,8 @@ final class CommunityService {
 
     @discardableResult
     func submitCommunityTestimony(title: String, story: String, category: String, authorName: String, journeyTheme: String, dayCount: Int) async -> Bool {
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !story.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         guard contentPassesFilter(title), contentPassesFilter(story) else { return false }
         let extra: [String: Any] = [
             "title": title,

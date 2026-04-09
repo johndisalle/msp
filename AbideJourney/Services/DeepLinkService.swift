@@ -42,7 +42,8 @@ final class DeepLinkService {
             URLQueryItem(name: "theme", value: theme.rawValue),
             URLQueryItem(name: "from", value: fromName),
         ]
-        return components.url ?? URL(string: "\(urlScheme)://couple")!
+        return components.url ?? URL(string: "\(urlScheme)://couple")
+            ?? URL(string: "https://abidejourney.com")!
     }
 
     /// Creates a gift journey URL.
@@ -58,7 +59,8 @@ final class DeepLinkService {
             items.append(URLQueryItem(name: "message", value: message))
         }
         components.queryItems = items
-        return components.url ?? URL(string: "\(urlScheme)://gift")!
+        return components.url ?? URL(string: "\(urlScheme)://gift")
+            ?? URL(string: "https://abidejourney.com")!
     }
 
     // MARK: - Handle Incoming Links

@@ -206,9 +206,15 @@ struct FaithReportView: View {
         let data = FaithReportService.shared.generateReport(data: stats)
 
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("AbideJourney-FaithReport-\(year).pdf")
-        try? data.write(to: url)
-        pdfURL = url
+        do {
+            try data.write(to: url)
+            pdfURL = url
+            showingShareSheet = true
+        } catch {
+            #if DEBUG
+            print("[FaithReport] Failed to write PDF: \(error.localizedDescription)")
+            #endif
+        }
         isGenerating = false
-        showingShareSheet = true
     }
 }

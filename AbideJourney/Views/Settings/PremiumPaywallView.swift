@@ -422,7 +422,7 @@ struct PremiumPaywallView: View {
             if let _ = try await storeService.purchase(product) {
                 if let profile = profiles.first {
                     profile.isPremium = true
-                    try? modelContext.save()
+                    try modelContext.save()
                 }
                 isPurchasing = false
                 Analytics.premiumPurchased(plan: selectedPlan == .yearly ? "yearly" : selectedPlan == .lifetime ? "lifetime" : "monthly")
