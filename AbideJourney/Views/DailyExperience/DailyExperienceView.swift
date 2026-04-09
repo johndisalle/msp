@@ -627,7 +627,6 @@ struct DevotionalCardView: View {
     let text: String
     var isPremium: Bool = false
     @State private var isExpanded = false
-    @State private var tts = TextToSpeechService.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -639,31 +638,6 @@ struct DevotionalCardView: View {
                     .font(AJTheme.subheadlineFont)
                     .foregroundColor(AJTheme.primaryText)
                 Spacer()
-
-                if isPremium {
-                    Button {
-                        if tts.isSpeaking || tts.isPaused {
-                            tts.togglePlayPause()
-                        } else {
-                            tts.speak("\(title). \(text)")
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: tts.isSpeaking ? "pause.fill" : (tts.isPaused ? "play.fill" : "speaker.wave.2.fill"))
-                                .font(.caption)
-                            Text(tts.isSpeaking ? "Pause" : (tts.isPaused ? "Resume" : "Listen"))
-                                .font(.system(.caption, design: .serif))
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(
-                            Capsule()
-                                .fill(AJTheme.gold.opacity(0.12))
-                        )
-                        .foregroundStyle(AJTheme.gold)
-                    }
-                    .accessibilityLabel(tts.isSpeaking ? "Pause devotional audio" : "Listen to devotional")
-                }
             }
 
             Text(title)
@@ -688,9 +662,6 @@ struct DevotionalCardView: View {
         }
         .ajCard()
         .padding(.horizontal)
-        .onDisappear {
-            tts.stop()
-        }
     }
 }
 
