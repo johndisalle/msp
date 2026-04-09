@@ -143,6 +143,7 @@
 		8C58E3FE2F8712B3003ACA3A /* CommunityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityService.swift; sourceTree = "<group>"; };
 		8C58E4842F8778F9003ACA3A /* DiscoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
 		8C58E4872F87F5B0003ACA3A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8C58E4892F87F799003ACA3A /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000001 /* AbideJourneyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbideJourneyApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000002 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000003 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -324,6 +325,7 @@
 				A1B2C3D4E5F60301000020 /* Frameworks */,
 				A1B2C3D4E5F60301000021 /* Products */,
 				8C4A6F8B2F86CACE007452AF /* Recovered References */,
+				8C58E4892F87F799003ACA3A /* Secrets.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -998,6 +1000,7 @@
 		};
 		A1B2C3D4E5F60701000003 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8C58E4892F87F799003ACA3A /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1033,6 +1036,7 @@
 		};
 		A1B2C3D4E5F60701000004 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8C58E4892F87F799003ACA3A /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
