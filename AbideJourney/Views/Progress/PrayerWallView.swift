@@ -652,6 +652,8 @@ private struct FilterChip: View {
 private struct CommunityPrayerCard: View {
     let prayer: CommunityPrayer
     private var community: CommunityService { CommunityService.shared }
+    @State private var showingReportSheet = false
+    @State private var showingBlockConfirmation = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -674,6 +676,24 @@ private struct CommunityPrayerCard: View {
                 Text(prayer.relativeDate)
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
+
+                Menu {
+                    Button(role: .destructive) {
+                        showingReportSheet = true
+                    } label: {
+                        Label("Report", systemImage: "flag")
+                    }
+                    Button(role: .destructive) {
+                        showingBlockConfirmation = true
+                    } label: {
+                        Label("Block User", systemImage: "hand.raised")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .padding(.leading, 4)
+                }
             }
 
             Text(prayer.text)
@@ -727,6 +747,26 @@ private struct CommunityPrayerCard: View {
                 .fill(AJTheme.cardBackground)
                 .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
         )
+        .confirmationDialog("Report this prayer?", isPresented: $showingReportSheet, titleVisibility: .visible) {
+            Button("Inappropriate Content", role: .destructive) {
+                Task { await community.reportPrayer(id: prayer.id, reason: "inappropriate") }
+            }
+            Button("Spam", role: .destructive) {
+                Task { await community.reportPrayer(id: prayer.id, reason: "spam") }
+            }
+            Button("Harmful or Abusive", role: .destructive) {
+                Task { await community.reportPrayer(id: prayer.id, reason: "abusive") }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Block this user?", isPresented: $showingBlockConfirmation, titleVisibility: .visible) {
+            Button("Block User", role: .destructive) {
+                community.blockUser(authorId: prayer.authorId)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("You will no longer see content from this user. This cannot be undone.")
+        }
     }
 }
 

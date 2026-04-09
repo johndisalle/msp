@@ -71,7 +71,7 @@ final class ReferralService {
         incredible for my faith. Use my code \(code) when you sign up and we'll \
         both get 1 month of Premium free!
 
-        Download: https://apps.apple.com/app/abide-journey/id0000000000
+        Download: https://apps.apple.com/app/abide-journey/id6760856253
         Referral code: \(code)
         """
     }
@@ -96,9 +96,9 @@ final class ReferralService {
     // MARK: - Private
 
     private func generateCode() -> String {
-        let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+        let chars = Array("ABCDEFGHJKLMNPQRSTUVWXYZ23456789")
         let code = (0..<6).map { _ in
-            chars.randomElement()!
+            chars[Int.random(in: 0..<chars.count)]
         }
         return "AJ-" + String(code)
     }

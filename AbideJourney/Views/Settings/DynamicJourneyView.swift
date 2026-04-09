@@ -38,7 +38,7 @@ struct DynamicJourneyView: View {
                         Text("Create Your Journey")
                             .font(AJTheme.headlineFont)
 
-                        Text("Tell us what you're going through, and we'll build a personalized 40-day journey just for you.")
+                        Text("Tell us what you're going through, and AI will build a personalized 40-day journey just for you.")
                             .font(.subheadline)
                             .foregroundStyle(AJTheme.secondaryText)
                             .multilineTextAlignment(.center)
@@ -46,6 +46,29 @@ struct DynamicJourneyView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top, 12)
+
+                    // AI & mental health disclaimer
+                    VStack(spacing: 6) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "cpu")
+                                .font(.caption2)
+                            Text("AI-Generated Content")
+                                .font(.caption2.bold())
+                        }
+                        .foregroundStyle(AJTheme.secondaryText)
+
+                        Text("This journey is created by AI and is not reviewed by clergy or therapists. It is not a substitute for professional counseling, therapy, or medical advice. If you are in crisis, please contact a mental health professional or call 988.")
+                            .font(.caption2)
+                            .foregroundStyle(AJTheme.secondaryText)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(2)
+                    }
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(AJTheme.gold.opacity(0.08))
+                    )
+                    .padding(.horizontal)
 
                     // Input
                     VStack(alignment: .leading, spacing: 8) {

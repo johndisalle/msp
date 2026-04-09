@@ -14,9 +14,11 @@ final class CommunityService {
     var isLoadingTestimonies = false
     var prayedPrayerIDs: Set<String> = []
     var prayedTestimonyIDs: Set<String> = []
+    var blockedUserIDs: Set<String> = []
 
     private let prayedPrayersKey = "community_prayed_prayer_ids"
     private let prayedTestimoniesKey = "community_prayed_testimony_ids"
+    private let blockedUsersKey = "community_blocked_user_ids"
 
     private let baseURL: String? = {
         guard let url = Bundle.main.object(forInfoDictionaryKey: "CLOUD_FUNCTION_URL") as? String else {
@@ -37,6 +39,62 @@ final class CommunityService {
     private init() {
         prayedPrayerIDs = Set(UserDefaults.standard.stringArray(forKey: prayedPrayersKey) ?? [])
         prayedTestimonyIDs = Set(UserDefaults.standard.stringArray(forKey: prayedTestimoniesKey) ?? [])
+        blockedUserIDs = Set(UserDefaults.standard.stringArray(forKey: blockedUsersKey) ?? [])
+    }
+
+    // MARK: - Content Filtering
+
+    /// Basic profanity/content filter. Returns true if content is acceptable.
+    func contentPassesFilter(_ text: String) -> Bool {
+        let lowered = text.lowercased()
+        let blockedPatterns = [
+            "\\bf+u+c+k", "\\bs+h+i+t", "\\ba+s+s+h+o+l+e", "\\bb+i+t+c+h",
+            "\\bd+a+m+n", "\\bc+u+n+t", "\\bn+i+g+g", "\\bf+a+g+g",
+            "\\bkill\\s+(your|my|him|her)self", "\\bsuicid",
+            "\\bhttp[s]?://", "\\bwww\\.",
+        ]
+        for pattern in blockedPatterns {
+            if lowered.range(of: pattern, options: .regularExpression) != nil {
+                return false
+            }
+        }
+        return true
+    }
+
+    // MARK: - Report & Block
+
+    func reportPrayer(id: String, reason: String) async -> Bool {
+        let extra: [String: Any] = ["prayerId": id, "reason": reason]
+        let result: SuccessResponse? = await callCommunity(action: "reportPrayer", extra: extra)
+        if result?.success == true {
+            communityPrayers.removeAll { $0.id == id }
+        }
+        return result?.success == true
+    }
+
+    func reportTestimony(id: String, reason: String) async -> Bool {
+        let extra: [String: Any] = ["testimonyId": id, "reason": reason]
+        let result: SuccessResponse? = await callCommunity(action: "reportTestimony", extra: extra)
+        if result?.success == true {
+            communityTestimonies.removeAll { $0.id == id }
+        }
+        return result?.success == true
+    }
+
+    func blockUser(authorId: String) {
+        blockedUserIDs.insert(authorId)
+        UserDefaults.standard.set(Array(blockedUserIDs), forKey: blockedUsersKey)
+        communityPrayers.removeAll { $0.authorId == authorId }
+        communityTestimonies.removeAll { $0.authorId == authorId }
+    }
+
+    func isUserBlocked(_ authorId: String) -> Bool {
+        blockedUserIDs.contains(authorId)
+    }
+
+    /// Deletes all community content posted by this device (for account deletion).
+    func deleteAllUserContent() async {
+        let _: SuccessResponse? = await callCommunity(action: "deleteUserContent")
     }
 
     // MARK: - Prayer Wall
@@ -47,11 +105,12 @@ final class CommunityService {
         defer { isLoadingPrayers = false }
 
         guard let result: PrayerResponse = await callCommunity(action: "getPrayers", extra: ["limit": 50]) else { return }
-        communityPrayers = result.prayers
+        communityPrayers = result.prayers.filter { !blockedUserIDs.contains($0.authorId) }
     }
 
     @discardableResult
     func submitCommunityPrayer(text: String, category: String, authorName: String, isAnonymous: Bool) async -> Bool {
+        guard contentPassesFilter(text) else { return false }
         let extra: [String: Any] = [
             "text": text,
             "category": category,
@@ -90,11 +149,12 @@ final class CommunityService {
         defer { isLoadingTestimonies = false }
 
         guard let result: TestimonyResponse = await callCommunity(action: "getTestimonies", extra: ["limit": 50]) else { return }
-        communityTestimonies = result.testimonies
+        communityTestimonies = result.testimonies.filter { !blockedUserIDs.contains($0.authorId) }
     }
 
     @discardableResult
     func submitCommunityTestimony(title: String, story: String, category: String, authorName: String, journeyTheme: String, dayCount: Int) async -> Bool {
+        guard contentPassesFilter(title), contentPassesFilter(story) else { return false }
         let extra: [String: Any] = [
             "title": title,
             "story": story,

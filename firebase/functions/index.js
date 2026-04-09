@@ -295,6 +295,18 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
   const { action, deviceId } = req.body;
   const userId = deviceId || "anonymous";
 
+  // Basic server-side content filter
+  const containsProfanity = (text) => {
+    if (!text) return false;
+    const lowered = text.toLowerCase();
+    const patterns = [
+      /\bf+u+c+k/i, /\bs+h+i+t/i, /\ba+s+s+h+o+l+e/i, /\bb+i+t+c+h/i,
+      /\bn+i+g+g/i, /\bf+a+g+g/i, /\bc+u+n+t/i,
+      /\bkill\s+(your|my|him|her)self/i, /\bsuicid/i,
+    ];
+    return patterns.some((p) => p.test(lowered));
+  };
+
   try {
     switch (action) {
       // ---- PRAYERS ----
@@ -302,6 +314,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         const limit = Math.min(req.body.limit || 50, 100);
         const snapshot = await db
           .collection("communityPrayers")
+          .where("isRemoved", "!=", true)
           .orderBy("createdAt", "desc")
           .limit(limit)
           .get();
@@ -317,6 +330,9 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         const { text, category, authorName, isAnonymous } = req.body;
         if (!text || text.length > 500) {
           return res.status(400).json({ error: "Prayer text required (max 500 chars)." });
+        }
+        if (containsProfanity(text)) {
+          return res.status(400).json({ error: "Your prayer contains language that isn't appropriate for this community. Please revise and try again." });
         }
         const prayer = {
           text: text.trim(),
@@ -346,6 +362,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         const tLimit = Math.min(req.body.limit || 50, 100);
         const tSnapshot = await db
           .collection("communityTestimonies")
+          .where("isRemoved", "!=", true)
           .orderBy("createdAt", "desc")
           .limit(tLimit)
           .get();
@@ -362,6 +379,9 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         if (!title || !story || story.length > 2000) {
           return res.status(400).json({ error: "Title and story required (max 2000 chars)." });
         }
+        if (containsProfanity(title) || containsProfanity(story)) {
+          return res.status(400).json({ error: "Your testimony contains language that isn't appropriate for this community. Please revise and try again." });
+        }
         const testimony = {
           title: title.trim(),
           story: story.trim(),
@@ -371,7 +391,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
           journeyTheme: journeyTheme || "",
           dayCount: dayCount || 40,
           prayerCount: 0,
-          isApproved: true,
+          isApproved: false,
           isFeatured: false,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
@@ -385,6 +405,56 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         await db.collection("communityTestimonies").doc(testimonyId).update({
           prayerCount: admin.firestore.FieldValue.increment(1),
         });
+        return res.status(200).json({ success: true });
+      }
+
+      case "reportPrayer": {
+        const { prayerId, reason } = req.body;
+        if (!prayerId) return res.status(400).json({ error: "prayerId required." });
+        await db.collection("communityReports").add({
+          type: "prayer",
+          contentId: prayerId,
+          reportedBy: userId,
+          reason: reason || "unspecified",
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+        // Auto-hide after 3 reports
+        const reportCount = (await db.collection("communityReports")
+          .where("contentId", "==", prayerId).get()).size;
+        if (reportCount >= 3) {
+          await db.collection("communityPrayers").doc(prayerId).update({ isRemoved: true });
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      case "reportTestimony": {
+        const { testimonyId, reason: tReason } = req.body;
+        if (!testimonyId) return res.status(400).json({ error: "testimonyId required." });
+        await db.collection("communityReports").add({
+          type: "testimony",
+          contentId: testimonyId,
+          reportedBy: userId,
+          reason: tReason || "unspecified",
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+        const tReportCount = (await db.collection("communityReports")
+          .where("contentId", "==", testimonyId).get()).size;
+        if (tReportCount >= 3) {
+          await db.collection("communityTestimonies").doc(testimonyId).update({ isRemoved: true });
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      case "deleteUserContent": {
+        // Delete all community content for a user (for account deletion)
+        const prayerSnap = await db.collection("communityPrayers")
+          .where("authorId", "==", userId).get();
+        const testimonySnap = await db.collection("communityTestimonies")
+          .where("authorId", "==", userId).get();
+        const batch = db.batch();
+        prayerSnap.docs.forEach((doc) => batch.delete(doc.ref));
+        testimonySnap.docs.forEach((doc) => batch.delete(doc.ref));
+        await batch.commit();
         return res.status(200).json({ success: true });
       }
 

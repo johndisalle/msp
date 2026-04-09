@@ -83,14 +83,15 @@ struct PremiumPaywallView: View {
                         // Subscribe button
                         subscribeButton
 
-                        // Free trial details
-                        if selectedPlan == .yearly {
+                        // Free trial details (only show if eligible for introductory offer)
+                        if selectedPlan == .yearly, let yearly = storeService.yearlyProduct,
+                           let intro = yearly.subscription?.introductoryOffer {
                             VStack(spacing: 4) {
                                 HStack(spacing: 6) {
                                     Image(systemName: "gift.fill")
                                         .font(.caption)
                                         .foregroundStyle(AJTheme.gold)
-                                    Text("3 days free, then auto-renews yearly")
+                                    Text("\(intro.period.value) \(intro.period.unit == .day ? "days" : "weeks") free, then auto-renews yearly")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -148,7 +149,9 @@ struct PremiumPaywallView: View {
                         // Redeem Offer Code
                         Button("Redeem Offer Code") {
                             Task {
-                                try? await AppStore.presentOfferCodeRedeemSheet(in: UIApplication.shared.connectedScenes.first as! UIWindowScene)
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                    try? await AppStore.presentOfferCodeRedeemSheet(in: windowScene)
+                                }
                             }
                         }
                         .font(.caption)
@@ -308,11 +311,12 @@ struct PremiumPaywallView: View {
                 .padding()
             } else {
                 if let yearly = storeService.yearlyProduct {
+                    let hasIntro = yearly.subscription?.introductoryOffer != nil
                     PlanButton(
                         title: "Yearly",
                         price: yearly.displayPrice + "/year",
-                        badge: "3-Day Free Trial",
-                        subtitle: "Then \(yearly.displayPrice)/year — Save 33%",
+                        badge: hasIntro ? "Free Trial" : "Best for Year",
+                        subtitle: hasIntro ? "Then \(yearly.displayPrice)/year — Save 33%" : "\(yearly.displayPrice)/year — Save 33%",
                         isSelected: selectedPlan == .yearly
                     ) {
                         selectedPlan = .yearly
@@ -379,7 +383,7 @@ struct PremiumPaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text(selectedPlan == .yearly ? "Start Free Trial" : selectedPlan == .lifetime ? "Buy Once, Keep Forever" : "Subscribe")
+                        Text(selectedPlan == .yearly && storeService.yearlyProduct?.subscription?.introductoryOffer != nil ? "Start Free Trial" : selectedPlan == .lifetime ? "Buy Once, Keep Forever" : "Subscribe")
                             .font(.headline)
                     }
                 }

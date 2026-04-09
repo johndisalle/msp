@@ -62,8 +62,9 @@ final class AuthService {
             if let name = credential.fullName {
                 let components = [name.givenName, name.familyName].compactMap { $0 }
                 if !components.isEmpty {
-                    userFullName = components.joined(separator: " ")
-                    KeychainHelper.save(key: nameKey, value: userFullName!)
+                    let fullName = components.joined(separator: " ")
+                    userFullName = fullName
+                    KeychainHelper.save(key: nameKey, value: fullName)
                 }
             }
             if let email = credential.email {

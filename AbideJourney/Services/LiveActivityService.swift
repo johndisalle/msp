@@ -67,6 +67,9 @@ final class LiveActivityService {
                 pushType: nil
             )
         } catch {
+            #if DEBUG
+            print("[LiveActivity] Failed to start activity: \(error.localizedDescription)")
+            #endif
         }
     }
 

@@ -277,6 +277,16 @@ struct SettingsView: View {
                                 .foregroundStyle(.green)
                                 .accessibilityHidden(true)
                         }
+
+                        Button {
+                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                Task {
+                                    try? await windowScene.openSubscriptionManagement()
+                                }
+                            }
+                        } label: {
+                            Label("Manage Subscription", systemImage: "creditcard")
+                        }
                     } else {
                         Button {
                             showingPremiumSheet = true
@@ -284,15 +294,19 @@ struct SettingsView: View {
                             HStack {
                                 Label("Upgrade to Premium", systemImage: "crown")
                                 Spacer()
-                                Text("$4.99/mo")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                if let monthly = StoreKitService.shared.monthlyProduct {
+                                    Text("\(monthly.displayPrice)/mo")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
 
                         Button {
                             Task {
-                                try? await AppStore.presentOfferCodeRedeemSheet(in: UIApplication.shared.connectedScenes.first as! UIWindowScene)
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                    try? await AppStore.presentOfferCodeRedeemSheet(in: windowScene)
+                                }
                             }
                         } label: {
                             Label("Redeem Offer Code", systemImage: "ticket")
@@ -311,7 +325,7 @@ struct SettingsView: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text("1.0.0")
+                        Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")
                             .foregroundStyle(.secondary)
                     }
 
@@ -339,10 +353,10 @@ struct SettingsView: View {
                     Button(role: .destructive) {
                         showingDeleteConfirmation = true
                     } label: {
-                        Label("Delete All Data & Reset", systemImage: "trash")
+                        Label("Delete Account & Data", systemImage: "trash")
                     }
                     .confirmationDialog(
-                        "Delete all your data?",
+                        "Delete your account and all data?",
                         isPresented: $showingDeleteConfirmation,
                         titleVisibility: .visible
                     ) {
@@ -351,10 +365,10 @@ struct SettingsView: View {
                         }
                         Button("Cancel", role: .cancel) {}
                     } message: {
-                        Text("This will permanently delete your profile, all journeys, journal entries, prayer sessions, and accountability partners. This cannot be undone.")
+                        Text("This will permanently delete your account, profile, all journeys, journal entries, community posts, and prayer sessions. This cannot be undone.")
                     }
                 } footer: {
-                    Text("Removes all app data and returns to the welcome screen.")
+                    Text("Deletes your account and all associated data, including community content.")
                 }
             }
             .navigationTitle("Settings")
@@ -374,6 +388,12 @@ struct SettingsView: View {
     private func deleteAllData() {
         // Cancel notifications
         NotificationService.shared.cancelAllNotifications()
+
+        // Delete server-side community content
+        Task { await CommunityService.shared.deleteAllUserContent() }
+
+        // Sign out
+        AuthService.shared.signOut()
 
         // Delete all profiles (cascade will delete journeys, days, entries, partners, etc.)
         for profile in profiles {

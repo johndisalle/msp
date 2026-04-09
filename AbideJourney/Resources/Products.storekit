@@ -13,6 +13,21 @@
   "nonRenewingSubscriptions" : [
   ],
   "products" : [
+    {
+      "displayPrice" : "79.99",
+      "familyShareable" : false,
+      "internalID" : "6760919500",
+      "localizations" : [
+        {
+          "description" : "Lifetime access to all premium features",
+          "displayName" : "AbideJourney Premium Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.abidejourney.premium.lifetime",
+      "referenceName" : "Lifetime",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_applicationInternalID" : "6760856253",
@@ -84,6 +99,11 @@
           "referenceName" : "Yearly",
           "subscriptionGroupID" : "21987241",
           "type" : "RecurringSubscription",
+          "introductoryOffer" : {
+            "internalID" : "6760919400",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
           "winbackOffers" : [
           ]
         }

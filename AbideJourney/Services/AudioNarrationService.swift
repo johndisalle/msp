@@ -352,7 +352,11 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
             ambientPlayer?.volume = 0.08
             ambientPlayer?.numberOfLoops = -1
             ambientPlayer?.play()
-        } catch {}
+        } catch {
+            #if DEBUG
+            print("[AudioNarration] Failed to create ambient player: \(error.localizedDescription)")
+            #endif
+        }
     }
 
     func stopAmbientAudio() {
