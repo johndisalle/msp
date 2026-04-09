@@ -37,3 +37,7 @@ fastlane/test_output
 # Code Injection
 iOSInjectionProject/
 firebase/functions/.env
+
+# Secrets (xcconfig with real values - keep template, ignore local overrides)
+Secrets.local.xcconfig
+GoogleService-Info.plist

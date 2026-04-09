@@ -1,14 +1,23 @@
 import Foundation
+import TelemetryDeck
 
-/// Lightweight analytics wrapper.
-/// Replace the print statements with your analytics SDK (e.g. TelemetryDeck, Mixpanel)
-/// when ready to ship.
+/// Lightweight analytics wrapper using TelemetryDeck.
+/// TelemetryDeck is privacy-first: no personal data is collected, no user consent required.
+/// Dashboard: https://dashboard.telemetrydeck.com
 enum Analytics {
 
     /// Call once at app launch before any signals are sent.
     static func configure() {
-        // TODO: Initialize your analytics SDK here
-        // e.g. TelemetryDeck.initialize(config: .init(appID: "YOUR_APP_ID"))
+        guard let appID = Bundle.main.object(forInfoDictionaryKey: "TELEMETRYDECK_APP_ID") as? String,
+              !appID.isEmpty,
+              appID != "YOUR_TELEMETRYDECK_APP_ID" else {
+            #if DEBUG
+            print("[Analytics] TelemetryDeck not configured — using debug logging only")
+            #endif
+            return
+        }
+        let config = TelemetryDeck.Config(appID: appID)
+        TelemetryDeck.initialize(config: config)
     }
 
     private static func signal(_ name: String, parameters: [String: String] = [:]) {
@@ -19,6 +28,7 @@ enum Analytics {
             print("[Analytics] \(name) \(parameters)")
         }
         #endif
+        TelemetryDeck.signal(name, parameters: parameters)
     }
 
     // MARK: - Onboarding

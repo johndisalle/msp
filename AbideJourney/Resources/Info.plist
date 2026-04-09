@@ -60,5 +60,11 @@
 	<string>Abide Journey uses your location to find churches near you so you can connect with a local faith community.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CLOUD_FUNCTION_URL</key>
+	<string>$(CLOUD_FUNCTION_URL)</string>
+	<key>APP_SECRET</key>
+	<string>$(APP_SECRET)</string>
+	<key>TELEMETRYDECK_APP_ID</key>
+	<string>$(TELEMETRYDECK_APP_ID)</string>
 </dict>
 </plist>
