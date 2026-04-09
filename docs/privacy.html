@@ -67,7 +67,7 @@
         <p>When you block a user, the blocked user's device identifier is stored locally on your device. Block lists are not transmitted to our servers.</p>
 
         <h3>Custom AI Journey Generation</h3>
-        <p>When you create a custom journey, the description you provide is sent to our server, which forwards it to an AI service (Anthropic Claude API) to generate personalized devotional content. We do not store your description after the journey is generated. The AI-generated journey content is returned to your device and stored locally.</p>
+        <p>When you create a custom journey, the description you provide is sent to our server, which forwards it to an AI service (Anthropic Claude API) to generate personalized devotional content. For rate limiting and abuse prevention, we log a truncated summary of your description (first 100 characters), along with the journey theme, title, your device identifier, and a timestamp. This log is stored in our database (Google Cloud Firestore). The AI-generated journey content is returned to your device and stored locally.</p>
 
         <h3>Listen Mode (AI Audio Narration)</h3>
         <p>When you use Listen Mode, the text of the day's devotional content is sent to our server, which forwards it to a text-to-speech service (ElevenLabs) to generate audio narration. The audio is returned to your device and cached locally. We do not store the text or audio on our servers after delivery.</p>
@@ -80,6 +80,9 @@
             <li>Processing account deletion requests</li>
         </ul>
         <p>This identifier is not linked to your Apple ID, name, email, or any personal information. It changes if you uninstall and reinstall the App. Rate limit records are stored temporarily and automatically expire.</p>
+
+        <h3>Referral &amp; Sharing Data</h3>
+        <p>If you use the referral feature, a unique referral code is generated and stored locally on your device along with referral counts and credit usage. Referral codes may be shared via deep links (<code>abidejourney://referral?code=...</code>). Similarly, Couples Journey and Gift a Journey invitations use deep links that may contain a partner name, theme selection, or gift message. Deep link data is processed on-device when received and is not stored on our servers.</p>
 
         <h2>4. Authentication Data</h2>
         <p>If you choose to sign in, the following data may be collected depending on your sign-in method:</p>
@@ -190,7 +193,8 @@
             <li><strong>Community posts:</strong> Stored on our servers until you request deletion or we remove them for policy violations.</li>
             <li><strong>Report data:</strong> Retained for as long as needed for moderation purposes.</li>
             <li><strong>Rate limit records:</strong> Automatically expire and are deleted periodically.</li>
-            <li><strong>AI processing data:</strong> Journey descriptions and devotional text sent for AI processing are not stored on our servers after the response is delivered.</li>
+            <li><strong>AI generation logs:</strong> Truncated journey descriptions (first 100 characters) and associated metadata are retained for abuse prevention and may be periodically purged.</li>
+            <li><strong>Audio narration text:</strong> Devotional text sent for audio generation is not stored on our servers after the audio response is delivered.</li>
             <li><strong>Analytics data:</strong> Anonymous usage signals are retained by TelemetryDeck in accordance with their data retention policies.</li>
         </ul>
 
