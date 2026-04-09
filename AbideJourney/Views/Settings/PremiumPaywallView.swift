@@ -29,9 +29,10 @@ struct PremiumPaywallView: View {
 
     private let features = [
         ("heart.fill", "Kingdom-Funded", "We tithe our profits to ministry and missions around the world"),
-        ("headphones", "Listen Mode", "Hear devotionals read aloud with premium voices and ambient soundscapes"),
-        ("wand.and.stars", "Custom Journeys", "Describe what you're going through and we'll build a journey for it"),
+        ("headphones", "Listen Mode", "Professional AI-narrated devotionals with ambient soundscapes like rain, piano, and worship"),
+        ("wand.and.stars", "Custom AI Journeys", "Describe what you're going through and AI builds a personalized 40-day journey"),
         ("paintpalette.fill", "Deep-Dive Themes", "Anxiety, grief, leadership & 10+ premium journey themes"),
+        ("person.3.fill", "Community Prayer & Testimony Wall", "Pray with believers worldwide and share how God is working in your life"),
         ("heart.circle.fill", "Couples Journey", "Walk through 40 days together with your partner"),
         ("figure.2.and.child.holdinghands", "Family Journey", "Age-appropriate faith journeys for your whole family"),
         ("calendar.badge.clock", "Seasonal Journeys", "Advent, Lent, Holy Week, and seasonal faith experiences"),
@@ -193,7 +194,7 @@ struct PremiumPaywallView: View {
                 .font(AJTheme.titleFont)
                 .multilineTextAlignment(.center)
 
-            Text("Unlock every journey, feature, and tool\nto grow closer to Christ.")
+            Text("AI-narrated devotionals, custom journeys,\ncommunity prayer, and so much more.")
                 .font(.subheadline)
                 .foregroundStyle(AJTheme.secondaryText)
                 .multilineTextAlignment(.center)
@@ -500,9 +501,10 @@ struct PremiumCelebrationView: View {
     @State private var showFeatures = false
 
     private let unlockedFeatures: [(icon: String, color: Color, title: String, description: String)] = [
-        ("headphones", .purple, "Listen Mode", "Premium voices and ambient soundscapes for devotionals"),
+        ("headphones", .purple, "Listen Mode", "AI-narrated devotionals with ambient soundscapes"),
         ("paintpalette.fill", .indigo, "Deep-Dive Journeys", "Anxiety, grief, leadership & 10+ premium themes"),
-        ("wand.and.stars", .orange, "Custom Journeys", "Describe your situation and get a journey built for you"),
+        ("wand.and.stars", .orange, "Custom AI Journeys", "Describe your situation and AI builds a journey for you"),
+        ("person.3.fill", .teal, "Community Prayer & Testimonies", "Pray with believers worldwide and share your faith story"),
         ("heart.circle.fill", .pink, "Couples Journey", "Walk through 40 days of growth with your partner"),
         ("figure.2.and.child.holdinghands", .orange, "Family Journey", "Age-appropriate faith journeys for your whole family"),
         ("calendar.badge.clock", .teal, "Seasonal Journeys", "Advent, Lent, Holy Week, and seasonal experiences"),

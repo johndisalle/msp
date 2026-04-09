@@ -96,9 +96,9 @@ struct WelcomeStepView: View {
             }
 
             VStack(spacing: 12) {
-                featureRow(icon: "sunrise.fill", color: AJTheme.gold, text: "Daily devotionals written for you")
-                featureRow(icon: "hands.sparkles.fill", color: AJTheme.sage, text: "Guided prayer and reflection")
-                featureRow(icon: "chart.line.uptrend.xyaxis", color: AJTheme.sandstone, text: "Track your spiritual growth")
+                featureRow(icon: "sunrise.fill", color: AJTheme.gold, text: "Daily Scripture, devotionals, prayer, and action steps")
+                featureRow(icon: "headphones", color: AJTheme.sage, text: "Listen Mode with AI-narrated devotionals")
+                featureRow(icon: "person.3.fill", color: AJTheme.sandstone, text: "Community prayer wall and testimonies")
             }
             .padding(.horizontal, AJTheme.paddingLarge)
             .opacity(appeared ? 1 : 0)

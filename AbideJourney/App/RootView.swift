@@ -120,7 +120,19 @@ struct WelcomeGuideView: View {
                 (icon: "text.book.closed.fill", color: .blue, text: "Scripture with your preferred translation"),
                 (icon: "heart.text.square.fill", color: .orange, text: "A devotional written for your situation"),
                 (icon: "hands.sparkles.fill", color: .purple, text: "A guided prayer you can pray along with"),
-                (icon: "checklist", color: .green, text: "Two action steps to live it out today"),
+                (icon: "headphones", color: .indigo, text: "Listen Mode — AI-narrated devotionals with soundscapes"),
+            ]
+        ),
+        (
+            icon: "sparkles",
+            color: AJTheme.gold,
+            title: "Sanctuary",
+            body: "Your spiritual home base. Pray, breathe, share testimonies, and connect with believers.",
+            features: [
+                (icon: "hands.sparkles.fill", color: .blue, text: "Prayer Wall — submit requests and pray for others"),
+                (icon: "text.quote", color: .orange, text: "Testimony Wall — read and share stories of faith"),
+                (icon: "wind", color: .teal, text: "Breathing meditation with Scripture"),
+                (icon: "person.3.fill", color: .green, text: "Community — connect with believers worldwide"),
             ]
         ),
         (
@@ -130,8 +142,9 @@ struct WelcomeGuideView: View {
             body: NSLocalizedString("tour.progress.body", comment: ""),
             features: [
                 (icon: "flame.fill", color: .orange, text: "Daily streak tracking"),
-                (icon: "circle.circle", color: .blue, text: "Habit rings for prayer, word, obedience & worship"),
+                (icon: "trophy.fill", color: .yellow, text: "Achievements and badges as you grow"),
                 (icon: "calendar", color: .green, text: "Journey calendar showing your path"),
+                (icon: "map.fill", color: .blue, text: "Faith Map — visualize your spiritual growth"),
             ]
         ),
         (
@@ -143,6 +156,7 @@ struct WelcomeGuideView: View {
                 (icon: "pencil.line", color: .blue, text: "Write your thoughts and reflections"),
                 (icon: "mic.fill", color: .purple, text: "Voice journaling — speak your heart"),
                 (icon: "face.smiling", color: .orange, text: "Track your mood through the journey"),
+                (icon: "camera.fill", color: .teal, text: "God Moments — capture what He's doing"),
             ]
         ),
         (
@@ -151,9 +165,10 @@ struct WelcomeGuideView: View {
             title: NSLocalizedString("tour.settings.title", comment: ""),
             body: NSLocalizedString("tour.settings.body", comment: ""),
             features: [
-                (icon: "wand.and.stars", color: .purple, text: "Create a custom journey from your situation"),
+                (icon: "wand.and.stars", color: .purple, text: "AI-powered custom journeys for your situation"),
                 (icon: "heart.circle.fill", color: .pink, text: "Start a couples journey together"),
                 (icon: "gift.fill", color: .orange, text: "Gift a premium journey to a friend"),
+                (icon: "mappin.and.ellipse", color: .red, text: "Find a Church near you"),
             ]
         ),
     ]
