@@ -1031,13 +1031,13 @@ private struct CommunityTestimonyCard: View {
         )
         .confirmationDialog("Report this testimony?", isPresented: $showingReportSheet, titleVisibility: .visible) {
             Button("Inappropriate Content", role: .destructive) {
-                Task { await community.reportTestimony(id: testimony.id, reason: "inappropriate"); showingReportConfirmation = true }
+                Task { _ = await community.reportTestimony(id: testimony.id, reason: "inappropriate"); showingReportConfirmation = true }
             }
             Button("Spam", role: .destructive) {
-                Task { await community.reportTestimony(id: testimony.id, reason: "spam"); showingReportConfirmation = true }
+                Task { _ = await community.reportTestimony(id: testimony.id, reason: "spam"); showingReportConfirmation = true }
             }
             Button("Harmful or Abusive", role: .destructive) {
-                Task { await community.reportTestimony(id: testimony.id, reason: "abusive"); showingReportConfirmation = true }
+                Task { _ = await community.reportTestimony(id: testimony.id, reason: "abusive"); showingReportConfirmation = true }
             }
             Button("Cancel", role: .cancel) {}
         }

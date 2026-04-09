@@ -750,13 +750,13 @@ private struct CommunityPrayerCard: View {
         )
         .confirmationDialog("Report this prayer?", isPresented: $showingReportSheet, titleVisibility: .visible) {
             Button("Inappropriate Content", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "inappropriate"); showingReportConfirmation = true }
+                Task { _ = await community.reportPrayer(id: prayer.id, reason: "inappropriate"); showingReportConfirmation = true }
             }
             Button("Spam", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "spam"); showingReportConfirmation = true }
+                Task { _ = await community.reportPrayer(id: prayer.id, reason: "spam"); showingReportConfirmation = true }
             }
             Button("Harmful or Abusive", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "abusive"); showingReportConfirmation = true }
+                Task { _ = await community.reportPrayer(id: prayer.id, reason: "abusive"); showingReportConfirmation = true }
             }
             Button("Cancel", role: .cancel) {}
         }
