@@ -38,6 +38,7 @@ struct DailyExperienceView: View {
                             if let journey = viewModel.journey {
                                 ProgressStripView(journey: journey, dayNumber: day.dayNumber)
                                     .padding(.horizontal)
+                            }
 
                             DayHeaderView(
                                 dayNumber: day.dayNumber,
