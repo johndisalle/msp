@@ -42,43 +42,36 @@ final class StoreKitService {
 
     // MARK: - Load Products
 
-    var loadAttempts = 0
     private static let maxRetries = 3
 
     func loadProducts() async {
         isLoading = true
         errorMessage = nil
 
-        do {
-            let loadedProducts = try await Product.products(for: Self.allProductIDs)
-            if loadedProducts.isEmpty {
-                // Retry with backoff — App Store may not respond immediately in sandbox
-                if loadAttempts < Self.maxRetries {
-                    loadAttempts += 1
-                    let delay = UInt64(loadAttempts) * 2_000_000_000 // 2s, 4s, 6s
-                    try? await Task.sleep(nanoseconds: delay)
-                    isLoading = false
-                    await loadProducts()
-                    return
+        for attempt in 0...Self.maxRetries {
+            do {
+                let loadedProducts = try await Product.products(for: Self.allProductIDs)
+                if loadedProducts.isEmpty && attempt < Self.maxRetries {
+                    try? await Task.sleep(nanoseconds: UInt64(attempt + 1) * 2_000_000_000)
+                    continue
                 }
-                errorMessage = "Subscription options are currently unavailable. Please check your connection and try again."
-            } else {
-                loadAttempts = 0
-            }
-            products = loadedProducts.sorted { $0.price < $1.price }
-            isLoading = false
-        } catch {
-            if loadAttempts < Self.maxRetries {
-                loadAttempts += 1
-                let delay = UInt64(loadAttempts) * 2_000_000_000
-                try? await Task.sleep(nanoseconds: delay)
+                products = loadedProducts.sorted { $0.price < $1.price }
+                if loadedProducts.isEmpty {
+                    errorMessage = "Subscription options are currently unavailable. Please check your connection and try again."
+                }
                 isLoading = false
-                await loadProducts()
+                return
+            } catch {
+                if attempt < Self.maxRetries {
+                    try? await Task.sleep(nanoseconds: UInt64(attempt + 1) * 2_000_000_000)
+                    continue
+                }
+                errorMessage = "Unable to connect to the App Store. Please check your connection and try again."
+                isLoading = false
                 return
             }
-            errorMessage = "Unable to connect to the App Store. Please check your connection and try again."
-            isLoading = false
         }
+        isLoading = false
     }
 
     // MARK: - Purchase
