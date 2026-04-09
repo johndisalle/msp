@@ -104,10 +104,17 @@ struct PremiumPaywallView: View {
 
                         // Subscription details
                         VStack(spacing: 6) {
-                            Text(selectedPlan == .lifetime ? "One-time purchase. No subscription." : "Cancel anytime. Subscription auto-renews.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
+                            if selectedPlan == .lifetime {
+                                Text("One-time purchase. No subscription.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                            } else {
+                                Text("Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period at the same rate. You can manage and cancel subscriptions in your device's Settings > Apple ID > Subscriptions. Any unused portion of a free trial will be forfeited when purchasing a subscription.")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
 
                             HStack(spacing: 4) {
                                 if let privacyURL = URL(string: "https://johndisalle.github.io/msp/privacy.html") {
@@ -297,7 +304,6 @@ struct PremiumPaywallView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                     Button {
-                        storeService.loadAttempts = 0
                         Task { await storeService.loadProducts() }
                     } label: {
                         HStack(spacing: 6) {

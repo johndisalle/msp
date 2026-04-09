@@ -426,7 +426,7 @@ struct SeasonalJourneysBrowseView: View {
                     .sorted { ($0.daysUntilStart ?? 999) < ($1.daysUntilStart ?? 999) }
 
                 if !upcoming.isEmpty {
-                    SectionHeader(title: "Coming Soon", icon: "calendar.badge.clock", color: AJTheme.gold)
+                    SectionHeader(title: "Upcoming", icon: "calendar.badge.clock", color: AJTheme.gold)
 
                     ForEach(upcoming) { season in
                         NavigationLink {

@@ -147,6 +147,20 @@ struct WelcomeStepView: View {
                         .foregroundStyle(AJTheme.secondaryText)
                 }
 
+                // Legal links
+                HStack(spacing: 4) {
+                    Text("By continuing, you agree to our")
+                    if let termsURL = URL(string: "https://johndisalle.github.io/msp/terms.html") {
+                        Link("Terms", destination: termsURL)
+                    }
+                    Text("and")
+                    if let privacyURL = URL(string: "https://johndisalle.github.io/msp/privacy.html") {
+                        Link("Privacy Policy", destination: privacyURL)
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
                 if let authError {
                     Text(authError)
                         .font(AJTheme.captionFont)

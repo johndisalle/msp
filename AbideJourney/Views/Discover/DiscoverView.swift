@@ -313,7 +313,7 @@ struct DiscoverView: View {
                         Text("Seasonal Journeys")
                             .font(.subheadline.bold())
                             .foregroundStyle(AJTheme.primaryText)
-                        Text("Advent, Lent, Holy Week, and more — coming soon")
+                        Text("Advent, Lent, Holy Week, and more")
                             .font(.caption)
                             .foregroundStyle(AJTheme.secondaryText)
                             .lineLimit(2)

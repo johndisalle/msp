@@ -654,6 +654,7 @@ private struct CommunityPrayerCard: View {
     private var community: CommunityService { CommunityService.shared }
     @State private var showingReportSheet = false
     @State private var showingBlockConfirmation = false
+    @State private var showingReportConfirmation = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -749,15 +750,20 @@ private struct CommunityPrayerCard: View {
         )
         .confirmationDialog("Report this prayer?", isPresented: $showingReportSheet, titleVisibility: .visible) {
             Button("Inappropriate Content", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "inappropriate") }
+                Task { await community.reportPrayer(id: prayer.id, reason: "inappropriate"); showingReportConfirmation = true }
             }
             Button("Spam", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "spam") }
+                Task { await community.reportPrayer(id: prayer.id, reason: "spam"); showingReportConfirmation = true }
             }
             Button("Harmful or Abusive", role: .destructive) {
-                Task { await community.reportPrayer(id: prayer.id, reason: "abusive") }
+                Task { await community.reportPrayer(id: prayer.id, reason: "abusive"); showingReportConfirmation = true }
             }
             Button("Cancel", role: .cancel) {}
+        }
+        .alert("Report Submitted", isPresented: $showingReportConfirmation) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Thank you. Our team will review this content.")
         }
         .confirmationDialog("Block this user?", isPresented: $showingBlockConfirmation, titleVisibility: .visible) {
             Button("Block User", role: .destructive) {

@@ -165,6 +165,12 @@ struct BreathingMeditationView: View {
                 }
                 .padding(.top, 8)
 
+                Text("These exercises are for relaxation and spiritual focus only. They are not a substitute for medical treatment. If you have breathing difficulties or health concerns, consult a healthcare professional.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+
                 // Session cards
                 LazyVStack(spacing: 14) {
                     ForEach(BreathingLibrary.sessions) { session in

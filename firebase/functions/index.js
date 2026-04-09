@@ -400,7 +400,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
           journeyTheme: journeyTheme || "",
           dayCount: dayCount || 40,
           prayerCount: 0,
-          isApproved: false,
+          isApproved: true,
           isFeatured: false,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
@@ -455,14 +455,37 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
       }
 
       case "deleteUserContent": {
-        // Delete all community content for a user (for account deletion)
+        // Delete all community content and associated data for account deletion
+        const batch = db.batch();
+
+        // Delete community prayers
         const prayerSnap = await db.collection("communityPrayers")
           .where("authorId", "==", userId).get();
+        prayerSnap.docs.forEach((doc) => batch.delete(doc.ref));
+
+        // Delete community testimonies
         const testimonySnap = await db.collection("communityTestimonies")
           .where("authorId", "==", userId).get();
-        const batch = db.batch();
-        prayerSnap.docs.forEach((doc) => batch.delete(doc.ref));
         testimonySnap.docs.forEach((doc) => batch.delete(doc.ref));
+
+        // Delete community reports filed by this user
+        const reportSnap = await db.collection("communityReports")
+          .where("reportedBy", "==", userId).get();
+        reportSnap.docs.forEach((doc) => batch.delete(doc.ref));
+
+        // Delete journey generation logs
+        const genSnap = await db.collection("journeyGenerations")
+          .where("deviceId", "==", userId).get();
+        genSnap.docs.forEach((doc) => batch.delete(doc.ref));
+
+        // Delete rate limit records
+        const today = new Date().toISOString().split("T")[0];
+        const rlPrefixes = [`${userId}_${today}`, `audio_${userId}_${today}`];
+        for (const prefix of rlPrefixes) {
+          const rlDoc = db.collection("rateLimits").doc(prefix);
+          batch.delete(rlDoc);
+        }
+
         await batch.commit();
         return res.status(200).json({ success: true });
       }
