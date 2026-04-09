@@ -8,11 +8,14 @@ struct JournalListView: View {
     @State private var showingPremiumSheet = false
     @State private var showingShareSheet = false
     @State private var showingNewEntrySheet = false
+    @State private var showingGrowthSheet = false
     @State private var editingEntry: JournalEntry?
     @State private var exportedPDFURL: URL?
     @State private var isExporting = false
     @State private var exportError: String?
     @State private var searchText = ""
+    @Query(filter: #Predicate<Journey> { $0.isActive }) private var activeJourneys: [Journey]
+    @Query private var allJourneys: [Journey]
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -37,93 +40,107 @@ struct JournalListView: View {
                         description: Text("Tap + to write your first reflection, or complete a daily devotional to journal about it.")
                     )
                 } else {
-                    List {
-                        // Premium users: remind them about voice journaling
-                        if isPremium && !entries.contains(where: \.isVoiceEntry) && searchText.isEmpty {
-                            Section {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "mic.fill")
-                                        .font(.title3)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 32)
-
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Try Voice Journaling")
-                                            .font(.subheadline.bold())
-                                        Text("Tap the mic button when writing a reflection to speak instead of type.")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                .padding(.vertical, 4)
-                                .listRowBackground(Color.purple.opacity(0.05))
-                            }
+                    VStack(spacing: 0) {
+                        // Growth snapshot
+                        Button {
+                            showingGrowthSheet = true
+                        } label: {
+                            GrowthSnapshotCard(journeys: allJourneys, entryCount: entries.count)
                         }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
 
-                        // Free users: export nudge after 5+ entries
-                        if !isPremium && entries.count >= 5 && searchText.isEmpty {
-                            Section {
-                                Button {
-                                    showingPremiumSheet = true
-                                } label: {
+                        // Existing list content
+                        List {
+                            // Premium users: remind them about voice journaling
+                            if isPremium && !entries.contains(where: \.isVoiceEntry) && searchText.isEmpty {
+                                Section {
                                     HStack(spacing: 12) {
-                                        Image(systemName: "doc.richtext")
+                                        Image(systemName: "mic.fill")
                                             .font(.title3)
-                                            .foregroundStyle(.accent)
+                                            .foregroundStyle(.purple)
                                             .frame(width: 32)
 
                                         VStack(alignment: .leading, spacing: 2) {
-                                            Text("Save your \(entries.count) reflections")
+                                            Text("Try Voice Journaling")
                                                 .font(.subheadline.bold())
-                                                .foregroundStyle(.primary)
-                                            Text("Export your journal as a beautiful PDF with Premium")
+                                            Text("Tap the mic button when writing a reflection to speak instead of type.")
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
                                         }
-
-                                        Spacer()
-
-                                        Image(systemName: "chevron.right")
-                                            .font(.caption)
-                                            .foregroundStyle(.tertiary)
                                     }
                                     .padding(.vertical, 4)
+                                    .listRowBackground(Color.purple.opacity(0.05))
                                 }
-                                .listRowBackground(Color.accentColor.opacity(0.05))
                             }
-                        }
 
-                        if !searchText.isEmpty && filteredEntries.isEmpty {
-                            ContentUnavailableView.search(text: searchText)
-                        } else {
-                            Section {
-                                ForEach(filteredEntries) { entry in
-                                    JournalEntryRow(entry: entry)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            editingEntry = entry
-                                        }
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                            Button(role: .destructive) {
-                                                deleteEntry(entry)
-                                            } label: {
-                                                Label("Delete", systemImage: "trash")
+                            // Free users: export nudge after 5+ entries
+                            if !isPremium && entries.count >= 5 && searchText.isEmpty {
+                                Section {
+                                    Button {
+                                        showingPremiumSheet = true
+                                    } label: {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "doc.richtext")
+                                                .font(.title3)
+                                                .foregroundStyle(.accent)
+                                                .frame(width: 32)
+
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text("Save your \(entries.count) reflections")
+                                                    .font(.subheadline.bold())
+                                                    .foregroundStyle(.primary)
+                                                Text("Export your journal as a beautiful PDF with Premium")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
                                             }
+
+                                            Spacer()
+
+                                            Image(systemName: "chevron.right")
+                                                .font(.caption)
+                                                .foregroundStyle(.tertiary)
                                         }
-                                        .swipeActions(edge: .leading) {
-                                            Button {
+                                        .padding(.vertical, 4)
+                                    }
+                                    .listRowBackground(Color.accentColor.opacity(0.05))
+                                }
+                            }
+
+                            if !searchText.isEmpty && filteredEntries.isEmpty {
+                                ContentUnavailableView.search(text: searchText)
+                            } else {
+                                Section {
+                                    ForEach(filteredEntries) { entry in
+                                        JournalEntryRow(entry: entry)
+                                            .contentShape(Rectangle())
+                                            .onTapGesture {
                                                 editingEntry = entry
-                                            } label: {
-                                                Label("Edit", systemImage: "pencil")
                                             }
-                                            .tint(AJTheme.sage)
-                                        }
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                                Button(role: .destructive) {
+                                                    deleteEntry(entry)
+                                                } label: {
+                                                    Label("Delete", systemImage: "trash")
+                                                }
+                                            }
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    editingEntry = entry
+                                                } label: {
+                                                    Label("Edit", systemImage: "pencil")
+                                                }
+                                                .tint(AJTheme.sage)
+                                            }
+                                    }
                                 }
                             }
                         }
+                        .listStyle(.plain)
+                        .searchable(text: $searchText, prompt: "Search reflections...")
                     }
-                    .listStyle(.plain)
-                    .searchable(text: $searchText, prompt: "Search reflections...")
                 }
             }
             .navigationTitle("Journal")
@@ -165,6 +182,9 @@ struct JournalListView: View {
             }
             .sheet(item: $editingEntry) { entry in
                 EditJournalSheet(entry: entry, modelContext: modelContext)
+            }
+            .sheet(isPresented: $showingGrowthSheet) {
+                MyGrowthSheet()
             }
             .alert("Export Failed", isPresented: Binding(
                 get: { exportError != nil },
@@ -517,6 +537,324 @@ struct JournalEntryRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+// MARK: - Growth Snapshot Card
+
+struct GrowthSnapshotCard: View {
+    let journeys: [Journey]
+    let entryCount: Int
+
+    private var activeJourney: Journey? {
+        journeys.first(where: { $0.isActive && !$0.isCompleted })
+    }
+
+    private var streakCount: Int {
+        guard let journey = activeJourney else { return 0 }
+        return StreakService.shared.calculateStreak(for: journey).currentStreak
+    }
+
+    private var badgeCount: Int {
+        AchievementService.shared.allBadges(
+            journeys: journeys,
+            journalCount: entryCount
+        ).filter(\.isEarned).count
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            // Streak
+            statItem(
+                icon: "flame.fill",
+                color: .orange,
+                value: "\(streakCount)",
+                label: "streak"
+            )
+
+            Capsule()
+                .fill(AJTheme.secondaryText.opacity(0.2))
+                .frame(width: 1, height: 28)
+
+            // Badges
+            statItem(
+                icon: "trophy.fill",
+                color: .yellow,
+                value: "\(badgeCount)",
+                label: "badges"
+            )
+
+            Capsule()
+                .fill(AJTheme.secondaryText.opacity(0.2))
+                .frame(width: 1, height: 28)
+
+            // Journey progress
+            if let journey = activeJourney {
+                statItem(
+                    icon: "book.fill",
+                    color: AJTheme.sage,
+                    value: "Day \(journey.currentDay)",
+                    label: "of \(journey.totalDays)"
+                )
+            } else {
+                statItem(
+                    icon: "book.fill",
+                    color: AJTheme.sage,
+                    value: "\(entryCount)",
+                    label: "entries"
+                )
+            }
+
+            Spacer()
+
+            // "My Growth" chevron
+            HStack(spacing: 4) {
+                Text("My Growth")
+                    .font(.caption.bold())
+                    .foregroundStyle(AJTheme.sage)
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(AJTheme.sage)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: AJTheme.cornerRadius)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
+    }
+
+    private func statItem(icon: String, color: Color, value: String, label: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(color)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(value)
+                    .font(.caption.bold())
+                    .foregroundStyle(AJTheme.primaryText)
+                Text(label)
+                    .font(.system(size: 10))
+                    .foregroundStyle(AJTheme.secondaryText)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - My Growth Sheet
+
+struct MyGrowthSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Query private var journeys: [Journey]
+    @Query private var journalEntries: [JournalEntry]
+    @Query private var profiles: [UserProfile]
+    @State private var viewModel = ProgressViewModel()
+    @State private var showingPremiumSheet = false
+
+    private var isPremium: Bool { profiles.first?.isPremium ?? false }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: AJTheme.paddingLarge) {
+                    // Journey progress
+                    if let journey = viewModel.journey {
+                        JourneyProgressCard(journey: journey)
+                    }
+
+                    // Streak
+                    if let streak = viewModel.streakInfo {
+                        StreakCard(streakInfo: streak)
+                    }
+
+                    // Achievements
+                    NavigationLink {
+                        AchievementsView()
+                    } label: {
+                        AchievementsSummaryCard(journeys: journeys, journalCount: journalEntries.count)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
+                    // Faith Wrapped
+                    NavigationLink {
+                        FaithWrappedView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [Color(red: 0.15, green: 0.20, blue: 0.38), Color(red: 0.30, green: 0.15, blue: 0.45)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: "sparkles")
+                                    .font(.body)
+                                    .foregroundStyle(.white)
+                            }
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(verbatim: "\(Calendar.current.component(.year, from: Date())) Faith Wrapped")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(AJTheme.primaryText)
+                                Text("Your year in review — shareable!")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(AJTheme.cardBackground)
+                                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
+                    // Habit rings
+                    HabitRingsCard(
+                        prayer: viewModel.prayerRingProgress,
+                        word: viewModel.wordRingProgress,
+                        obedience: viewModel.obedienceRingProgress,
+                        worship: viewModel.worshipRingProgress
+                    )
+
+                    // Weekly stats
+                    WeeklyStatsCard(
+                        prayerDays: viewModel.weeklyPrayerCount,
+                        scriptureCount: viewModel.weeklyScriptureCount,
+                        obedienceCount: viewModel.weeklyObedienceCount
+                    )
+
+                    // Calendar
+                    if let journey = viewModel.journey {
+                        StreakCalendarView(journey: journey)
+                    }
+
+                    // Premium features (visible to all)
+                    NavigationLink {
+                        FaithMapView()
+                    } label: {
+                        PremiumProgressCard(
+                            icon: "map.fill",
+                            color: .teal,
+                            title: "Faith Map",
+                            subtitle: "See your spiritual growth visualized over time"
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+
+                    if isPremium {
+                        NavigationLink {
+                            FaithReportView()
+                        } label: {
+                            PremiumProgressCard(
+                                icon: "sparkles.rectangle.stack.fill",
+                                color: .indigo,
+                                title: "Annual Faith Report",
+                                subtitle: "A beautiful summary of your year with God"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+
+                        NavigationLink {
+                            AccountabilityView()
+                        } label: {
+                            PremiumProgressCard(
+                                icon: "person.2.fill",
+                                color: .green,
+                                title: "Accountability Partners",
+                                subtitle: "Invite a friend to walk alongside you"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                    } else {
+                        // Show premium features as locked previews
+                        lockedFeatureCard(
+                            icon: "sparkles.rectangle.stack.fill",
+                            color: .indigo,
+                            title: "Annual Faith Report",
+                            subtitle: "A beautiful summary of your year with God"
+                        )
+
+                        lockedFeatureCard(
+                            icon: "person.2.fill",
+                            color: .green,
+                            title: "Accountability Partners",
+                            subtitle: "Invite a friend to walk alongside you"
+                        )
+                    }
+                }
+                .padding(.vertical)
+            }
+            .ajScreenBackground()
+            .navigationTitle("My Growth")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .bold()
+                }
+            }
+            .onAppear {
+                viewModel.loadProgress(from: journeys)
+            }
+            .sheet(isPresented: $showingPremiumSheet) {
+                PremiumPaywallView()
+            }
+        }
+    }
+
+    private func lockedFeatureCard(icon: String, color: Color, title: String, subtitle: String) -> some View {
+        Button {
+            showingPremiumSheet = true
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(color.opacity(0.12))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: icon)
+                        .font(.body)
+                        .foregroundStyle(color)
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(AJTheme.primaryText)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(AJTheme.secondaryText)
+                }
+                Spacer()
+                Text("Premium")
+                    .font(.caption2.bold())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Capsule().fill(AJTheme.gold))
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(AJTheme.cardBackground)
+                    .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+            )
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal)
     }
 }
 

@@ -13,11 +13,6 @@ struct SettingsView: View {
     @State private var showingNewJourneySheet = false
     @State private var showingAbandonConfirmation = false
     @State private var showingDeleteConfirmation = false
-    @State private var showingCouplesSheet = false
-    @State private var showingFamilySheet = false
-    @State private var showingDynamicSheet = false
-    @State private var showingGiftSheet = false
-    @State private var showingReferralSheet = false
     @State private var showingWelcomeGuide = false
     @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
     @AppStorage("appColorTheme") private var appColorTheme: AppColorTheme = .classic
@@ -240,27 +235,6 @@ struct SettingsView: View {
                         Label("Start New Journey", systemImage: "plus.circle")
                     }
 
-                    if profile?.isPremium == true {
-                        Button {
-                            showingDynamicSheet = true
-                        } label: {
-                            Label("Create Custom Journey", systemImage: "wand.and.stars")
-                        }
-
-                        Button {
-                            showingCouplesSheet = true
-                        } label: {
-                            Label("Couples Journey", systemImage: "heart.circle.fill")
-                                .foregroundStyle(.pink)
-                        }
-
-                        Button {
-                            showingFamilySheet = true
-                        } label: {
-                            Label("Family Journey", systemImage: "figure.2.and.child.holdinghands")
-                                .foregroundStyle(.orange)
-                        }
-                    }
                 }
 
                 // Past journeys
@@ -292,17 +266,6 @@ struct SettingsView: View {
                     }
                 }
 
-                // Accountability (Premium)
-                if profile?.isPremium == true {
-                    Section("Accountability") {
-                        NavigationLink {
-                            AccountabilityView()
-                        } label: {
-                            Label("Accountability Partners", systemImage: "person.2.fill")
-                        }
-                    }
-                }
-
                 // Premium
                 Section("Premium") {
                     if profile?.isPremium == true {
@@ -313,32 +276,6 @@ struct SettingsView: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
                                 .accessibilityHidden(true)
-                        }
-
-                        Button {
-                            showingGiftSheet = true
-                        } label: {
-                            Label("Gift a Journey", systemImage: "gift.fill")
-                        }
-
-                        Button {
-                            showingReferralSheet = true
-                        } label: {
-                            HStack {
-                                Label("Refer a Friend", systemImage: "person.badge.plus")
-                                Spacer()
-                                if ReferralService.shared.referralCount > 0 {
-                                    Text("\(ReferralService.shared.referralCount) referred")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-
-                        NavigationLink {
-                            FaithReportView()
-                        } label: {
-                            Label("Annual Faith Report", systemImage: "sparkles.rectangle.stack.fill")
                         }
                     } else {
                         Button {
@@ -351,13 +288,6 @@ struct SettingsView: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
-                        }
-
-                        Button {
-                            showingReferralSheet = true
-                        } label: {
-                            Label("Invite Friends, Get Free Premium", systemImage: "person.badge.plus")
-                                .foregroundStyle(AJTheme.sage)
                         }
 
                         Button {
@@ -433,21 +363,6 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingNewJourneySheet) {
                 NewJourneyView()
-            }
-            .sheet(isPresented: $showingCouplesSheet) {
-                CouplesJourneyView()
-            }
-            .sheet(isPresented: $showingFamilySheet) {
-                FamilyJourneyView()
-            }
-            .sheet(isPresented: $showingDynamicSheet) {
-                DynamicJourneyView()
-            }
-            .sheet(isPresented: $showingGiftSheet) {
-                GiftJourneyView()
-            }
-            .sheet(isPresented: $showingReferralSheet) {
-                ReferralView(userName: profile?.name ?? "Friend")
             }
             .sheet(isPresented: $showingWelcomeGuide) {
                 WelcomeGuideView {

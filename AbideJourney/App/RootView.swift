@@ -124,6 +124,18 @@ struct WelcomeGuideView: View {
             ]
         ),
         (
+            icon: "compass",
+            color: AJTheme.sage,
+            title: "Discover",
+            body: "Browse journey themes, create custom AI journeys, and explore everything the app has to offer.",
+            features: [
+                (icon: "map.fill", color: .blue, text: "13+ journey themes from Knowing God to Healing Relationships"),
+                (icon: "wand.and.stars", color: .purple, text: "Custom AI Journeys built for your situation"),
+                (icon: "heart.circle.fill", color: .pink, text: "Couples and Family journey options"),
+                (icon: "gift.fill", color: .orange, text: "Gift a journey to someone you love"),
+            ]
+        ),
+        (
             icon: "sparkles",
             color: AJTheme.gold,
             title: "Sanctuary",
@@ -136,39 +148,15 @@ struct WelcomeGuideView: View {
             ]
         ),
         (
-            icon: "chart.line.uptrend.xyaxis",
-            color: AJTheme.sandstone,
-            title: NSLocalizedString("tour.progress.title", comment: ""),
-            body: NSLocalizedString("tour.progress.body", comment: ""),
-            features: [
-                (icon: "flame.fill", color: .orange, text: "Daily streak tracking"),
-                (icon: "trophy.fill", color: .yellow, text: "Achievements and badges as you grow"),
-                (icon: "calendar", color: .green, text: "Journey calendar showing your path"),
-                (icon: "map.fill", color: .blue, text: "Faith Map — visualize your spiritual growth"),
-            ]
-        ),
-        (
             icon: "book.fill",
             color: AJTheme.sage,
-            title: NSLocalizedString("tour.journal.title", comment: ""),
-            body: NSLocalizedString("tour.journal.body", comment: ""),
+            title: "Journal & Growth",
+            body: "Reflect on your journey, track your spiritual growth, and celebrate how far you've come.",
             features: [
                 (icon: "pencil.line", color: .blue, text: "Write your thoughts and reflections"),
                 (icon: "mic.fill", color: .purple, text: "Voice journaling — speak your heart"),
-                (icon: "face.smiling", color: .orange, text: "Track your mood through the journey"),
-                (icon: "camera.fill", color: .teal, text: "God Moments — capture what He's doing"),
-            ]
-        ),
-        (
-            icon: "gearshape.fill",
-            color: AJTheme.sandstone,
-            title: NSLocalizedString("tour.settings.title", comment: ""),
-            body: NSLocalizedString("tour.settings.body", comment: ""),
-            features: [
-                (icon: "wand.and.stars", color: .purple, text: "AI-powered custom journeys for your situation"),
-                (icon: "heart.circle.fill", color: .pink, text: "Start a couples journey together"),
-                (icon: "gift.fill", color: .orange, text: "Gift a premium journey to a friend"),
-                (icon: "mappin.and.ellipse", color: .red, text: "Find a Church near you"),
+                (icon: "flame.fill", color: .orange, text: "Track your streak, habits, and achievements"),
+                (icon: "map.fill", color: .teal, text: "Faith Map — visualize your spiritual growth"),
             ]
         ),
     ]

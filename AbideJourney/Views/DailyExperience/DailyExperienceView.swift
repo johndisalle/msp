@@ -16,6 +16,9 @@ struct DailyExperienceView: View {
     @State private var showingSeasonalDetail = false
     @State private var activeSeason: SeasonalJourney?
     @State private var cardsAppeared = false
+    @State private var showingSettings = false
+    @State private var showingNewJourneyFromEmpty = false
+    @State private var showPostCompletionSuggestions = false
 
     private var isPremium: Bool { profiles.first?.isPremium ?? false }
 
@@ -30,6 +33,41 @@ struct DailyExperienceView: View {
                             Color.clear
                                 .frame(height: 0)
                                 .id("scrollTop")
+
+                            // Compact progress strip
+                            if let journey = viewModel.journey, let streak = StreakService.shared.calculateStreak(for: journey) {
+                                HStack(spacing: 12) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "flame.fill")
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                        Text("\(streak.currentStreak)-day streak")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(AJTheme.primaryText)
+                                    }
+
+                                    Capsule()
+                                        .fill(AJTheme.secondaryText.opacity(0.3))
+                                        .frame(width: 1, height: 12)
+
+                                    Text("Day \(day.dayNumber)/\(journey.totalDays)")
+                                        .font(.caption)
+                                        .foregroundStyle(AJTheme.secondaryText)
+
+                                    Spacer()
+
+                                    Text("\(Int(journey.progress * 100))%")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(AJTheme.sage)
+                                }
+                                .padding(.horizontal, AJTheme.paddingMedium)
+                                .padding(.vertical, AJTheme.paddingSmall)
+                                .background(
+                                    RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                                        .fill(AJTheme.sage.opacity(0.06))
+                                )
+                                .padding(.horizontal)
+                            }
 
                             DayHeaderView(
                                 dayNumber: day.dayNumber,
@@ -68,7 +106,13 @@ struct DailyExperienceView: View {
                             DevotionalCardView(
                                 title: day.devotionalTitle,
                                 text: day.devotionalText,
-                                isPremium: isPremium
+                                isPremium: isPremium,
+                                onListenTapped: {
+                                    showingListenMode = true
+                                },
+                                onPremiumTapped: {
+                                    showingPremiumSheet = true
+                                }
                             )
                             .opacity(cardsAppeared ? 1 : 0)
                             .offset(y: cardsAppeared ? 0 : 20)
@@ -117,8 +161,16 @@ struct DailyExperienceView: View {
                                 }
                             }
 
+                            if showPostCompletionSuggestions {
+                                PostCompletionSuggestionsCard()
+                                    .padding(.horizontal)
+                                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            }
+
                             if viewModel.dailyLimitReached {
-                                DailyLimitReachedCard(isPremium: isPremium)
+                                DailyLimitReachedCard(isPremium: isPremium) {
+                                    showingPremiumSheet = true
+                                }
                                     .padding(.horizontal)
                                     .padding(.bottom, AJTheme.paddingXLarge)
                             } else {
@@ -174,34 +226,101 @@ struct DailyExperienceView: View {
                     } // ZStack
                     } // ScrollViewReader
                 } else {
-                    VStack(spacing: 20) {
-                        Spacer()
-                        Image(systemName: "book.closed.fill")
-                            .font(.system(size: 56))
-                            .foregroundStyle(AJTheme.sage.opacity(0.4))
-                        Text("No Active Journey")
-                            .font(AJTheme.headlineFont)
-                        Text("Start a new journey to begin your 40-day walk with God.")
-                            .font(AJTheme.bodyFont)
-                            .foregroundStyle(AJTheme.secondaryText)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                        NavigationLink {
-                            NewJourneyView()
-                        } label: {
-                            HStack {
-                                Image(systemName: "plus.circle.fill")
-                                Text("Start a Journey")
+                    ScrollView {
+                        VStack(spacing: AJTheme.paddingLarge) {
+                            Spacer().frame(height: 40)
+
+                            // Greeting
+                            VStack(spacing: 8) {
+                                Text(greetingText)
+                                    .font(AJTheme.headlineFont)
+                                    .foregroundStyle(AJTheme.primaryText)
+
+                                Text(Date(), format: .dateTime.weekday(.wide).month(.wide).day())
+                                    .font(.system(.subheadline, design: .serif))
+                                    .foregroundStyle(AJTheme.secondaryText)
                             }
+
+                            // Hero verse
+                            VStack(spacing: 12) {
+                                Image(systemName: "book.closed.fill")
+                                    .font(.system(size: 48))
+                                    .foregroundStyle(AJTheme.sage.opacity(0.6))
+
+                                Text("\u{201C}Your word is a lamp to my feet and a light to my path.\u{201D}")
+                                    .font(AJTheme.scriptureFont)
+                                    .foregroundStyle(AJTheme.primaryText)
+                                    .multilineTextAlignment(.center)
+                                    .lineSpacing(4)
+                                    .padding(.horizontal, AJTheme.paddingLarge)
+
+                                Text("— Psalm 119:105")
+                                    .font(.system(.caption, design: .serif, weight: .semibold))
+                                    .foregroundStyle(AJTheme.gold)
+                            }
+                            .padding(.vertical, AJTheme.paddingLarge)
+
+                            // Begin CTA
+                            Button {
+                                // Switch to Discover tab - for now, show NewJourneyView
+                                showingNewJourneyFromEmpty = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "plus.circle.fill")
+                                    Text("Begin Your Journey")
+                                }
+                            }
+                            .buttonStyle(AJPrimaryButtonStyle())
+                            .padding(.horizontal, AJTheme.paddingXLarge)
+
+                            // Quick access cards
+                            VStack(spacing: 4) {
+                                Text("or explore while you decide")
+                                    .font(AJTheme.captionFont)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+                            .padding(.top, 8)
+
+                            HStack(spacing: 12) {
+                                NavigationLink {
+                                    BreathingMeditationView()
+                                } label: {
+                                    quickAccessCard(icon: "wind", color: .teal, title: "Breathe")
+                                }
+                                .buttonStyle(.plain)
+
+                                NavigationLink {
+                                    PrayerWallView()
+                                } label: {
+                                    quickAccessCard(icon: "hands.sparkles.fill", color: .blue, title: "Pray")
+                                }
+                                .buttonStyle(.plain)
+
+                                NavigationLink {
+                                    ScriptureMemoryView()
+                                } label: {
+                                    quickAccessCard(icon: "brain.head.profile", color: .purple, title: "Memorize")
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal)
+
+                            Spacer()
                         }
-                        .buttonStyle(AJPrimaryButtonStyle())
-                        .padding(.horizontal, 40)
-                        Spacer()
                     }
                 }
             }
             .navigationTitle("Today")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .foregroundStyle(AJTheme.secondaryText)
+                    }
+                    .accessibilityLabel("Settings")
+                }
                 if viewModel.currentDay != nil {
                     ToolbarItem(placement: .topBarTrailing) {
                         HStack(spacing: 16) {
@@ -256,6 +375,9 @@ struct DailyExperienceView: View {
                 if isPremium && !viewModel.dailyLimitReached && !viewModel.journeyJustCompleted {
                     showingAdvancePrompt = true
                 }
+                withAnimation(.easeOut(duration: 0.4).delay(0.5)) {
+                    showPostCompletionSuggestions = true
+                }
             }) {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
@@ -284,6 +406,9 @@ struct DailyExperienceView: View {
             }
             .sheet(isPresented: $showingPremiumSheet) {
                 PremiumPaywallView()
+            }
+            .sheet(isPresented: $showingNewJourneyFromEmpty) {
+                NewJourneyView()
             }
             .sheet(isPresented: $showingSmartPaywall) {
                 PremiumPaywallView()
@@ -343,6 +468,39 @@ struct DailyExperienceView: View {
                 }
             }
         }
+    }
+
+    private var greetingText: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        let name = profiles.first?.name ?? "Friend"
+        switch hour {
+        case 5..<12: return "Good morning, \(name)"
+        case 12..<17: return "Good afternoon, \(name)"
+        default: return "Good evening, \(name)"
+        }
+    }
+
+    private func quickAccessCard(icon: String, color: Color, title: String) -> some View {
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.12))
+                    .frame(width: 48, height: 48)
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(color)
+            }
+            Text(title)
+                .font(.system(.caption, design: .serif, weight: .medium))
+                .foregroundStyle(AJTheme.primaryText)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AJTheme.paddingMedium)
+        .background(
+            RoundedRectangle(cornerRadius: AJTheme.cornerRadius)
+                .fill(AJTheme.cardBackground)
+                .shadow(color: AJTheme.cardShadow, radius: AJTheme.cardShadowRadius, x: 0, y: 2)
+        )
     }
 }
 
@@ -626,6 +784,8 @@ struct DevotionalCardView: View {
     let title: String
     let text: String
     var isPremium: Bool = false
+    var onListenTapped: (() -> Void)? = nil
+    var onPremiumTapped: (() -> Void)? = nil
     @State private var isExpanded = false
 
     var body: some View {
@@ -658,6 +818,49 @@ struct DevotionalCardView: View {
                 .foregroundColor(AJTheme.sage)
                 .accessibilityLabel("Read full devotional")
                 .accessibilityHint("Double tap to expand the devotional text")
+            }
+
+            // Listen Mode teaser
+            if let onListen = onListenTapped {
+                Divider()
+                    .padding(.vertical, 4)
+
+                Button {
+                    if isPremium {
+                        onListen()
+                    } else {
+                        onPremiumTapped?()
+                    }
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "waveform")
+                            .font(.caption)
+                            .foregroundStyle(isPremium ? AJTheme.sage : AJTheme.secondaryText)
+                        Text(isPremium ? "Listen to this devotional" : "Listen Mode")
+                            .font(.system(.caption, design: .serif, weight: .semibold))
+                            .foregroundStyle(isPremium ? AJTheme.sage : AJTheme.secondaryText)
+                        Spacer()
+                        if isPremium {
+                            Image(systemName: "play.circle.fill")
+                                .font(.title3)
+                                .foregroundStyle(AJTheme.sage)
+                        } else {
+                            Text("Premium")
+                                .font(.caption2.bold())
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Capsule().fill(AJTheme.gold))
+                        }
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                            .fill(isPremium ? AJTheme.sage.opacity(0.06) : AJTheme.gold.opacity(0.06))
+                    )
+                }
+                .buttonStyle(.plain)
             }
         }
         .ajCard()
@@ -827,6 +1030,7 @@ struct PrayerCardView: View {
 
 struct DailyLimitReachedCard: View {
     let isPremium: Bool
+    var onUpgrade: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 14) {
@@ -849,6 +1053,19 @@ struct DailyLimitReachedCard: View {
                     .font(AJTheme.captionFont)
                     .foregroundStyle(AJTheme.gold)
                     .multilineTextAlignment(.center)
+            }
+
+            if !isPremium, let onUpgrade {
+                Button {
+                    onUpgrade()
+                } label: {
+                    HStack {
+                        Image(systemName: "crown.fill")
+                        Text("Unlock 3 Days Per Day")
+                    }
+                }
+                .buttonStyle(AJPremiumButtonStyle())
+                .padding(.top, 4)
             }
         }
         .padding()
@@ -922,13 +1139,13 @@ struct PremiumFeatureHintsCard: View {
         case 4...7:
             return ("map.fill", AJTheme.sage, "Explore Your Faith Map", "Check the Progress tab to see your spiritual growth visualized over time.")
         case 8...14:
-            return ("person.2.fill", AJTheme.success, "Invite an Accountability Partner", "Go to Settings to invite a friend to walk alongside you on this journey.")
+            return ("person.2.fill", AJTheme.success, "Invite an Accountability Partner", "Check the Discover tab to invite a friend to walk alongside you on this journey.")
         case 15...21:
-            return ("heart.circle.fill", AJTheme.sandstone, "Try a Couples Journey", "Walk through 40 days with your partner — find it in Settings under Journey.")
+            return ("heart.circle.fill", AJTheme.sandstone, "Try a Couples Journey", "Walk through 40 days with your partner — find it on the Discover tab under Journey.")
         case 22...30:
-            return ("wand.and.stars", AJTheme.gold, "Create a Custom Journey", "Describe what you're going through and we'll build a journey just for you. Find it in Settings.")
+            return ("wand.and.stars", AJTheme.gold, "Create a Custom Journey", "Describe what you're going through and we'll build a journey just for you. Find it on the Discover tab.")
         case 31...40:
-            return ("gift.fill", AJTheme.gold, "Gift a Journey", "Know someone who could use encouragement? Send them a journey from Settings.")
+            return ("gift.fill", AJTheme.gold, "Gift a Journey", "Know someone who could use encouragement? Send them a journey from the Discover tab.")
         default:
             return nil
         }
@@ -1065,6 +1282,54 @@ struct BookmarkedDaysView: View {
             }
         }
         .navigationTitle("Bookmarked Days")
+    }
+}
+
+// MARK: - Post-Completion Suggestions
+
+struct PostCompletionSuggestionsCard: View {
+    private let suggestions: [(icon: String, color: Color, title: String, destination: AnyView)] = [
+        ("brain.head.profile", .purple, "Memorize today's verse", AnyView(ScriptureMemoryView())),
+        ("camera.viewfinder", .orange, "Capture a God Moment", AnyView(GodMomentsView())),
+        ("wind", .teal, "Breathe & reflect", AnyView(BreathingMeditationView())),
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "sparkles")
+                    .foregroundStyle(AJTheme.gold)
+                Text("Keep Going")
+                    .font(AJTheme.subheadlineFont)
+                    .foregroundStyle(AJTheme.primaryText)
+            }
+
+            ForEach(Array(suggestions.enumerated()), id: \.offset) { _, suggestion in
+                NavigationLink {
+                    suggestion.destination
+                } label: {
+                    HStack(spacing: 12) {
+                        ZStack {
+                            Circle()
+                                .fill(suggestion.color.opacity(0.12))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: suggestion.icon)
+                                .font(.caption)
+                                .foregroundStyle(suggestion.color)
+                        }
+                        Text(suggestion.title)
+                            .font(.system(.subheadline, design: .serif))
+                            .foregroundStyle(AJTheme.primaryText)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .ajCard()
     }
 }
 
