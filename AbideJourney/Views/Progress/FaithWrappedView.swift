@@ -346,7 +346,7 @@ struct WrappedStats {
     static func compute(journeys: [Journey], journalEntries: [JournalEntry]) -> WrappedStats {
         let year = Calendar.current.component(.year, from: Date())
         guard let startOfYear = Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1)) else {
-            return WrappedStats(daysCompleted: 0, journeysCompleted: 0, longestStreak: 0, journalEntries: 0, prayerCount: 0, versesMemorized: 0, badgesEarned: 0, topTheme: nil, godMomentsCount: 0)
+            return WrappedStats(year: year, totalDaysCompleted: 0, longestStreak: 0, journeysCompleted: 0, journalCount: 0, prayerCount: 0, versesMemorized: 0, badgesEarned: 0, topTheme: nil, godMomentsCount: 0)
         }
 
         let yearJourneys = journeys.filter { $0.startDate >= startOfYear }
