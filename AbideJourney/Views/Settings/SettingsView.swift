@@ -281,7 +281,7 @@ struct SettingsView: View {
                         Button {
                             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                                 Task {
-                                    try? await windowScene.openSubscriptionManagement()
+                                    try? await AppStore.showManageSubscriptions(in: windowScene)
                                 }
                             }
                         } label: {
