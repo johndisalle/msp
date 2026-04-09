@@ -66,7 +66,7 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
         super.init()
         #if DEBUG
         print("[AudioNarration] cloudFunctionBaseURL: \(cloudFunctionBaseURL ?? "NIL")")
-        print("[AudioNarration] appSecret present: \(appSecret != nil && !appSecret!.isEmpty)")
+        print("[AudioNarration] appSecret: [\(appSecret ?? "NIL")] (length: \(appSecret?.count ?? 0))")
         #endif
     }
 
