@@ -556,10 +556,7 @@ struct GrowthSnapshotCard: View {
     }
 
     private var badgeCount: Int {
-        AchievementService.shared.allBadges(
-            journeys: journeys,
-            journalCount: entryCount
-        ).filter(\.isEarned).count
+        AchievementService.shared.earnedBadgeIDs.count
     }
 
     var body: some View {
