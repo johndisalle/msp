@@ -12,7 +12,7 @@ struct MainTabView: View {
         var icon: String {
             switch self {
             case .today: return "sunrise.fill"
-            case .discover: return "compass"
+            case .discover: return "safari"
             case .sanctuary: return "sparkles"
             case .journal: return "book.fill"
             }

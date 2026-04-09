@@ -124,7 +124,7 @@ struct WelcomeGuideView: View {
             ]
         ),
         (
-            icon: "compass",
+            icon: "safari",
             color: AJTheme.sage,
             title: "Discover",
             body: "Browse journey themes, create custom AI journeys, and explore everything the app has to offer.",
