@@ -75,22 +75,22 @@ final class TestimonyService {
     private let prayedKey = "prayed_testimony_ids"
     private init() {}
 
-    // Seed testimonies (simulating approved/featured content)
+    // Seed testimonies — real-style Christian testimonies about encountering Jesus
     private let seedTestimonies: [Testimony] = [
         Testimony(
-            authorName: "Sarah M.",
-            journeyTheme: "Overcoming Anxiety",
-            category: .anxiety,
-            title: "From Panic Attacks to Peace",
-            story: "I started this journey having panic attacks every single day. I couldn't sleep, couldn't focus at work, couldn't be present with my kids. By Day 10, the breathing exercises and daily scripture started to rewire my thinking. By Day 30, I realized I hadn't had a panic attack in two weeks. God used this app to teach me that His peace isn't the absence of storms — it's His presence in them. I still have hard days, but now I have tools and a God who meets me in them.",
+            authorName: "Marcus T.",
+            journeyTheme: "Finding Faith",
+            category: .faith,
+            title: "From the Streets to the Cross",
+            story: "I grew up in a home where God was never mentioned. By 19 I was selling drugs, sleeping in my car, and thought my life was already over. One night a stranger at a gas station looked me dead in the eyes and said, 'Jesus loves you and He's not done with you yet.' I laughed it off. But I couldn't stop hearing those words. Two weeks later I walked into a church for the first time in my life. When the pastor gave the altar call, my legs moved before my brain could talk me out of it. I fell on my knees and wept like a child. That was three years ago. I'm sober, I'm employed, and I'm alive — because Jesus met me in a gas station parking lot.",
             dayCount: 40
         ),
         Testimony(
-            authorName: "Marcus & Denise T.",
-            journeyTheme: "Healing Relationships",
-            category: .marriage,
-            title: "We Almost Gave Up",
-            story: "My wife and I were two weeks from signing divorce papers when a friend suggested we try a couples journey together. We almost didn't. But something about doing the same devotional every day and having those reflection prompts forced us to actually talk — really talk — for the first time in years. We cried together on Day 7. We prayed together on Day 14 for the first time in our marriage. We renewed our vows on Day 40. God saved our marriage through 40 days of showing up.",
+            authorName: "Priya K.",
+            journeyTheme: "Knowing God",
+            category: .faith,
+            title: "A Hindu Girl Who Found Jesus",
+            story: "I grew up Hindu in a devout family. I loved my culture, but there was always an emptiness I couldn't name. In college, a roommate invited me to a Bible study. I went out of curiosity, not belief. But when I read John 4 — Jesus talking to the Samaritan woman at the well — I started crying. Here was a God who pursued a woman everyone else rejected. Who saw her. Who offered her living water. I felt seen for the first time. It took me a year of quietly reading Scripture before I gave my life to Christ. My family struggled with it. Some still do. But I know the One who found me at my own well, and I'll never go back to being thirsty.",
             dayCount: 40
         ),
         Testimony(
@@ -98,31 +98,31 @@ final class TestimonyService {
             journeyTheme: "Knowing God",
             category: .faith,
             title: "I Was an Atheist for 15 Years",
-            story: "A coworker challenged me to try this app for 40 days. I said yes just to prove him wrong. But somewhere around Day 12, the scriptures started making sense in a way they never had in church growing up. The journal prompts made me honest with myself for the first time. By Day 25, I was praying — actually praying — and meaning it. I gave my life to Christ on Day 33, alone in my apartment, tears streaming down my face. This app didn't convert me. God did. But this app put me in the room with Him.",
+            story: "I was a proud atheist. I had all the arguments, all the rebuttals, all the intellectual armor. Then my daughter was born premature at 26 weeks. She was 1 pound, 12 ounces, and the doctors gave her a 30% chance. Standing over that incubator, all my arguments meant nothing. I didn't have a prayer to pray because I didn't believe in the One who hears them. But I prayed anyway. 'God, if You're real, save my little girl.' She's five now. She runs, she laughs, she drives me crazy in the best way. I can't explain it with science. I can only explain it with Jesus. He didn't just save my daughter. He saved me.",
             dayCount: 40
         ),
         Testimony(
-            authorName: "Priya K.",
-            journeyTheme: "Walking Through Grief",
-            category: .grief,
-            title: "After Losing My Mom",
-            story: "I lost my mother to cancer and I was angry at God. A friend sent me a gift journey and I almost deleted it. But I opened it one sleepless night at 3am. The devotional that day was about how Jesus wept at Lazarus's tomb — even though He knew He was about to raise him. That broke me open. God wasn't asking me not to grieve. He was grieving with me. I completed all 40 days and while the pain hasn't disappeared, I found a God who holds me in it.",
+            authorName: "Sarah M.",
+            journeyTheme: "Freedom in Christ",
+            category: .addiction,
+            title: "He Broke Every Chain",
+            story: "I was addicted to pills for seven years. I lost my nursing license, my apartment, and nearly my children. I checked into rehab four times and relapsed four times. The fifth time, a counselor who was a believer said something I'll never forget: 'You keep trying to save yourself. What if you let Someone else do it?' She handed me a Bible opened to Isaiah 61 — 'He has sent me to bind up the brokenhearted, to proclaim freedom for the captives.' I read it and something broke inside me. Not broke as in damaged — broke as in broke open. I surrendered my addiction to Jesus that night. It wasn't magic. Recovery was still hard. But for the first time, I wasn't fighting alone. I've been clean for two years. My kids are home. And I know who set me free.",
             dayCount: 40
         ),
         Testimony(
-            authorName: "David L.",
-            journeyTheme: "Spiritual Growth",
-            category: .purpose,
-            title: "From Sunday Christian to Everyday Disciple",
-            story: "I'd been going to church for 20 years but my faith felt hollow. I was going through the motions. This app challenged me to actually DO something with my faith every single day. The action steps were small but they changed everything — praying for a stranger, texting encouragement to a friend, memorizing scripture on my commute. 40 days turned a passive faith into an active one. I'm now leading a small group at my church for the first time.",
+            authorName: "David & Michelle L.",
+            journeyTheme: "Healing Relationships",
+            category: .marriage,
+            title: "God Rebuilt What We Destroyed",
+            story: "Our marriage was over. Not legally — but in every way that mattered. Years of bitterness, unforgiveness, and silence had turned us into strangers sharing a house. We went to a marriage retreat as a last resort, mostly for the kids. On the second night, the pastor asked us to wash each other's feet like Jesus washed His disciples'. I looked at my wife — really looked at her — for the first time in years. We both broke down. In that moment, Jesus showed me that marriage isn't about being right. It's about laying down your life. We rededicated our marriage to Christ that weekend. It's been two years and we're more in love than the day we met, because now we love each other the way Jesus loves us.",
             dayCount: 40
         ),
         Testimony(
             authorName: "Leah W.",
-            journeyTheme: "Overcoming Anxiety",
-            category: .healing,
-            title: "God Healed What Medicine Couldn't",
-            story: "I'm not against medicine — I still take mine. But the anxiety that medicine managed, God actually healed. The daily breathing exercises with scripture became my anchor. The prayer wall became my lifeline. I wrote down every anxious thought and watched God answer prayer after prayer. Some He answered with 'yes,' some with 'wait,' but none with silence. I am not the same person I was 40 days ago.",
+            journeyTheme: "Walking Through Grief",
+            category: .grief,
+            title: "He Carried Me Through the Valley",
+            story: "When my son passed away in a car accident at 17, I wanted to die too. I screamed at God. I told Him I hated Him. I stopped going to church. For six months I lived in complete darkness. Then one morning I found my son's Bible under his bed. It fell open to a page he had underlined: 'The Lord is close to the brokenhearted and saves those who are crushed in spirit' — Psalm 34:18. In his handwriting in the margin he had written: 'This is true, Mom.' I collapsed on his bedroom floor and cried out to Jesus for the first time since the funeral. He met me there. He didn't explain why. He didn't give me answers. He just held me. And He hasn't let go since. My son knew Jesus. And because of that, I know I'll see him again.",
             dayCount: 40
         ),
     ]
