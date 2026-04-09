@@ -64,6 +64,10 @@ final class AudioNarrationService: NSObject, AVAudioPlayerDelegate {
 
     private override init() {
         super.init()
+        #if DEBUG
+        print("[AudioNarration] cloudFunctionBaseURL: \(cloudFunctionBaseURL ?? "NIL")")
+        print("[AudioNarration] appSecret present: \(appSecret != nil && !appSecret!.isEmpty)")
+        #endif
     }
 
     // MARK: - Public API
