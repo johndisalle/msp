@@ -35,39 +35,9 @@ struct DailyExperienceView: View {
                                 .id("scrollTop")
 
                             // Compact progress strip
-                            if let journey = viewModel.journey, let streak = StreakService.shared.calculateStreak(for: journey) {
-                                HStack(spacing: 12) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "flame.fill")
-                                            .font(.caption2)
-                                            .foregroundStyle(.orange)
-                                        Text("\(streak.currentStreak)-day streak")
-                                            .font(.caption.bold())
-                                            .foregroundStyle(AJTheme.primaryText)
-                                    }
-
-                                    Capsule()
-                                        .fill(AJTheme.secondaryText.opacity(0.3))
-                                        .frame(width: 1, height: 12)
-
-                                    Text("Day \(day.dayNumber)/\(journey.totalDays)")
-                                        .font(.caption)
-                                        .foregroundStyle(AJTheme.secondaryText)
-
-                                    Spacer()
-
-                                    Text("\(Int(journey.progress * 100))%")
-                                        .font(.caption.bold())
-                                        .foregroundStyle(AJTheme.sage)
-                                }
-                                .padding(.horizontal, AJTheme.paddingMedium)
-                                .padding(.vertical, AJTheme.paddingSmall)
-                                .background(
-                                    RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
-                                        .fill(AJTheme.sage.opacity(0.06))
-                                )
-                                .padding(.horizontal)
-                            }
+                            if let journey = viewModel.journey {
+                                ProgressStripView(journey: journey, dayNumber: day.dayNumber)
+                                    .padding(.horizontal)
 
                             DayHeaderView(
                                 dayNumber: day.dayNumber,
@@ -1282,6 +1252,47 @@ struct BookmarkedDaysView: View {
             }
         }
         .navigationTitle("Bookmarked Days")
+    }
+}
+
+// MARK: - Progress Strip
+
+struct ProgressStripView: View {
+    let journey: Journey
+    let dayNumber: Int
+
+    var body: some View {
+        let streak = StreakService.shared.calculateStreak(for: journey)
+        HStack(spacing: 12) {
+            HStack(spacing: 4) {
+                Image(systemName: "flame.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+                Text("\(streak.currentStreak)-day streak")
+                    .font(.caption.bold())
+                    .foregroundStyle(AJTheme.primaryText)
+            }
+
+            Capsule()
+                .fill(AJTheme.secondaryText.opacity(0.3))
+                .frame(width: 1, height: 12)
+
+            Text("Day \(dayNumber)/\(journey.totalDays)")
+                .font(.caption)
+                .foregroundStyle(AJTheme.secondaryText)
+
+            Spacer()
+
+            Text("\(Int(journey.progress * 100))%")
+                .font(.caption.bold())
+                .foregroundStyle(AJTheme.sage)
+        }
+        .padding(.horizontal, AJTheme.paddingMedium)
+        .padding(.vertical, AJTheme.paddingSmall)
+        .background(
+            RoundedRectangle(cornerRadius: AJTheme.cornerRadiusSmall)
+                .fill(AJTheme.sage.opacity(0.06))
+        )
     }
 }
 
