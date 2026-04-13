@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
+const crypto = require("crypto");
 const { defineString } = require("firebase-functions/params");
 
 admin.initializeApp();
@@ -220,6 +221,27 @@ exports.generateAudioHTTP = functions.https.onRequest(async (req, res) => {
       });
     }
 
+    // Cache check — first user pays ElevenLabs cost, others get cached MP3
+    const cacheKey = crypto
+      .createHash("sha256")
+      .update(`${voice || "female"}|${text}`)
+      .digest("hex");
+    const cachePath = `audio-cache/${cacheKey}.mp3`;
+
+    try {
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(cachePath);
+      const [exists] = await file.exists();
+      if (exists) {
+        res.set("Content-Type", "audio/mpeg");
+        res.set("X-Cache", "HIT");
+        file.createReadStream().pipe(res);
+        return;
+      }
+    } catch (err) {
+      console.error("Cache check failed, falling through:", err);
+    }
+
     const apiKey = elevenLabsKey.value();
     if (!apiKey || apiKey === "YOUR_ELEVENLABS_API_KEY") {
       return res.status(500).json({ error: "Audio service is not configured." });
@@ -262,12 +284,29 @@ exports.generateAudioHTTP = functions.https.onRequest(async (req, res) => {
           .json({ error: "Failed to generate audio. Please try again." });
       }
 
-      // Update rate limit
+      // Update rate limit (only counts cache misses — hits are free)
       await rateLimitRef.set({ count: currentCount + 1, date: today });
 
       // Stream the MP3 audio back to the client
       const arrayBuf = await response.arrayBuffer();
       const audioBuffer = Buffer.from(arrayBuf);
+
+      // Save to Storage cache for future requests
+      try {
+        const bucket = admin.storage().bucket();
+        const file = bucket.file(cachePath);
+        await file.save(audioBuffer, {
+          contentType: "audio/mpeg",
+          metadata: {
+            cacheControl: "public, max-age=31536000",
+            metadata: { voice: voice || "female", textLength: String(text.length) }
+          }
+        });
+      } catch (err) {
+        console.error("Cache save failed (audio still served):", err);
+      }
+
+      res.set("X-Cache", "MISS");
       res.set("Content-Type", "audio/mpeg");
       res.set("Content-Length", audioBuffer.length.toString());
       return res.status(200).send(audioBuffer);
