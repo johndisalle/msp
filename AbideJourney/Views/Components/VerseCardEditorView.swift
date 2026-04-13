@@ -130,7 +130,7 @@ struct VerseCardEditorView: View {
     let text: String
 
     @State private var selectedStyle: VerseCardStyle = .classic
-    @State private var selectedFormat: VerseCardFormat = .square
+    @State private var selectedFormat: VerseCardFormat = .story
     @State private var showShareSheet = false
     @State private var shareItems: [Any] = []
     @State private var isRendering = false
@@ -309,12 +309,10 @@ struct VerseCardEditorView: View {
 
     private func shareCard() {
         isRendering = true
-        let square = renderSquareImage()
-        let story = renderStoryImage()
+        let image: UIImage? = (selectedFormat == .story) ? renderStoryImage() : renderSquareImage()
 
         var items: [Any] = []
-        if let square { items.append(square) }
-        if let story { items.append(story) }
+        if let image { items.append(image) }
 
         shareItems = items
         isRendering = false
@@ -344,7 +342,14 @@ struct VerseCardCanvas: View {
     private var verseLineSpacing: CGFloat { canvasSize.width * 0.015 }
     private var crossBottomPadding: CGFloat { canvasSize.width * 0.04 }
     private var dividerVerticalPadding: CGFloat { canvasSize.width * 0.04 }
-    private var brandingBottomPadding: CGFloat { canvasSize.width * 0.05 }
+    private var isStoryFormat: Bool { canvasSize.height > canvasSize.width * 1.2 }
+    private var topSpacerMin: CGFloat { canvasSize.height * (isStoryFormat ? 0.14 : 0.08) }
+    private var bottomSpacerMin: CGFloat { canvasSize.height * (isStoryFormat ? 0.26 : 0.08) }
+    private var brandingBottomPadding: CGFloat { canvasSize.width * (isStoryFormat ? 0.04 : 0.05) }
+    private var storyHorizontalPadding: CGFloat { canvasSize.width * (isStoryFormat ? 0.11 : 0.08) }
+    private var topWordmarkFontSize: CGFloat { canvasSize.width * 0.032 }
+    private var bottomWordmarkFontSize: CGFloat { canvasSize.width * 0.042 }
+    private var bottomCTAFontSize: CGFloat { canvasSize.width * 0.024 }
     private var outerPadding: CGFloat { canvasSize.width * 0.05 }
     private var cornerRadius: CGFloat { max(20, canvasSize.width * 0.04) }
 
@@ -356,52 +361,118 @@ struct VerseCardCanvas: View {
             // Decorative elements
             decorativeOverlay
 
-            // Content
-            VStack(spacing: 0) {
-                Spacer(minLength: canvasSize.height * 0.08)
-
-                // Cross / decorative icon
-                Image(systemName: "cross.fill")
-                    .font(.system(size: crossIconSize))
-                    .foregroundStyle(style.accentColor.opacity(0.6))
-                    .padding(.bottom, crossBottomPadding)
-
-                // Verse text
-                Text("\u{201C}\(text)\u{201D}")
-                    .font(.system(size: verseFontSize, weight: .medium, design: .serif))
-                    .italic()
-                    .foregroundStyle(style.textColor)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(verseLineSpacing)
-                    .padding(.horizontal, horizontalPadding)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                // Divider
-                Rectangle()
-                    .fill(style.accentColor.opacity(0.4))
-                    .frame(width: dividerWidth, height: dividerHeight)
-                    .padding(.vertical, dividerVerticalPadding)
-
-                // Reference
-                Text(reference)
-                    .font(.system(size: referenceFontSize, weight: .semibold, design: .serif))
-                    .foregroundStyle(style.accentColor)
-
-                Spacer(minLength: canvasSize.height * 0.08)
-
-                // Branding
-                HStack(spacing: brandingIconSize * 0.6) {
-                    Image(systemName: "book.closed.fill")
-                        .font(.system(size: brandingIconSize))
-                    Text("Abide Journey")
-                        .font(.system(size: brandingFontSize, weight: .medium, design: .serif))
-                }
-                .foregroundStyle(style.secondaryTextColor)
-                .padding(.bottom, brandingBottomPadding)
+            if isStoryFormat {
+                storyContent
+            } else {
+                squareContent
             }
-            .padding(outerPadding)
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+
+    @ViewBuilder
+    private var storyContent: some View {
+        GeometryReader { geo in
+            let h = geo.size.height
+            let w = geo.size.width
+            VStack(spacing: 0) {
+                Spacer().frame(height: h * 0.13)
+
+                Text("ABIDE JOURNEY")
+                    .font(.system(size: w * 0.035, weight: .semibold, design: .serif))
+                    .tracking(w * 0.009)
+                    .foregroundStyle(style.accentColor)
+
+                Spacer(minLength: 0)
+
+                VStack(spacing: 0) {
+                    Image(systemName: "cross.fill")
+                        .font(.system(size: w * 0.07))
+                        .foregroundStyle(style.accentColor.opacity(0.7))
+                        .padding(.bottom, h * 0.022)
+
+                    Text("\u{201C}\(text)\u{201D}")
+                        .font(.system(size: w * 0.052, weight: .medium, design: .serif))
+                        .italic()
+                        .foregroundStyle(style.textColor)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(w * 0.012)
+                        .padding(.horizontal, w * 0.11)
+                        .minimumScaleFactor(0.7)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Rectangle()
+                        .fill(style.accentColor.opacity(0.5))
+                        .frame(width: w * 0.09, height: max(2, w * 0.004))
+                        .padding(.vertical, h * 0.02)
+
+                    Text(reference)
+                        .font(.system(size: w * 0.036, weight: .semibold, design: .serif))
+                        .foregroundStyle(style.accentColor)
+                }
+
+                Spacer(minLength: 0)
+
+                VStack(spacing: h * 0.008) {
+                    HStack(spacing: w * 0.015) {
+                        Image(systemName: "book.closed.fill")
+                            .font(.system(size: w * 0.04))
+                        Text("Abide Journey")
+                            .font(.system(size: w * 0.048, weight: .semibold, design: .serif))
+                    }
+                    .foregroundStyle(style.textColor)
+
+                    Text("Daily devotionals · Download on the App Store")
+                        .font(.system(size: w * 0.025, weight: .medium, design: .rounded))
+                        .foregroundStyle(style.secondaryTextColor)
+                }
+
+                Spacer().frame(height: h * 0.18)
+            }
+            .frame(width: w, height: h)
+        }
+    }
+
+    @ViewBuilder
+    private var squareContent: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: topSpacerMin)
+
+            Image(systemName: "cross.fill")
+                .font(.system(size: crossIconSize))
+                .foregroundStyle(style.accentColor.opacity(0.6))
+                .padding(.bottom, crossBottomPadding)
+
+            Text("\u{201C}\(text)\u{201D}")
+                .font(.system(size: verseFontSize, weight: .medium, design: .serif))
+                .italic()
+                .foregroundStyle(style.textColor)
+                .multilineTextAlignment(.center)
+                .lineSpacing(verseLineSpacing)
+                .padding(.horizontal, horizontalPadding)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Rectangle()
+                .fill(style.accentColor.opacity(0.4))
+                .frame(width: dividerWidth, height: dividerHeight)
+                .padding(.vertical, dividerVerticalPadding)
+
+            Text(reference)
+                .font(.system(size: referenceFontSize, weight: .semibold, design: .serif))
+                .foregroundStyle(style.accentColor)
+
+            Spacer(minLength: bottomSpacerMin)
+
+            HStack(spacing: brandingIconSize * 0.6) {
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: brandingIconSize))
+                Text("Abide Journey")
+                    .font(.system(size: brandingFontSize, weight: .medium, design: .serif))
+            }
+            .foregroundStyle(style.secondaryTextColor)
+            .padding(.bottom, brandingBottomPadding)
+        }
+        .padding(outerPadding)
     }
 
     @ViewBuilder
