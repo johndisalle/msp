@@ -29,6 +29,9 @@ struct RootView: View {
                             ClaimGiftJourneyView(gift: gift)
                         }
                     }
+                    .sheet(isPresented: $deepLinkService.showUpgradePaywall) {
+                        PremiumPaywallView()
+                    }
                     .onAppear {
                         if !hasSeenWelcomeGuide {
                             showWelcomeGuide = true

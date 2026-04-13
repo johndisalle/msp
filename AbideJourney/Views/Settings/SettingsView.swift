@@ -34,6 +34,34 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                if profile?.isPremium != true {
+                    Section {
+                        Button {
+                            showingPremiumSheet = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "crown.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(AJTheme.gold)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Upgrade to Premium")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(AJTheme.primaryText)
+                                    Text("Unlimited journeys, AI-personalized, Listen Mode")
+                                        .font(.caption)
+                                        .foregroundStyle(AJTheme.secondaryText)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(AJTheme.secondaryText)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .listRowBackground(AJTheme.gold.opacity(0.08))
+                    }
+                }
+
                 // Profile section
                 if let profile = profile {
                     Section("Profile") {

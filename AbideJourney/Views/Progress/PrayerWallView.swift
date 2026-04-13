@@ -1,6 +1,8 @@
 import SwiftUI
+import SwiftData
 
 struct PrayerWallView: View {
+    @Query private var profiles: [UserProfile]
     enum PrayerTab: String, CaseIterable {
         case myPrayers = "My Prayers"
         case community = "Community"
@@ -11,6 +13,7 @@ struct PrayerWallView: View {
     @State private var showingNewRequest = false
     @State private var showingAnswered = false
     @State private var selectedFilter: PrayerRequest.PrayerCategory?
+    @State private var showingFirstAnsweredPaywall = false
     @State private var answerRequestID: UUID?
     @State private var answerNote = ""
 
@@ -79,12 +82,24 @@ struct PrayerWallView: View {
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     ReviewPromptService.shared.checkAfterPrayerAnswered()
                     withAnimation { requests = service.loadRequests() }
+
+                    let key = "paywall_first_answered_prayer_shown"
+                    let isPremium = profiles.first?.isPremium ?? false
+                    if !isPremium && !UserDefaults.standard.bool(forKey: key) {
+                        UserDefaults.standard.set(true, forKey: key)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            showingFirstAnsweredPaywall = true
+                        }
+                    }
                 }
                 answerRequestID = nil
             }
             Button("Cancel", role: .cancel) { answerRequestID = nil }
         } message: {
             Text("How did God answer this prayer?")
+        }
+        .sheet(isPresented: $showingFirstAnsweredPaywall) {
+            PremiumPaywallView()
         }
     }
 

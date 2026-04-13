@@ -83,7 +83,12 @@ struct NewJourneyView: View {
 
                     // Start button
                     Button {
-                        startNewJourney()
+                        let hasCompletedJourney = journeys.contains { $0.isCompleted }
+                        if !isPremium && hasCompletedJourney {
+                            showingPremiumSheet = true
+                        } else {
+                            startNewJourney()
+                        }
                     } label: {
                         Group {
                             if isGenerating {

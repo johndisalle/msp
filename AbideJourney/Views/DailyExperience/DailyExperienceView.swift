@@ -353,6 +353,15 @@ struct DailyExperienceView: View {
                 CheckInSheet { rating, note in
                     viewModel.submitCheckIn(rating: rating, note: note, context: modelContext)
                     viewModel.completeDay(rating: rating, isPremium: isPremium, context: modelContext)
+                    if let dayNumber = viewModel.currentDay?.dayNumber, dayNumber == 7, !isPremium {
+                        let key = "paywall_week_one_shown"
+                        if !UserDefaults.standard.bool(forKey: key) {
+                            UserDefaults.standard.set(true, forKey: key)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                showingPremiumSheet = true
+                            }
+                        }
+                    }
                 }
             }
             .fullScreenCover(isPresented: $showingListenMode) {
