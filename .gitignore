@@ -44,3 +44,6 @@ GoogleService-Info.plist
 
 Secrets.xcconfig
 AbideJourney/Resources/Secrets.xcconfig
+
+*.bak
+*.bak_*
