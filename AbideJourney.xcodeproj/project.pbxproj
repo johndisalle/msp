@@ -116,8 +116,6 @@
 		A1B2C3D4E5F60001000136 /* AcceptCouplesInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */; };
 		A1B2C3D4E5F60001000137 /* ClaimGiftJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */; };
 		A1B2C3D4E5F60001000138 /* Localizable.strings in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000138 /* Localizable.strings */; };
-		A1B2C3D4E5F60001000140 /* ReferralService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000140 /* ReferralService.swift */; };
-		A1B2C3D4E5F60001000141 /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000141 /* ReferralView.swift */; };
 		A1B2C3D4E5F60001000142 /* ScriptureMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */; };
 		A1B2C3D4E5F60001000143 /* VerseCardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */; };
 		A1B2C3D4E5F60001000144 /* AchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60101000144 /* AchievementService.swift */; };
@@ -273,8 +271,6 @@
 		A1B2C3D4E5F60101000136 /* AcceptCouplesInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptCouplesInviteView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000137 /* ClaimGiftJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimGiftJourneyView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000138 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = AbideJourney/Resources/en.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
-		A1B2C3D4E5F60101000140 /* ReferralService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralService.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60101000141 /* ReferralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000142 /* ScriptureMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureMemoryView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000143 /* VerseCardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCardEditorView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60101000144 /* AchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementService.swift; sourceTree = "<group>"; };
@@ -479,7 +475,6 @@
 				A1B2C3D4E5F60101000103 /* FaithReportService.swift */,
 				A1B2C3D4E5F60101000134 /* AIJourneyService.swift */,
 				A1B2C3D4E5F60101000135 /* DeepLinkService.swift */,
-				A1B2C3D4E5F60101000140 /* ReferralService.swift */,
 				A1B2C3D4E5F60101000144 /* AchievementService.swift */,
 				A1B2C3D4E5F60101000146 /* PrayerWallService.swift */,
 				A1B2C3D4E5F60101000148 /* GodMomentsService.swift */,
@@ -573,7 +568,6 @@
 				A1B2C3D4E5F60101000107 /* GiftJourneyView.swift */,
 				A1B2C3D4E5F60101000108 /* CouplesJourneyView.swift */,
 				A1B2C3D4E5F60101000109 /* DynamicJourneyView.swift */,
-				A1B2C3D4E5F60101000141 /* ReferralView.swift */,
 				A1B2C3D4E5F60101000154 /* FamilyJourneyView.swift */,
 			);
 			path = Settings;
@@ -932,8 +926,6 @@
 				A1B2C3D4E5F60001000135 /* DeepLinkService.swift in Sources */,
 				A1B2C3D4E5F60001000136 /* AcceptCouplesInviteView.swift in Sources */,
 				A1B2C3D4E5F60001000137 /* ClaimGiftJourneyView.swift in Sources */,
-				A1B2C3D4E5F60001000140 /* ReferralService.swift in Sources */,
-				A1B2C3D4E5F60001000141 /* ReferralView.swift in Sources */,
 				A1B2C3D4E5F60001000142 /* ScriptureMemoryView.swift in Sources */,
 				A1B2C3D4E5F60001000143 /* VerseCardEditorView.swift in Sources */,
 				A1B2C3D4E5F60001000144 /* AchievementService.swift in Sources */,

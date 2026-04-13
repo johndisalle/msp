@@ -13,7 +13,6 @@ struct DiscoverView: View {
     @State private var showCouplesJourney = false
     @State private var showFamilyJourney = false
     @State private var showGiftJourney = false
-    @State private var showReferral = false
     @State private var selectedTheme: JourneyTheme?
 
     private var profile: UserProfile? { profiles.first }
@@ -90,9 +89,6 @@ struct DiscoverView: View {
             }
             .sheet(isPresented: $showGiftJourney) {
                 GiftJourneyView()
-            }
-            .sheet(isPresented: $showReferral) {
-                ReferralView(userName: profile?.name ?? "Friend")
             }
         }
     }
@@ -377,39 +373,6 @@ struct DiscoverView: View {
             .padding(.horizontal)
 
             // Invite Friends
-            Button {
-                showReferral = true
-            } label: {
-                HStack(spacing: 16) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(Color.green.opacity(0.12))
-                            .frame(width: 52, height: 52)
-                        Image(systemName: "person.badge.plus")
-                            .font(.title3)
-                            .foregroundStyle(.green)
-                    }
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Invite Friends")
-                            .font(.subheadline.bold())
-                            .foregroundStyle(AJTheme.primaryText)
-                        Text("Share your faith journey with someone you care about")
-                            .font(.caption)
-                            .foregroundStyle(AJTheme.secondaryText)
-                            .lineLimit(2)
-                    }
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
-                .ajCard()
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal)
         }
     }
 
