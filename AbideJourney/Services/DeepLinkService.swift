@@ -16,6 +16,9 @@ final class DeepLinkService {
     var pendingGiftClaim: GiftClaim?
     var showCouplesInviteSheet = false
     var showGiftClaimSheet = false
+    var openTodayDevotional = false
+    var todayDeepLinkSource: String?
+    var showUpgradePaywall = false
 
     struct CouplesInvite {
         let theme: JourneyTheme
@@ -98,6 +101,10 @@ final class DeepLinkService {
             handleCouplesInvite(params: params)
         case "gift":
             handleGiftClaim(params: params)
+        case "today":
+            handleTodayDeepLink(params: params)
+        case "upgrade":
+            showUpgradePaywall = true
         default:
             break
         }
@@ -110,6 +117,12 @@ final class DeepLinkService {
 
         pendingCouplesInvite = CouplesInvite(theme: theme, fromName: fromName)
         showCouplesInviteSheet = true
+    }
+
+
+    private func handleTodayDeepLink(params: [String: String]) {
+        openTodayDevotional = true
+        todayDeepLinkSource = params["source"]
     }
 
     private func handleGiftClaim(params: [String: String]) {

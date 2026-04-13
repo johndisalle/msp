@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 // MARK: - Appearance Mode
 
@@ -40,6 +41,8 @@ struct AbideJourneyApp: App {
         // Record install date for smart review prompts
         ReviewPromptService.shared.recordInstallDateIfNeeded()
 
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+
         do {
             let schema = Schema([
                 UserProfile.self,
@@ -73,6 +76,7 @@ struct AbideJourneyApp: App {
                     }
                     .task {
                         await restorePremiumStatusIfNeeded(container: modelContainer)
+                        await refreshNotificationSchedule(container: modelContainer)
                     }
             } else {
                 DatabaseErrorView()
@@ -99,7 +103,38 @@ struct AbideJourneyApp: App {
             try? context.save()
         }
     }
+
+    @MainActor
+    private func refreshNotificationSchedule(container: ModelContainer) async {
+        let context = container.mainContext
+
+        let profileDescriptor = FetchDescriptor<UserProfile>()
+        guard let profile = try? context.fetch(profileDescriptor).first,
+              profile.notificationsEnabled else { return }
+
+        let journeyDescriptor = FetchDescriptor<Journey>(predicate: #Predicate { $0.isActive })
+        guard let journey = try? context.fetch(journeyDescriptor).first else { return }
+
+        NotificationService.shared.scheduleRollingNotifications(profile: profile, journey: journey)
+
+        let completedDays = (journey.days ?? []).filter { $0.isCompleted }
+        let lastActivity = completedDays.compactMap { $0.date }.max() ?? journey.startDate
+        let calendar = Calendar.current
+        let daysSince = calendar.dateComponents(
+            [.day],
+            from: calendar.startOfDay(for: lastActivity),
+            to: calendar.startOfDay(for: Date())
+        ).day ?? 0
+
+        if daysSince >= 1 {
+            NotificationService.shared.scheduleComebackNotifications(
+                daysSinceLastActivity: daysSince,
+                morningTime: profile.notificationMorningTime
+            )
+        }
+    }
 }
+
 
 /// Shown when SwiftData fails to initialize — avoids a crash.
 private struct DatabaseErrorView: View {
@@ -109,5 +144,37 @@ private struct DatabaseErrorView: View {
         } description: {
             Text("Abide Journey could not open its database. Please restart the app. If the problem persists, try reinstalling.")
         }
+    }
+}
+
+
+// MARK: - Notification Delegate
+
+final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = NotificationDelegate()
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        if let path = userInfo["deepLinkPath"] as? String {
+            let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            if let url = URL(string: "abidejourney://\(trimmed)") {
+                DispatchQueue.main.async {
+                    DeepLinkService.shared.handleURL(url)
+                }
+            }
+        }
+        completionHandler()
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound, .badge])
     }
 }
