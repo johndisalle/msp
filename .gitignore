@@ -41,3 +41,6 @@ firebase/functions/.env
 # Secrets (xcconfig with real values - keep template, ignore local overrides)
 Secrets.local.xcconfig
 GoogleService-Info.plist
+
+Secrets.xcconfig
+AbideJourney/Resources/Secrets.xcconfig
