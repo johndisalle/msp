@@ -94,6 +94,34 @@ enum VerseCardStyle: String, CaseIterable {
     }
 }
 
+// MARK: - Verse Card Format
+
+enum VerseCardFormat: String, CaseIterable {
+    case square
+    case story
+
+    var label: String {
+        switch self {
+        case .square: return "Square"
+        case .story: return "Story"
+        }
+    }
+
+    var renderSize: CGSize {
+        switch self {
+        case .square: return CGSize(width: 1080, height: 1080)
+        case .story: return CGSize(width: 1080, height: 1920)
+        }
+    }
+
+    var previewSize: CGSize {
+        switch self {
+        case .square: return CGSize(width: 300, height: 300)
+        case .story: return CGSize(width: 300, height: 533)
+        }
+    }
+}
+
 // MARK: - Verse Card Editor
 
 struct VerseCardEditorView: View {
@@ -102,8 +130,9 @@ struct VerseCardEditorView: View {
     let text: String
 
     @State private var selectedStyle: VerseCardStyle = .classic
+    @State private var selectedFormat: VerseCardFormat = .square
     @State private var showShareSheet = false
-    @State private var renderedImage: UIImage?
+    @State private var shareItems: [Any] = []
     @State private var isRendering = false
 
     var body: some View {
@@ -111,12 +140,29 @@ struct VerseCardEditorView: View {
             VStack(spacing: 20) {
                 // Preview
                 ScrollView {
-                    VerseCardCanvas(
-                        reference: reference,
-                        text: text,
-                        style: selectedStyle
-                    )
-                    .padding(.horizontal, 24)
+                    VStack(spacing: 14) {
+                        Picker("Format", selection: $selectedFormat) {
+                            ForEach(VerseCardFormat.allCases, id: \.self) { format in
+                                Text(format.label).tag(format)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal, 24)
+
+                        VerseCardCanvas(
+                            reference: reference,
+                            text: text,
+                            style: selectedStyle,
+                            canvasSize: selectedFormat.previewSize
+                        )
+                        .frame(
+                            width: selectedFormat.previewSize.width,
+                            height: selectedFormat.previewSize.height
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+                        .animation(.easeInOut(duration: 0.25), value: selectedFormat)
+                    }
                     .padding(.top, 16)
                 }
 
@@ -210,38 +256,70 @@ struct VerseCardEditorView: View {
                 }
             }
             .sheet(isPresented: $showShareSheet) {
-                if let image = renderedImage {
-                    ShareSheet(items: [image])
+                if !shareItems.isEmpty {
+                    ShareSheet(items: shareItems)
                 }
             }
         }
     }
 
-    private func renderCardToImage() -> UIImage? {
-        let cardView = VerseCardCanvas(
+    private func renderSquareImage() -> UIImage? {
+        let view = VerseCardCanvas(
             reference: reference,
             text: text,
-            style: selectedStyle
+            style: selectedStyle,
+            canvasSize: CGSize(width: 1080, height: 1080)
         )
         .frame(width: 1080, height: 1080)
 
-        let renderer = ImageRenderer(content: cardView)
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = 1.0
+        return renderer.uiImage
+    }
+
+    private func renderStoryImage() -> UIImage? {
+        let view = VerseCardCanvas(
+            reference: reference,
+            text: text,
+            style: selectedStyle,
+            canvasSize: CGSize(width: 1080, height: 1920)
+        )
+        .frame(width: 1080, height: 1920)
+
+        let renderer = ImageRenderer(content: view)
         renderer.scale = 1.0
         return renderer.uiImage
     }
 
     private func saveToPhotos() {
-        guard let image = renderCardToImage() else { return }
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        let square = renderSquareImage()
+        let story = renderStoryImage()
+
+        if let square {
+            UIImageWriteToSavedPhotosAlbum(square, nil, nil, nil)
+        }
+        if let story {
+            UIImageWriteToSavedPhotosAlbum(story, nil, nil, nil)
+        }
+
+        if square != nil || story != nil {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
     }
 
     private func shareCard() {
         isRendering = true
-        let image = renderCardToImage()
-        renderedImage = image
+        let square = renderSquareImage()
+        let story = renderStoryImage()
+
+        var items: [Any] = []
+        if let square { items.append(square) }
+        if let story { items.append(story) }
+
+        shareItems = items
         isRendering = false
-        if image != nil {
+
+        if !items.isEmpty {
             showShareSheet = true
         }
     }
@@ -253,6 +331,22 @@ struct VerseCardCanvas: View {
     let reference: String
     let text: String
     let style: VerseCardStyle
+    let canvasSize: CGSize
+
+    private var verseFontSize: CGFloat { canvasSize.width * 0.055 }
+    private var referenceFontSize: CGFloat { canvasSize.width * 0.035 }
+    private var crossIconSize: CGFloat { canvasSize.width * 0.07 }
+    private var brandingFontSize: CGFloat { canvasSize.width * 0.022 }
+    private var brandingIconSize: CGFloat { canvasSize.width * 0.02 }
+    private var horizontalPadding: CGFloat { canvasSize.width * 0.08 }
+    private var dividerWidth: CGFloat { canvasSize.width * 0.08 }
+    private var dividerHeight: CGFloat { max(2, canvasSize.width * 0.004) }
+    private var verseLineSpacing: CGFloat { canvasSize.width * 0.015 }
+    private var crossBottomPadding: CGFloat { canvasSize.width * 0.04 }
+    private var dividerVerticalPadding: CGFloat { canvasSize.width * 0.04 }
+    private var brandingBottomPadding: CGFloat { canvasSize.width * 0.05 }
+    private var outerPadding: CGFloat { canvasSize.width * 0.05 }
+    private var cornerRadius: CGFloat { max(20, canvasSize.width * 0.04) }
 
     var body: some View {
         ZStack {
@@ -264,51 +358,50 @@ struct VerseCardCanvas: View {
 
             // Content
             VStack(spacing: 0) {
-                Spacer()
+                Spacer(minLength: canvasSize.height * 0.08)
 
                 // Cross / decorative icon
                 Image(systemName: "cross.fill")
-                    .font(.system(size: 28))
+                    .font(.system(size: crossIconSize))
                     .foregroundStyle(style.accentColor.opacity(0.6))
-                    .padding(.bottom, 20)
+                    .padding(.bottom, crossBottomPadding)
 
                 // Verse text
                 Text("\u{201C}\(text)\u{201D}")
-                    .font(.system(size: 22, weight: .medium, design: .serif))
+                    .font(.system(size: verseFontSize, weight: .medium, design: .serif))
                     .italic()
                     .foregroundStyle(style.textColor)
                     .multilineTextAlignment(.center)
-                    .lineSpacing(8)
-                    .padding(.horizontal, 36)
+                    .lineSpacing(verseLineSpacing)
+                    .padding(.horizontal, horizontalPadding)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 // Divider
                 Rectangle()
                     .fill(style.accentColor.opacity(0.4))
-                    .frame(width: 40, height: 2)
-                    .padding(.vertical, 20)
+                    .frame(width: dividerWidth, height: dividerHeight)
+                    .padding(.vertical, dividerVerticalPadding)
 
                 // Reference
                 Text(reference)
-                    .font(.system(size: 16, weight: .semibold, design: .serif))
+                    .font(.system(size: referenceFontSize, weight: .semibold, design: .serif))
                     .foregroundStyle(style.accentColor)
 
-                Spacer()
+                Spacer(minLength: canvasSize.height * 0.08)
 
                 // Branding
-                HStack(spacing: 6) {
+                HStack(spacing: brandingIconSize * 0.6) {
                     Image(systemName: "book.closed.fill")
-                        .font(.system(size: 10))
+                        .font(.system(size: brandingIconSize))
                     Text("Abide Journey")
-                        .font(.system(size: 11, weight: .medium, design: .serif))
+                        .font(.system(size: brandingFontSize, weight: .medium, design: .serif))
                 }
                 .foregroundStyle(style.secondaryTextColor)
-                .padding(.bottom, 24)
+                .padding(.bottom, brandingBottomPadding)
             }
-            .padding(24)
+            .padding(outerPadding)
         }
-        .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     @ViewBuilder
@@ -319,8 +412,8 @@ struct VerseCardCanvas: View {
             GeometryReader { geo in
                 ForEach(0..<15, id: \.self) { i in
                     Circle()
-                        .fill(Color.white.opacity(Double.random(in: 0.1...0.3)))
-                        .frame(width: CGFloat.random(in: 2...4))
+                        .fill(Color.white.opacity(Double(((i * 19) % 20) + 10) / 100.0))
+                        .frame(width: CGFloat(((i * 13) % 3) + 2))
                         .position(
                             x: CGFloat(((i * 73 + 37) % Int(max(geo.size.width, 1)))),
                             y: CGFloat(((i * 47 + 19) % Int(max(geo.size.height, 1))))
@@ -329,21 +422,25 @@ struct VerseCardCanvas: View {
             }
         case .nature:
             // Subtle leaf pattern
-            VStack {
-                HStack {
+            GeometryReader { geo in
+                let topLeafSize = geo.size.width * 0.22
+                let bottomLeafSize = geo.size.width * 0.17
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "leaf.fill")
+                            .font(.system(size: topLeafSize))
+                            .foregroundStyle(.white.opacity(0.06))
+                            .rotationEffect(.degrees(-30))
+                    }
                     Spacer()
-                    Image(systemName: "leaf.fill")
-                        .font(.system(size: 80))
-                        .foregroundStyle(.white.opacity(0.06))
-                        .rotationEffect(.degrees(-30))
-                }
-                Spacer()
-                HStack {
-                    Image(systemName: "leaf.fill")
-                        .font(.system(size: 60))
-                        .foregroundStyle(.white.opacity(0.06))
-                        .rotationEffect(.degrees(150))
-                    Spacer()
+                    HStack {
+                        Image(systemName: "leaf.fill")
+                            .font(.system(size: bottomLeafSize))
+                            .foregroundStyle(.white.opacity(0.06))
+                            .rotationEffect(.degrees(150))
+                        Spacer()
+                    }
                 }
             }
         default:
