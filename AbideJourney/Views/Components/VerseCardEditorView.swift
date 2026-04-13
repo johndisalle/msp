@@ -319,6 +319,7 @@ struct VerseCardEditorView: View {
 
         if !items.isEmpty {
             showShareSheet = true
+            ReviewPromptService.shared.checkAfterVerseCardShared()
         }
     }
 }

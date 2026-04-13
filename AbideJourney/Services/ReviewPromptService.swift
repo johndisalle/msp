@@ -48,6 +48,32 @@ final class ReviewPromptService {
         }
     }
 
+
+    /// Call when the user hits a 7-day streak for the first time
+    func checkAfterStreakMilestone(currentStreak: Int) {
+        guard currentStreak == 7 else { return }
+        requestReviewIfEligible(trigger: "streak_7")
+    }
+
+    /// Call after saving a journal entry — triggers on first 100+ word entry
+    func checkAfterMeaningfulJournalEntry(wordCount: Int) {
+        guard wordCount >= 100 else { return }
+        let key = "reviewPrompt_firstLongJournalDone"
+        guard !UserDefaults.standard.bool(forKey: key) else { return }
+        UserDefaults.standard.set(true, forKey: key)
+        requestReviewIfEligible(trigger: "first_long_journal")
+    }
+
+    /// Call after sharing a verse card — triggers on the 2nd share
+    func checkAfterVerseCardShared() {
+        let key = "reviewPrompt_verseShareCount"
+        let count = UserDefaults.standard.integer(forKey: key)
+        UserDefaults.standard.set(count + 1, forKey: key)
+        if count + 1 == 2 {
+            requestReviewIfEligible(trigger: "verse_shared")
+        }
+    }
+
     // MARK: - Core Logic
 
     private func requestReviewIfEligible(trigger: String) {

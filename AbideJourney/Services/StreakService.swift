@@ -76,6 +76,8 @@ final class StreakService {
             longestStreak = max(longestStreak, tempStreak)
         }
 
+        ReviewPromptService.shared.checkAfterStreakMilestone(currentStreak: currentStreak)
+
         return StreakInfo(
             currentStreak: currentStreak,
             longestStreak: longestStreak,

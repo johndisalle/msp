@@ -447,6 +447,7 @@ struct StandaloneJournalSheet: View {
         let trimmed = journalText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let entry = JournalEntry(text: trimmed, mood: selectedMood, isVoiceEntry: isVoiceEntry)
+        ReviewPromptService.shared.checkAfterMeaningfulJournalEntry(wordCount: entry.text.split { $0.isWhitespace || $0.isNewline }.filter { !$0.isEmpty }.count)
         modelContext.insert(entry)
         try? modelContext.save()
     }

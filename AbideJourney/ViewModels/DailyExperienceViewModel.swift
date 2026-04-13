@@ -119,6 +119,7 @@ final class DailyExperienceViewModel {
         // Save journal entry if there's text
         if !journalText.isEmpty {
             let entry = JournalEntry(text: journalText, mood: selectedMood, isVoiceEntry: isVoiceJournalEntry)
+            ReviewPromptService.shared.checkAfterMeaningfulJournalEntry(wordCount: entry.text.split { $0.isWhitespace || $0.isNewline }.filter { !$0.isEmpty }.count)
             entry.journeyDay = day
             context.insert(entry)
         }
