@@ -31,26 +31,29 @@ final class DeepLinkService {
     /// The custom URL scheme for the app
     static let urlScheme = "abidejourney"
 
+    static let universalLinkHost = "johndisalle.github.io"
+
     // MARK: - Generate Shareable Links
 
     /// Creates a couples invitation URL that can be shared via messages/email.
     static func couplesInviteURL(theme: JourneyTheme, fromName: String) -> URL {
         var components = URLComponents()
-        components.scheme = urlScheme
-        components.host = "couple"
+        components.scheme = "https"
+        components.host = universalLinkHost
+        components.path = "/couple"
         components.queryItems = [
             URLQueryItem(name: "theme", value: theme.rawValue),
             URLQueryItem(name: "from", value: fromName),
         ]
-        return components.url ?? URL(string: "\(urlScheme)://couple")
-            ?? URL(string: "https://abidejourney.com")!
+        return components.url ?? URL(string: "https://\(universalLinkHost)/couple")!
     }
 
     /// Creates a gift journey URL.
     static func giftURL(theme: JourneyTheme, fromName: String, message: String?) -> URL {
         var components = URLComponents()
-        components.scheme = urlScheme
-        components.host = "gift"
+        components.scheme = "https"
+        components.host = universalLinkHost
+        components.path = "/gift"
         var items = [
             URLQueryItem(name: "theme", value: theme.rawValue),
             URLQueryItem(name: "from", value: fromName),
@@ -59,14 +62,14 @@ final class DeepLinkService {
             items.append(URLQueryItem(name: "message", value: message))
         }
         components.queryItems = items
-        return components.url ?? URL(string: "\(urlScheme)://gift")
-            ?? URL(string: "https://abidejourney.com")!
+        return components.url ?? URL(string: "https://\(universalLinkHost)/gift")!
     }
 
     // MARK: - Handle Incoming Links
 
     /// Processes an incoming URL (from .onOpenURL or scene delegate).
     func handleURL(_ url: URL) {
+        print("[DeepLink] scheme=\(url.scheme ?? "nil") host=\(url.host ?? "nil") path=\(url.path)")
         // Support both custom scheme and universal links
         let host: String?
         let path: String
