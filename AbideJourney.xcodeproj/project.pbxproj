@@ -12,6 +12,9 @@
 		8C2881A02F91C47300102B30 /* AdaptationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28819F2F91C47300102B30 /* AdaptationBannerView.swift */; };
 		8C2881AC2F9253C300102B30 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8C2881AB2F9253C300102B30 /* FirebaseAuth */; };
 		8C2881AE2F92793700102B30 /* AdminModerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2881AD2F92793700102B30 /* AdminModerationView.swift */; };
+		8C2881B22F92E03F00102B30 /* AdminPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2881AF2F92E03F00102B30 /* AdminPanelView.swift */; };
+		8C2881B32F92E03F00102B30 /* UserManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2881B12F92E03F00102B30 /* UserManagementView.swift */; };
+		8C2881B42F92E03F00102B30 /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2881B02F92E03F00102B30 /* UserDetailView.swift */; };
 		8C58E3F32F86E423003ACA3A /* SeasonalJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */; };
 		8C58E3F42F86E423003ACA3A /* ChurchFinderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */; };
 		8C58E3F52F86E423003ACA3A /* ReviewPromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */; };
@@ -166,6 +169,9 @@
 		8C28819D2F91C45400102B30 /* GreetingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingService.swift; sourceTree = "<group>"; };
 		8C28819F2F91C47300102B30 /* AdaptationBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptationBannerView.swift; sourceTree = "<group>"; };
 		8C2881AD2F92793700102B30 /* AdminModerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminModerationView.swift; sourceTree = "<group>"; };
+		8C2881AF2F92E03F00102B30 /* AdminPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminPanelView.swift; sourceTree = "<group>"; };
+		8C2881B02F92E03F00102B30 /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
+		8C2881B12F92E03F00102B30 /* UserManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementView.swift; sourceTree = "<group>"; };
 		8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchFinderService.swift; sourceTree = "<group>"; };
 		8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptService.swift; sourceTree = "<group>"; };
 		8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyService.swift; sourceTree = "<group>"; };
@@ -573,6 +579,9 @@
 		A1B2C3D4E5F60301000013 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				8C2881AF2F92E03F00102B30 /* AdminPanelView.swift */,
+				8C2881B02F92E03F00102B30 /* UserDetailView.swift */,
+				8C2881B12F92E03F00102B30 /* UserManagementView.swift */,
 				8C2881AD2F92793700102B30 /* AdminModerationView.swift */,
 				A1B2C3D4E5F60101000033 /* PremiumPaywallView.swift */,
 				A1B2C3D4E5F60101000034 /* SettingsView.swift */,
@@ -918,6 +927,9 @@
 				A1B2C3D4E5F60001000109 /* DynamicJourneyView.swift in Sources */,
 				A1B2C3D4E5F60001000111 /* AnalyticsService.swift in Sources */,
 				A1B2C3D4E5F60001000112 /* AuthService.swift in Sources */,
+				8C2881B22F92E03F00102B30 /* AdminPanelView.swift in Sources */,
+				8C2881B32F92E03F00102B30 /* UserManagementView.swift in Sources */,
+				8C2881B42F92E03F00102B30 /* UserDetailView.swift in Sources */,
 				A1B2C3D4E5F60001000113 /* Theme.swift in Sources */,
 				A1B2C3D4E5F60001000114 /* ContentExpansion_Prayer.swift in Sources */,
 				A1B2C3D4E5F60001000115 /* ContentExpansion_Scripture.swift in Sources */,

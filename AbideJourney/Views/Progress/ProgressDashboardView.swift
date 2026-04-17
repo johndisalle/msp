@@ -305,10 +305,11 @@ struct StreakCard: View {
     let streakInfo: StreakService.StreakInfo
 
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 12) {
             StreakStatView(value: streakInfo.currentStreak, label: "Current\nStreak", icon: "flame.fill", color: .orange)
             StreakStatView(value: streakInfo.longestStreak, label: "Longest\nStreak", icon: "trophy.fill", color: .yellow)
             StreakStatView(value: streakInfo.totalDaysCompleted, label: "Total\nDays", icon: "checkmark.seal.fill", color: .green)
+            StreakStatView(value: streakInfo.freezesAvailable, label: "Available\nFreezes", icon: "snowflake", color: .cyan)
         }
         .ajCard()
         .padding(.horizontal)

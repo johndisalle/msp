@@ -28,8 +28,6 @@ struct AdminModerationView: View {
 
             content
         }
-        .navigationTitle("Moderation")
-        .navigationBarTitleDisplayMode(.inline)
         .task(id: tab) { await load() }
         .refreshable { await load() }
     }

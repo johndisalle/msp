@@ -95,9 +95,19 @@ struct AbideJourneyApp: App {
         let store = StoreKitService.shared
         await store.updatePurchasedProducts()
 
+        // Also check admin-granted premium (Firestore flag)
+        let adminGrantedPremium = AuthService.shared.isPremiumFromGrant
+
         let context = container.mainContext
         let descriptor = FetchDescriptor<UserProfile>()
         guard let profile = try? context.fetch(descriptor).first else { return }
+        // Effective premium = StoreKit OR admin-granted.
+        // Don't downgrade if either is true. Only flip to false if BOTH are false.
+        let effectivePremium = store.isPremium || adminGrantedPremium
+        if profile.isPremium != effectivePremium {
+            profile.isPremium = effectivePremium
+        }
+
 
         if store.isPremium && !profile.isPremium {
             profile.isPremium = true

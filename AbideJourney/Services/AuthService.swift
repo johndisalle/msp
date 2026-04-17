@@ -47,6 +47,10 @@ final class AuthService {
     /// Refreshed in bootstrap() and after each sign-in mutation.
     private(set) var isAdmin = false
 
+    /// Admin-granted premium status, read from Firestore via ensureUserProfile.
+    /// ORed with StoreKit status when computing profile.isPremium.
+    private(set) var isPremiumFromGrant = false
+
     // MARK: - Keychain keys (legacy + ancillary)
 
     private let userIDKey = "appleUserID"
@@ -91,6 +95,7 @@ final class AuthService {
             }
             await refreshAppleCredentialIfNeeded()
             await refreshAdminClaim()
+            await ensureUserProfile()
             return
         }
 
@@ -113,6 +118,7 @@ final class AuthService {
             hasFirebaseUser = false
         }
         await refreshAdminClaim()
+        await ensureUserProfile()
     }
 
     // MARK: - Apple Sign-In request prep
@@ -197,6 +203,7 @@ final class AuthService {
 
             currentNonce = nil
             await refreshAdminClaim()
+            await ensureUserProfile()
         }
     }
 
@@ -242,6 +249,7 @@ final class AuthService {
         KeychainHelper.save(key: emailKey, value: trimmedEmail)
         KeychainHelper.save(key: nameKey, value: trimmedName)
         await refreshAdminClaim()
+        await ensureUserProfile()
     }
 
     // MARK: - Firebase Email/Password Sign In
@@ -278,6 +286,7 @@ final class AuthService {
             }
         }
         await refreshAdminClaim()
+        await ensureUserProfile()
     }
 
     /// Legacy Keychain SHA256 sign-in. Kept alive for users who created accounts
@@ -331,6 +340,7 @@ final class AuthService {
         uid = nil
         hasFirebaseUser = false
         isAdmin = false
+        isPremiumFromGrant = false
 
         KeychainHelper.delete(key: userIDKey)
         KeychainHelper.delete(key: authMethodKey)
@@ -339,6 +349,40 @@ final class AuthService {
 
         // Re-bootstrap so community features keep working.
         Task { await bootstrap() }
+    }
+
+    // MARK: - User profile sync
+
+    /// Calls the server's ensureUserProfile action, which creates or updates the
+    /// user's Firestore profile doc and returns its current state. Populates
+    /// isPremiumFromGrant based on the returned premium.granted flag.
+    /// Safe to call on every launch — it's idempotent.
+    func ensureUserProfile() async {
+        guard hasFirebaseUser else {
+            isPremiumFromGrant = false
+            return
+        }
+        let payload: [String: Any] = ["action": "ensureUserProfile"]
+        guard let url = URL(string: "https://us-central1-abidejourney-81288.cloudfunctions.net/communityHTTP") else { return }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = await currentIDToken() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        req.httpBody = try? JSONSerialization.data(withJSONObject: payload)
+
+        do {
+            let (data, _) = try await URLSession.shared.data(for: req)
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let profile = json["profile"] as? [String: Any] else { return }
+            let premium = profile["premium"] as? [String: Any]
+            isPremiumFromGrant = (premium?["granted"] as? Bool) == true
+        } catch {
+            #if DEBUG
+            print("[AuthService] ensureUserProfile failed: \(error.localizedDescription)")
+            #endif
+        }
     }
 
     // MARK: - Admin claim

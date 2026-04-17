@@ -591,6 +591,309 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         return res.status(200).json({ success: true });
       }
 
+      // ---- USER PROFILE SYNC (called by client on sign-in / bootstrap) ----
+      case "ensureUserProfile": {
+        // Anonymous users don't get a profile doc — only real signed-in users.
+        if (auth.isLegacy) {
+          return res.status(200).json({ synced: false, reason: "legacy" });
+        }
+        let authUser;
+        try {
+          authUser = await admin.auth().getUser(auth.uid);
+        } catch (e) {
+          return res.status(500).json({ error: "Could not read auth user: " + e.message });
+        }
+        // Skip fully-anonymous users
+        if (!authUser.providerData || authUser.providerData.length === 0) {
+          return res.status(200).json({ synced: false, reason: "anonymous" });
+        }
+
+        const email = authUser.email || authUser.providerData[0]?.email || "";
+        const name = authUser.displayName || "";
+        const now = admin.firestore.FieldValue.serverTimestamp();
+        const isAdmin = authUser.customClaims?.admin === true;
+
+        const userRef = db.collection("users").doc(auth.uid);
+        const existing = await userRef.get();
+
+        if (existing.exists) {
+          // Update denormalized fields that can change
+          await userRef.update({
+            email,
+            emailLower: email.toLowerCase(),
+            name,
+            nameLower: name.toLowerCase(),
+            isAdmin,
+            lastSyncedAt: now,
+          });
+        } else {
+          await userRef.set({
+            email,
+            emailLower: email.toLowerCase(),
+            name,
+            nameLower: name.toLowerCase(),
+            createdAt: now,
+            lastSyncedAt: now,
+            isAdmin,
+            premium: {
+              granted: false,
+            },
+          });
+        }
+        const final = await userRef.get();
+        const f = final.data() || {};
+        const profile = {
+          ...f,
+          createdAt: f.createdAt?.toDate?.()?.toISOString() || null,
+          lastSyncedAt: f.lastSyncedAt?.toDate?.()?.toISOString() || null,
+          premium: f.premium ? {
+            ...f.premium,
+            grantedAt: f.premium.grantedAt?.toDate?.()?.toISOString() || null,
+            revokedAt: f.premium.revokedAt?.toDate?.()?.toISOString() || null,
+          } : null,
+        };
+        return res.status(200).json({ synced: true, created: !existing.exists, profile });
+      }
+
+      // ---- ADMIN: USER MANAGEMENT ----
+      case "listUsers": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const filter = req.body.filter || "all"; // all | premium | admin | recent
+        const searchRaw = (req.body.search || "").trim().toLowerCase();
+        const hardLimit = Math.min(req.body.limit || 500, 1000);
+
+        let query = db.collection("users");
+        switch (filter) {
+          case "premium":
+            query = query.where("premium.granted", "==", true);
+            break;
+          case "admin":
+            query = query.where("isAdmin", "==", true);
+            break;
+          case "recent":
+            // Sort by lastSyncedAt instead of createdAt
+            query = query.orderBy("lastSyncedAt", "desc");
+            break;
+          case "all":
+          default:
+            query = query.orderBy("createdAt", "desc");
+            break;
+        }
+        // 'premium' and 'admin' filter also sort by createdAt
+        if (filter === "premium" || filter === "admin") {
+          query = query.orderBy("createdAt", "desc");
+        }
+        query = query.limit(hardLimit);
+
+        const snap = await query.get();
+        let users = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+          lastSyncedAt: doc.data().lastSyncedAt?.toDate?.()?.toISOString() || null,
+        }));
+
+        // Substring search — applied post-query for simplicity
+        if (searchRaw.length > 0) {
+          users = users.filter((u) =>
+            (u.emailLower || "").includes(searchRaw) ||
+            (u.nameLower || "").includes(searchRaw) ||
+            (u.id || "").toLowerCase().includes(searchRaw)
+          );
+        }
+
+        return res.status(200).json({ users, total: users.length });
+      }
+
+      case "getUserDetail": {
+        if (!isAdminAuth(auth)) {
+          return res.status(200).json({ error: "Admin required" });
+        }
+        const { targetUid } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+
+        // Pull live Auth data
+        let authUser;
+        try {
+          authUser = await admin.auth().getUser(targetUid);
+        } catch (e) {
+          return res.status(404).json({ error: "User not found: " + e.message });
+        }
+        const authData = {
+          uid: authUser.uid,
+          email: authUser.email || null,
+          displayName: authUser.displayName || null,
+          emailVerified: authUser.emailVerified,
+          disabled: authUser.disabled,
+          providerIds: authUser.providerData.map((p) => p.providerId),
+          creationTime: authUser.metadata.creationTime,
+          lastSignInTime: authUser.metadata.lastSignInTime,
+          customClaims: authUser.customClaims || {},
+        };
+
+        // Pull Firestore profile
+        const docSnap = await db.collection("users").doc(targetUid).get();
+        const profile = docSnap.exists ? {
+          ...docSnap.data(),
+          createdAt: docSnap.data().createdAt?.toDate?.()?.toISOString() || null,
+          lastSyncedAt: docSnap.data().lastSyncedAt?.toDate?.()?.toISOString() || null,
+          premium: docSnap.data().premium ? {
+            ...docSnap.data().premium,
+            grantedAt: docSnap.data().premium.grantedAt?.toDate?.()?.toISOString() || null,
+            revokedAt: docSnap.data().premium.revokedAt?.toDate?.()?.toISOString() || null,
+          } : null,
+        } : null;
+
+        // Count their content
+        const [prayers, testimonies] = await Promise.all([
+          db.collection("communityPrayers").where("authorId", "==", targetUid).count().get(),
+          db.collection("communityTestimonies").where("authorId", "==", targetUid).count().get(),
+        ]);
+
+        return res.status(200).json({
+          auth: authData,
+          profile,
+          stats: {
+            prayersPosted: prayers.data().count,
+            testimoniesPosted: testimonies.data().count,
+          },
+        });
+      }
+
+      case "grantPremium": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { targetUid, reason } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+
+        await db.collection("users").doc(targetUid).set({
+          premium: {
+            granted: true,
+            grantedAt: admin.firestore.FieldValue.serverTimestamp(),
+            grantedBy: auth.uid,
+            reason: (reason || "").trim() || "No reason provided",
+            revokedAt: null,
+            revokedBy: null,
+          },
+        }, { merge: true });
+
+        return res.status(200).json({ success: true });
+      }
+
+      case "revokePremium": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { targetUid } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+
+        await db.collection("users").doc(targetUid).set({
+          premium: {
+            granted: false,
+            revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+            revokedBy: auth.uid,
+          },
+        }, { merge: true });
+
+        return res.status(200).json({ success: true });
+      }
+
+      case "grantAdminClaim": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { targetUid } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+
+        let target;
+        try {
+          target = await admin.auth().getUser(targetUid);
+        } catch (e) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        const existing = target.customClaims || {};
+        await admin.auth().setCustomUserClaims(targetUid, { ...existing, admin: true });
+        // Mirror to Firestore for query-ability
+        await db.collection("users").doc(targetUid).set({
+          isAdmin: true,
+          adminGrantedAt: admin.firestore.FieldValue.serverTimestamp(),
+          adminGrantedBy: auth.uid,
+        }, { merge: true });
+
+        return res.status(200).json({ success: true });
+      }
+
+      case "revokeAdminClaim": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { targetUid } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+
+        // Self-revoke guard — admin cannot revoke their own claim (soft lockout protection)
+        if (targetUid === auth.uid) {
+          return res.status(400).json({ error: "Cannot revoke your own admin claim" });
+        }
+
+        let target;
+        try {
+          target = await admin.auth().getUser(targetUid);
+        } catch (e) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        const existing = target.customClaims || {};
+        delete existing.admin;
+        await admin.auth().setCustomUserClaims(targetUid, existing);
+        await db.collection("users").doc(targetUid).set({
+          isAdmin: false,
+          adminRevokedAt: admin.firestore.FieldValue.serverTimestamp(),
+          adminRevokedBy: auth.uid,
+        }, { merge: true });
+
+        return res.status(200).json({ success: true });
+      }
+
+      case "deleteUser": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { targetUid } = req.body;
+        if (!targetUid) return res.status(400).json({ error: "targetUid required" });
+        if (targetUid === auth.uid) {
+          return res.status(400).json({ error: "Cannot delete yourself" });
+        }
+
+        // 1. Delete community content (prayers, testimonies, reports by author)
+        const delBatch = db.batch();
+        const [prayerSnap, testimonySnap, reportSnap] = await Promise.all([
+          db.collection("communityPrayers").where("authorId", "==", targetUid).get(),
+          db.collection("communityTestimonies").where("authorId", "==", targetUid).get(),
+          db.collection("communityReports").where("reportedBy", "==", targetUid).get(),
+        ]);
+        [...prayerSnap.docs, ...testimonySnap.docs, ...reportSnap.docs].forEach((d) => delBatch.delete(d.ref));
+
+        // 2. Delete user profile doc
+        delBatch.delete(db.collection("users").doc(targetUid));
+
+        await delBatch.commit();
+
+        // 3. Delete Firebase Auth user
+        try {
+          await admin.auth().deleteUser(targetUid);
+        } catch (e) {
+          // Non-fatal — Firestore is clean, orphan auth user can be hand-cleaned if this fails
+          console.warn("Failed to delete auth user " + targetUid + ": " + e.message);
+          return res.status(200).json({ success: true, authDeletionFailed: true, warning: e.message });
+        }
+
+        return res.status(200).json({ success: true });
+      }
+
       default:
         return res.status(400).json({ error: `Unknown action: ${action}` });
     }

@@ -230,6 +230,61 @@ final class CommunityService {
         return result?.success == true
     }
 
+    // MARK: - User Management (admin)
+
+    func listUsers(filter: String) async -> [UserListItem]? {
+        guard let result: UserListResponse = await callCommunity(
+            action: "listUsers", extra: ["filter": filter, "limit": 500]
+        ) else { return nil }
+        return result.users
+    }
+
+    func getUserDetail(targetUid: String) async -> UserDetail? {
+        return await callCommunity(
+            action: "getUserDetail", extra: ["targetUid": targetUid]
+        )
+    }
+
+    @discardableResult
+    func grantPremium(targetUid: String, reason: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "grantPremium", extra: ["targetUid": targetUid, "reason": reason]
+        )
+        return result?.success == true
+    }
+
+    @discardableResult
+    func revokePremium(targetUid: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "revokePremium", extra: ["targetUid": targetUid]
+        )
+        return result?.success == true
+    }
+
+    @discardableResult
+    func grantAdminClaim(targetUid: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "grantAdminClaim", extra: ["targetUid": targetUid]
+        )
+        return result?.success == true
+    }
+
+    @discardableResult
+    func revokeAdminClaim(targetUid: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "revokeAdminClaim", extra: ["targetUid": targetUid]
+        )
+        return result?.success == true
+    }
+
+    @discardableResult
+    func deleteUser(targetUid: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "deleteUser", extra: ["targetUid": targetUid]
+        )
+        return result?.success == true
+    }
+
     // MARK: - Network
 
     private func callCommunity<T: Decodable>(action: String, extra: [String: Any] = [:]) async -> T? {
@@ -348,3 +403,62 @@ private struct TestimonyResponse: Codable {
 private struct SuccessResponse: Codable {
     let success: Bool
 }
+
+
+// MARK: - User Management Models
+
+struct UserListItem: Codable, Identifiable {
+    let id: String
+    let email: String?
+    let name: String?
+    let isAdmin: Bool?
+    let createdAt: String?
+    let lastSyncedAt: String?
+    let premium: PremiumInfo?
+}
+
+struct UserListResponse: Codable {
+    let users: [UserListItem]
+    let total: Int?
+}
+
+struct UserDetail: Codable {
+    let auth: AuthInfo
+    let profile: UserProfileDoc?
+    let stats: UserStats
+
+    struct AuthInfo: Codable {
+        let uid: String
+        let email: String?
+        let displayName: String?
+        let emailVerified: Bool
+        let disabled: Bool
+        let providerIds: [String]
+        let creationTime: String?
+        let lastSignInTime: String?
+    }
+
+    struct UserStats: Codable {
+        let prayersPosted: Int
+        let testimoniesPosted: Int
+    }
+}
+
+struct UserProfileDoc: Codable {
+    let email: String?
+    let name: String?
+    let isAdmin: Bool?
+    let createdAt: String?
+    let lastSyncedAt: String?
+    let premium: PremiumInfo?
+}
+
+struct PremiumInfo: Codable {
+    let granted: Bool
+    let grantedAt: String?
+    let grantedBy: String?
+    let reason: String?
+    let revokedAt: String?
+    let revokedBy: String?
+}
+

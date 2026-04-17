@@ -345,11 +345,11 @@ struct SettingsView: View {
                 // About
                 // MARK: - Admin Moderation (visible only to admins)
                 if AuthService.shared.isAdmin {
-                    Section("Moderation") {
+                    Section("Admin") {
                         NavigationLink {
-                            AdminModerationView()
+                            AdminPanelView()
                         } label: {
-                            Label("Testimony Queue", systemImage: "shield.lefthalf.filled")
+                            Label("Admin Panel", systemImage: "shield.lefthalf.filled")
                         }
                     }
                 }
