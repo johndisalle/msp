@@ -24,7 +24,7 @@
 <body>
     <div class="container">
         <h1>Privacy Policy</h1>
-        <p class="subtitle">Last updated: April 9, 2026</p>
+        <p class="subtitle">Last updated: April 17, 2026</p>
 
         <h2>1. Introduction</h2>
         <p>AbideJourney ("the App") is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your choices regarding your data. This policy applies to the AbideJourney iOS application and its associated server services.</p>
@@ -51,7 +51,7 @@
             <li>The text of your prayer request or testimony</li>
             <li>The display name you provide (or "Anonymous" if you choose)</li>
             <li>The category you select</li>
-            <li>A device identifier used to associate your submissions (not your Apple ID or personal identity)</li>
+            <li>A unique account identifier (Firebase user ID) associated with your sign-in. For users who have not signed in with Apple or email, this is an anonymous identifier created by Firebase Authentication on first launch and is not linked to your Apple ID or personal identity unless you choose to sign in.</li>
             <li>A timestamp of when the post was submitted</li>
             <li>Prayer count (how many users have prayed for a request)</li>
         </ul>
@@ -60,26 +60,26 @@
         <h3>Community Reports &amp; Moderation Data</h3>
         <p>When you report a community post, the following is recorded:</p>
         <ul>
-            <li>Your device identifier (to prevent duplicate reports)</li>
+            <li>Your account identifier (Firebase user ID, anonymous or signed-in) to prevent duplicate reports</li>
             <li>The report reason you selected (Inappropriate, Spam, or Harmful)</li>
             <li>The identifier of the reported post</li>
         </ul>
         <p>When you block a user, the blocked user's device identifier is stored locally on your device. Block lists are not transmitted to our servers.</p>
 
         <h3>Custom AI Journey Generation</h3>
-        <p>When you create a custom journey, the description you provide is sent to our server, which forwards it to an AI service (Anthropic Claude API) to generate personalized devotional content. For rate limiting and abuse prevention, we log a truncated summary of your description (first 100 characters), along with the journey theme, title, your device identifier, and a timestamp. This log is stored in our database (Google Cloud Firestore). The AI-generated journey content is returned to your device and stored locally.</p>
+        <p>When you create a custom journey, the description you provide is sent to our server, which forwards it to an AI service (Anthropic Claude API) to generate personalized devotional content. For rate limiting and abuse prevention, we log a truncated summary of your description (first 100 characters), along with the journey theme, title, your account identifier (Firebase user ID), and a timestamp. This log is stored in our database (Google Cloud Firestore). The AI-generated journey content is returned to your device and stored locally.</p>
 
         <h3>Listen Mode (AI Audio Narration)</h3>
         <p>When you use Listen Mode, the text of the day's devotional content is sent to our server, which forwards it to a text-to-speech service (ElevenLabs) to generate audio narration. The audio is returned to your device and cached locally. We do not store the text or audio on our servers after delivery.</p>
 
-        <h3>Device Identifier &amp; Rate Limiting</h3>
-        <p>We use your device's vendor identifier (a non-personal, device-specific ID provided by Apple via <code>identifierForVendor</code>) for the following purposes:</p>
+        <h3>Account Identifier &amp; Rate Limiting</h3>
+        <p>We use a Firebase user identifier (UID) to identify your requests to our servers for the following purposes:</p>
         <ul>
             <li>Rate limiting to prevent abuse of our services</li>
             <li>Associating your community posts for moderation purposes</li>
             <li>Processing account deletion requests</li>
         </ul>
-        <p>This identifier is not linked to your Apple ID, name, email, or any personal information. It changes if you uninstall and reinstall the App. Rate limit records are stored temporarily and automatically expire.</p>
+        <p>If you have not signed in, Firebase Authentication assigns your device an anonymous UID on first launch. This anonymous UID is not linked to your Apple ID, name, email, or any personal information unless you later choose to sign in with Apple or email, at which point it becomes associated with that account. Anonymous UIDs change if you uninstall and reinstall the App. Rate limit records are stored temporarily and automatically expire.</p>
 
         <h3>Referral &amp; Sharing Data</h3>
         <p>If you use the referral feature, a unique referral code is generated and stored locally on your device along with referral counts and credit usage. Referral codes may be shared via deep links (<code>abidejourney://referral?code=...</code>). Similarly, Couples Journey and Gift a Journey invitations use deep links that may contain a partner name, theme selection, or gift message. Deep link data is processed on-device when received and is not stored on our servers.</p>
@@ -99,7 +99,8 @@
             <li>Your email address</li>
             <li>Your name (if provided)</li>
         </ul>
-        <p>Authentication credentials are stored securely in your device's Keychain. Your name and email are stored locally on your device to personalize your profile and are not transmitted to external servers beyond what is required for authentication.</p>
+        <p>Authentication credentials for both Sign in with Apple and Email Sign-In are processed by <strong>Firebase Authentication</strong> (a Google service). Firebase issues your account a unique user identifier (UID) and securely stores your authentication credentials. Your email address and name are also stored locally on your device for personalization. We do not have access to your password — Firebase handles all credential storage and verification on its servers.</p>
+        <p>If you choose not to sign in, Firebase Authentication still assigns your device an anonymous UID for the purposes described above (rate limiting, community post moderation). This anonymous UID is not linked to any personal information.</p>
 
         <h2>5. Location Data</h2>
         <p>The <strong>Find a Church</strong> feature requests your location to search for nearby churches using Apple's MapKit. Your location is:</p>
@@ -150,8 +151,8 @@
             </tr>
             <tr>
                 <td>Google Cloud / Firebase</td>
-                <td>Server hosting, community data storage (Firestore)</td>
-                <td>Community posts, device identifiers, report data</td>
+                <td>Server hosting, community data storage (Firestore), user authentication (Firebase Authentication)</td>
+                <td>Community posts, account identifiers (Firebase UIDs), authentication credentials, report data</td>
             </tr>
             <tr>
                 <td>Anthropic (Claude API)</td>
@@ -249,9 +250,10 @@
         <p>We implement reasonable security measures to protect data transmitted to and stored on our servers, including:</p>
         <ul>
             <li>HTTPS encryption for all server communication</li>
-            <li>Server-side request authentication using shared secrets</li>
+            <li>Server-side request authentication using cryptographically signed Firebase ID tokens, verified on every request</li>
             <li>Rate limiting to prevent abuse</li>
-            <li>Firebase security rules restricting database access</li>
+            <li>Firebase security rules restricting direct database access</li>
+            <li>Custom claims to gate administrative actions to authorized accounts</li>
         </ul>
         <p>However, no method of electronic transmission or storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
 

@@ -325,7 +325,7 @@ struct TestimonyCard: View {
 
                 Spacer()
 
-                if testimony.isFeatured {
+                if testimony.isFeatured == true {
                     Image(systemName: "star.fill")
                         .font(.caption)
                         .foregroundStyle(.yellow)
@@ -936,7 +936,7 @@ private struct CommunityTestimonyCard: View {
 
                 Spacer()
 
-                if testimony.isFeatured {
+                if testimony.isFeatured == true {
                     Image(systemName: "star.fill")
                         .font(.caption)
                         .foregroundStyle(.yellow)

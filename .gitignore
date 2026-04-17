@@ -47,3 +47,4 @@ AbideJourney/Resources/Secrets.xcconfig
 
 *.bak
 *.bak_*
+.migration-backup/

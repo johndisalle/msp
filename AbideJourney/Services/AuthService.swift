@@ -43,6 +43,10 @@ final class AuthService {
     private(set) var userFullName: String?
     private(set) var appleUserID: String?   // Apple's `sub` — kept for credentialState checks
 
+    /// Admin status derived from Firebase custom claim.
+    /// Refreshed in bootstrap() and after each sign-in mutation.
+    private(set) var isAdmin = false
+
     // MARK: - Keychain keys (legacy + ancillary)
 
     private let userIDKey = "appleUserID"
@@ -86,6 +90,7 @@ final class AuthService {
                 }
             }
             await refreshAppleCredentialIfNeeded()
+            await refreshAdminClaim()
             return
         }
 
@@ -107,6 +112,7 @@ final class AuthService {
             #endif
             hasFirebaseUser = false
         }
+        await refreshAdminClaim()
     }
 
     // MARK: - Apple Sign-In request prep
@@ -190,6 +196,7 @@ final class AuthService {
             }
 
             currentNonce = nil
+            await refreshAdminClaim()
         }
     }
 
@@ -234,6 +241,7 @@ final class AuthService {
         KeychainHelper.save(key: authMethodKey, value: AuthMethod.firebaseEmail.rawValue)
         KeychainHelper.save(key: emailKey, value: trimmedEmail)
         KeychainHelper.save(key: nameKey, value: trimmedName)
+        await refreshAdminClaim()
     }
 
     // MARK: - Firebase Email/Password Sign In
@@ -269,6 +277,7 @@ final class AuthService {
                 throw AuthError.wrongPassword
             }
         }
+        await refreshAdminClaim()
     }
 
     /// Legacy Keychain SHA256 sign-in. Kept alive for users who created accounts
@@ -321,6 +330,7 @@ final class AuthService {
         isSignedIn = false
         uid = nil
         hasFirebaseUser = false
+        isAdmin = false
 
         KeychainHelper.delete(key: userIDKey)
         KeychainHelper.delete(key: authMethodKey)
@@ -329,6 +339,26 @@ final class AuthService {
 
         // Re-bootstrap so community features keep working.
         Task { await bootstrap() }
+    }
+
+    // MARK: - Admin claim
+
+    /// Reads the Firebase custom `admin` claim from the current user's ID token.
+    /// Force-refresh by default so claims granted since the last token issue are picked up.
+    func refreshAdminClaim(forceRefresh: Bool = true) async {
+        guard let user = Auth.auth().currentUser else {
+            isAdmin = false
+            return
+        }
+        do {
+            let result = try await user.getIDTokenResult(forcingRefresh: forceRefresh)
+            isAdmin = (result.claims["admin"] as? Bool) == true
+        } catch {
+            #if DEBUG
+            print("[AuthService] refreshAdminClaim failed: \(error.localizedDescription)")
+            #endif
+            // Don't flip isAdmin on transient errors — keep last known value.
+        }
     }
 
     // MARK: - Apple credential refresh

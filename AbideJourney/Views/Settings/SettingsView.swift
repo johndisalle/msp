@@ -343,6 +343,17 @@ struct SettingsView: View {
                 }
 
                 // About
+                // MARK: - Admin Moderation (visible only to admins)
+                if AuthService.shared.isAdmin {
+                    Section("Moderation") {
+                        NavigationLink {
+                            AdminModerationView()
+                        } label: {
+                            Label("Testimony Queue", systemImage: "shield.lefthalf.filled")
+                        }
+                    }
+                }
+
                 Section("About") {
                     Button {
                         showingWelcomeGuide = true

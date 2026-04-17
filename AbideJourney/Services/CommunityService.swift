@@ -12,6 +12,8 @@ final class CommunityService {
     var communityTestimonies: [CommunityTestimony] = []
     var isLoadingPrayers = false
     var isLoadingTestimonies = false
+    var pendingTestimonies: [CommunityTestimony] = []
+    var flaggedTestimonies: [CommunityTestimony] = []
     var prayedPrayerIDs: Set<String> = []
     var prayedTestimonyIDs: Set<String> = []
     var blockedUserIDs: Set<String> = []
@@ -187,6 +189,47 @@ final class CommunityService {
         prayedTestimonyIDs.contains(id)
     }
 
+    // MARK: - Admin Moderation
+
+    func loadPendingTestimonies() async {
+        guard let result: TestimonyResponse = await callCommunity(
+            action: "getPendingTestimonies", extra: ["limit": 50]
+        ) else { return }
+        pendingTestimonies = result.testimonies
+    }
+
+    func loadFlaggedTestimonies() async {
+        guard let result: TestimonyResponse = await callCommunity(
+            action: "getFlaggedTestimonies", extra: ["limit": 50]
+        ) else { return }
+        flaggedTestimonies = result.testimonies
+    }
+
+    @discardableResult
+    func approveTestimony(id: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "approveTestimony", extra: ["testimonyId": id]
+        )
+        if result?.success == true {
+            pendingTestimonies.removeAll { $0.id == id }
+            flaggedTestimonies.removeAll { $0.id == id }
+        }
+        return result?.success == true
+    }
+
+    @discardableResult
+    func deleteTestimonyAsAdmin(id: String) async -> Bool {
+        let result: SuccessResponse? = await callCommunity(
+            action: "deleteTestimonyAdmin", extra: ["testimonyId": id]
+        )
+        if result?.success == true {
+            pendingTestimonies.removeAll { $0.id == id }
+            flaggedTestimonies.removeAll { $0.id == id }
+            communityTestimonies.removeAll { $0.id == id }
+        }
+        return result?.success == true
+    }
+
     // MARK: - Network
 
     private func callCommunity<T: Decodable>(action: String, extra: [String: Any] = [:]) async -> T? {
@@ -276,8 +319,9 @@ struct CommunityTestimony: Codable, Identifiable {
     let journeyTheme: String?
     let dayCount: Int?
     var prayerCount: Int
-    let isApproved: Bool
-    let isFeatured: Bool
+    let isApproved: Bool?
+    let isFeatured: Bool?
+    let status: String?
     let createdAt: String?
 
     var relativeDate: String {

@@ -20,9 +20,9 @@ const elevenLabsMaleVoice = defineString("ELEVENLABS_MALE_VOICE_ID");
 // ============================================================
 // Auth: dual-path resolver
 // ============================================================
-// Returns { uid, isLegacy } or null.
-//   - Authorization: Bearer <Firebase ID token>  → real uid
-//   - X-App-Secret + body.deviceId  → legacy_<deviceId> (transition path)
+// Returns { uid, isLegacy, isAdmin } or null.
+//   - Authorization: Bearer <Firebase ID token>  → real uid (+admin claim if granted)
+//   - X-App-Secret + body.deviceId  → legacy_<deviceId> (never admin)
 //
 // Once your new app build hits saturation, delete the legacy branch.
 // ============================================================
@@ -33,7 +33,11 @@ async function resolveUserId(req) {
     const token = auth.slice(7).trim();
     try {
       const decoded = await admin.auth().verifyIdToken(token);
-      return { uid: decoded.uid, isLegacy: false };
+      return {
+        uid: decoded.uid,
+        isLegacy: false,
+        isAdmin: decoded.admin === true,
+      };
     } catch (e) {
       console.warn("verifyIdToken failed:", e.message);
       return null;
@@ -44,9 +48,15 @@ async function resolveUserId(req) {
   const secret = req.headers["x-app-secret"] || req.body?.appSecret;
   const deviceId = req.body?.deviceId;
   if (secret && secret === appSecret.value() && deviceId) {
-    return { uid: `legacy_${deviceId}`, isLegacy: true };
+    return { uid: `legacy_${deviceId}`, isLegacy: true, isAdmin: false };
   }
   return null;
+}
+
+// Returns true if the resolved auth has admin custom claim.
+// Legacy-path users can never be admin.
+function isAdminAuth(auth) {
+  return Boolean(auth && !auth.isLegacy && auth.isAdmin);
 }
 
 // ============================================================
@@ -393,7 +403,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         const tLimit = Math.min(req.body.limit || 50, 100);
         const tSnapshot = await db
           .collection("communityTestimonies")
-          .where("isRemoved", "!=", true)
+          .where("status", "==", "approved")
           .orderBy("createdAt", "desc")
           .limit(tLimit)
           .get();
@@ -426,8 +436,7 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
           journeyTheme: journeyTheme || "",
           dayCount: dayCount || 40,
           prayerCount: 0,
-          // NOTE: Once admin panel ships, default to false and require admin approval.
-          isApproved: true,
+          status: "pending",   // admin must approve before public visibility
           isFeatured: false,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
@@ -477,8 +486,80 @@ exports.communityHTTP = functions.https.onRequest(async (req, res) => {
         const tReportCount = (await db.collection("communityReports")
           .where("contentId", "==", testimonyId).get()).size;
         if (tReportCount >= 3) {
-          await db.collection("communityTestimonies").doc(testimonyId).update({ isRemoved: true });
+          // Flip to flagged so admin can re-review (don't delete — admin needs context).
+          await db.collection("communityTestimonies").doc(testimonyId).update({ status: "flagged" });
         }
+        return res.status(200).json({ success: true });
+      }
+
+      // ---- ADMIN-ONLY ACTIONS ----
+      case "getPendingTestimonies": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const aLimit = Math.min(req.body.limit || 50, 100);
+        const aSnap = await db
+          .collection("communityTestimonies")
+          .where("status", "==", "pending")
+          .orderBy("createdAt", "desc")
+          .limit(aLimit)
+          .get();
+        const items = aSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+        }));
+        return res.status(200).json({ testimonies: items });
+      }
+
+      case "getFlaggedTestimonies": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const fLimit = Math.min(req.body.limit || 50, 100);
+        const fSnap = await db
+          .collection("communityTestimonies")
+          .where("status", "==", "flagged")
+          .orderBy("createdAt", "desc")
+          .limit(fLimit)
+          .get();
+        const items = fSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+        }));
+        return res.status(200).json({ testimonies: items });
+      }
+
+      case "approveTestimony": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { testimonyId: appId } = req.body;
+        if (!appId) return res.status(400).json({ error: "testimonyId required." });
+        await db.collection("communityTestimonies").doc(appId).update({
+          status: "approved",
+          approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+          approvedBy: auth.uid,
+        });
+        return res.status(200).json({ success: true });
+      }
+
+      case "deleteTestimonyAdmin": {
+        if (!isAdminAuth(auth)) {
+          return res.status(403).json({ error: "Admin required" });
+        }
+        const { testimonyId: delId } = req.body;
+        if (!delId) return res.status(400).json({ error: "testimonyId required." });
+        const dBatch = db.batch();
+        dBatch.delete(db.collection("communityTestimonies").doc(delId));
+        // Clean up any reports for this testimony
+        const reportSnap = await db.collection("communityReports")
+          .where("contentId", "==", delId)
+          .where("type", "==", "testimony")
+          .get();
+        reportSnap.docs.forEach((d) => dBatch.delete(d.ref));
+        await dBatch.commit();
         return res.status(200).json({ success: true });
       }
 
