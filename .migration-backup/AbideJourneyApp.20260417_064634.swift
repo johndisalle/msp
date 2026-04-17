@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
 import UserNotifications
-import FirebaseCore
 
 // MARK: - Appearance Mode
 
@@ -36,8 +35,6 @@ struct AbideJourneyApp: App {
     @AppStorage("appColorTheme") private var appColorTheme: AppColorTheme = .classic
 
     init() {
-        FirebaseApp.configure()
-
         // Initialize analytics
         Analytics.configure()
 
@@ -78,7 +75,6 @@ struct AbideJourneyApp: App {
                         DeepLinkService.shared.handleURL(url)
                     }
                     .task {
-                        await AuthService.shared.bootstrap()
                         await restorePremiumStatusIfNeeded(container: modelContainer)
                         await refreshNotificationSchedule(container: modelContainer)
                     }

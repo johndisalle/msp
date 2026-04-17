@@ -142,10 +142,13 @@ final class DailyExperienceViewModel {
 
         // Haptic feedback for completion
         UINotificationFeedbackGenerator().notificationOccurred(.success)
-        showConfetti = true
 
-        // Check for milestone celebration
-        if MilestoneCelebrationView.milestoneDays.contains(day.dayNumber) {
+        // FIX UX: reserve confetti for milestones so each celebration
+        // stays meaningful. Previously it fired on every day completion.
+        let isMilestone = MilestoneCelebrationView.milestoneDays.contains(day.dayNumber)
+            || day.dayNumber >= journey.totalDays
+        if isMilestone {
+            showConfetti = true
             milestoneDay = day.dayNumber
         }
 

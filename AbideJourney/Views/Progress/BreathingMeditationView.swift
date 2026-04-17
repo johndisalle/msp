@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Breathing Session Model
 
@@ -135,9 +136,13 @@ enum BreathingLibrary {
 struct BreathingMeditationView: View {
     @State private var selectedSession: BreathingSession?
     @State private var showingPremiumPaywall = false
+    @Query private var profiles: [UserProfile]
 
+    // FIX: read premium from the same SwiftData source as the rest of
+    // the app. The old UserDefaults key "isPremiumUser" was never set,
+    // so paying users saw all 6 premium Breathe sessions as locked.
     private var isPremium: Bool {
-        UserDefaults.standard.bool(forKey: "isPremiumUser")
+        profiles.first?.isPremium ?? false
     }
 
     var body: some View {

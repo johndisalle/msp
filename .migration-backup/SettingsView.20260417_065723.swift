@@ -112,7 +112,7 @@ struct SettingsView: View {
                             }
                         } else {
                             SignInWithAppleButton(.signIn, onRequest: { request in
-                                AuthService.shared.prepareAppleRequest(request)
+                                request.requestedScopes = [.fullName, .email]
                             }, onCompletion: { result in
                                 handleSignIn(result, profile: profile)
                             })
@@ -438,20 +438,18 @@ struct SettingsView: View {
     }
 
     private func handleSignIn(_ result: Result<ASAuthorization, Error>, profile: UserProfile) {
-        Task {
-            do {
-                try await AuthService.shared.handleAuthorization(result)
-                profile.appleUserID = AuthService.shared.appleUserID
-                if let email = AuthService.shared.userEmail {
-                    profile.email = email
-                }
-                if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
-                    profile.name = fullName
-                }
-                try? modelContext.save()
-            } catch {
-                // User cancelled or auth failed — no action needed
+        do {
+            try AuthService.shared.handleAuthorization(result)
+            profile.appleUserID = AuthService.shared.appleUserID
+            if let email = AuthService.shared.userEmail {
+                profile.email = email
             }
+            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                profile.name = fullName
+            }
+            try? modelContext.save()
+        } catch {
+            // User cancelled or auth failed — no action needed
         }
     }
 

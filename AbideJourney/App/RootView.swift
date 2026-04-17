@@ -59,9 +59,6 @@ struct RootView: View {
                 }
             }
         }
-        .task {
-            await AuthService.shared.checkCredentialState()
-        }
     }
 }
 

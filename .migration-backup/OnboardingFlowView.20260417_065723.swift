@@ -108,7 +108,7 @@ struct WelcomeStepView: View {
             VStack(spacing: 12) {
                 // Sign in with Apple
                 SignInWithAppleButton(.signUp, onRequest: { request in
-                    AuthService.shared.prepareAppleRequest(request)
+                    request.requestedScopes = [.fullName, .email]
                 }, onCompletion: { result in
                     handleAppleSignIn(result)
                 })
@@ -188,18 +188,16 @@ struct WelcomeStepView: View {
     }
 
     private func handleAppleSignIn(_ result: Result<ASAuthorization, Error>) {
-        Task {
-            do {
-                try await AuthService.shared.handleAuthorization(result)
-                if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
-                    viewModel.userName = fullName
-                }
-                viewModel.nextStep()
-            } catch let error as ASAuthorizationError where error.code == .canceled {
-                // User cancelled
-            } catch {
-                authError = error.localizedDescription
+        do {
+            try AuthService.shared.handleAuthorization(result)
+            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                viewModel.userName = fullName
             }
+            viewModel.nextStep()
+        } catch let error as ASAuthorizationError where error.code == .canceled {
+            // User cancelled
+        } catch {
+            authError = error.localizedDescription
         }
     }
 
@@ -349,15 +347,13 @@ struct EmailSignUpSheet: View {
             return
         }
 
-        Task {
-            do {
-                try await AuthService.shared.signUp(name: name, email: email, password: password)
-                viewModel.userName = name
-                dismiss()
-                viewModel.nextStep()
-            } catch {
-                sheetError = error.localizedDescription
-            }
+        do {
+            try AuthService.shared.signUp(name: name, email: email, password: password)
+            viewModel.userName = name
+            dismiss()
+            viewModel.nextStep()
+        } catch {
+            sheetError = error.localizedDescription
         }
     }
 }
@@ -451,21 +447,19 @@ struct EmailSignInSheet: View {
 
                     // Apple sign in option
                     SignInWithAppleButton(.signIn, onRequest: { request in
-                        AuthService.shared.prepareAppleRequest(request)
+                        request.requestedScopes = [.fullName, .email]
                     }, onCompletion: { result in
-                        Task {
-                            do {
-                                try await AuthService.shared.handleAuthorization(result)
-                                if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
-                                    viewModel.userName = fullName
-                                }
-                                dismiss()
-                                viewModel.nextStep()
-                            } catch let error as ASAuthorizationError where error.code == .canceled {
-                                // cancelled
-                            } catch {
-                                sheetError = error.localizedDescription
+                        do {
+                            try AuthService.shared.handleAuthorization(result)
+                            if let fullName = AuthService.shared.userFullName, !fullName.isEmpty {
+                                viewModel.userName = fullName
                             }
+                            dismiss()
+                            viewModel.nextStep()
+                        } catch let error as ASAuthorizationError where error.code == .canceled {
+                            // cancelled
+                        } catch {
+                            sheetError = error.localizedDescription
                         }
                     })
                     .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
@@ -494,17 +488,15 @@ struct EmailSignInSheet: View {
 
     private func signIn() {
         sheetError = nil
-        Task {
-            do {
-                try await AuthService.shared.signIn(email: email, password: password)
-                if let name = AuthService.shared.userFullName {
-                    viewModel.userName = name
-                }
-                dismiss()
-                viewModel.nextStep()
-            } catch {
-                sheetError = error.localizedDescription
+        do {
+            try AuthService.shared.signIn(email: email, password: password)
+            if let name = AuthService.shared.userFullName {
+                viewModel.userName = name
             }
+            dismiss()
+            viewModel.nextStep()
+        } catch {
+            sheetError = error.localizedDescription
         }
     }
 }

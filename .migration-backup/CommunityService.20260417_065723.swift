@@ -190,31 +190,28 @@ final class CommunityService {
     // MARK: - Network
 
     private func callCommunity<T: Decodable>(action: String, extra: [String: Any] = [:]) async -> T? {
-        guard let base = baseURL else { return nil }
+        guard let base = baseURL, let secret = appSecret, !secret.isEmpty else { return nil }
         guard let url = URL(string: "\(base)/communityHTTP") else { return nil }
 
-        var body: [String: Any] = ["action": action]
-        for (key, value) in extra { body[key] = value }
+        var body: [String: Any] = [
+            "action": action,
+            "deviceId": deviceId,
+            "appSecret": secret,
+        ]
+        for (key, value) in extra {
+            body[key] = value
+        }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
         request.timeoutInterval = 15
-
-        // New auth: Firebase ID token
-        if let token = await AuthService.shared.currentIDToken() {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-
-        // Legacy fallback for transition window — remove after server-side legacy path is dropped.
-        if let secret = appSecret, !secret.isEmpty {
-            request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
-            body["deviceId"] = deviceId
-        }
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
             let (data, response) = try await URLSession.shared.data(for: request)
+
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 #if DEBUG
                 let errorBody = String(data: data.prefix(200), encoding: .utf8) ?? ""
@@ -222,6 +219,7 @@ final class CommunityService {
                 #endif
                 return nil
             }
+
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             #if DEBUG

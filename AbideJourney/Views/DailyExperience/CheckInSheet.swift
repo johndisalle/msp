@@ -12,7 +12,7 @@ struct CheckInSheet: View {
             VStack(spacing: 32) {
                 Spacer()
 
-                Text("How did today's step go?")
+                Text("How was your walk today?")
                     .font(AJTheme.headlineFont)
                     .foregroundColor(AJTheme.primaryText)
 
@@ -45,7 +45,7 @@ struct CheckInSheet: View {
                     }
                 }
 
-                TextField("Add a note (optional)", text: $note, axis: .vertical)
+                TextField("What's on your heart? (optional)", text: $note, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .lineLimit(3...6)
                     .padding(.horizontal, 32)
@@ -70,11 +70,11 @@ struct CheckInSheet: View {
                 .padding(.bottom, 32)
             }
             .ajScreenBackground()
-            .navigationTitle("Evening Check-In")
+            .navigationTitle("End of Day")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Skip") { dismiss() }
+                    Button("Not Now") { dismiss() }
                 }
             }
         }

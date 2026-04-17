@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C28819C2F91BC4600102B30 /* JournalDraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28819B2F91BC4600102B30 /* JournalDraftStore.swift */; };
+		8C28819E2F91C45400102B30 /* GreetingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28819D2F91C45400102B30 /* GreetingService.swift */; };
+		8C2881A02F91C47300102B30 /* AdaptationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28819F2F91C47300102B30 /* AdaptationBannerView.swift */; };
+		8C2881AC2F9253C300102B30 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8C2881AB2F9253C300102B30 /* FirebaseAuth */; };
 		8C58E3F32F86E423003ACA3A /* SeasonalJourneyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */; };
 		8C58E3F42F86E423003ACA3A /* ChurchFinderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */; };
 		8C58E3F52F86E423003ACA3A /* ReviewPromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */; };
@@ -157,6 +161,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8C28819B2F91BC4600102B30 /* JournalDraftStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalDraftStore.swift; sourceTree = "<group>"; };
+		8C28819D2F91C45400102B30 /* GreetingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingService.swift; sourceTree = "<group>"; };
+		8C28819F2F91C47300102B30 /* AdaptationBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptationBannerView.swift; sourceTree = "<group>"; };
 		8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchFinderService.swift; sourceTree = "<group>"; };
 		8C58E3F12F86E423003ACA3A /* ReviewPromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptService.swift; sourceTree = "<group>"; };
 		8C58E3F22F86E423003ACA3A /* SeasonalJourneyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalJourneyService.swift; sourceTree = "<group>"; };
@@ -320,6 +327,7 @@
 				A1B2C3D4E5F60001000043 /* HealthKit.framework in Frameworks */,
 				A1B2C3D4E5F60001000044 /* ActivityKit.framework in Frameworks */,
 				A1B2C3D4E5F60001000045 /* WidgetKit.framework in Frameworks */,
+				8C2881AC2F9253C300102B30 /* FirebaseAuth in Frameworks */,
 				A1B2C3D4E5F60001000046 /* UserNotifications.framework in Frameworks */,
 				A1B2C3D4E5F60001000047 /* Charts.framework in Frameworks */,
 				A1B2C3D4E5F60001000048 /* WatchConnectivity.framework in Frameworks */,
@@ -427,6 +435,8 @@
 		A1B2C3D4E5F60301000006 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8C28819D2F91C45400102B30 /* GreetingService.swift */,
+				8C28819B2F91BC4600102B30 /* JournalDraftStore.swift */,
 				8C58E3FE2F8712B3003ACA3A /* CommunityService.swift */,
 				8C58E3FC2F8709DB003ACA3A /* AudioNarrationService.swift */,
 				8C58E3F02F86E423003ACA3A /* ChurchFinderService.swift */,
@@ -520,6 +530,7 @@
 		A1B2C3D4E5F60301000010 /* DailyExperience */ = {
 			isa = PBXGroup;
 			children = (
+				8C28819F2F91C47300102B30 /* AdaptationBannerView.swift */,
 				8C58E3F62F86E435003ACA3A /* ListenModeView.swift */,
 				8C58E3F72F86E435003ACA3A /* SeasonalJourneyViews.swift */,
 				A1B2C3D4E5F60101000026 /* CheckInSheet.swift */,
@@ -779,6 +790,7 @@
 			mainGroup = A1B2C3D4E5F60301000001;
 			packageReferences = (
 				8C58E48A2F87F8C4003ACA3A /* XCRemoteSwiftPackageReference "SwiftSDK" */,
+				8C2881AA2F9253C300102B30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = A1B2C3D4E5F60301000021 /* Products */;
 			projectDirPath = "";
@@ -839,6 +851,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C58E3FD2F8709DB003ACA3A /* AudioNarrationService.swift in Sources */,
+				8C28819E2F91C45400102B30 /* GreetingService.swift in Sources */,
 				A1B2C3D4E5F60001000001 /* AbideJourneyApp.swift in Sources */,
 				A1B2C3D4E5F60001000002 /* MainTabView.swift in Sources */,
 				A1B2C3D4E5F60001000003 /* RootView.swift in Sources */,
@@ -854,6 +867,7 @@
 				A1B2C3D4E5F60001000013 /* ContentData.swift in Sources */,
 				A1B2C3D4E5F60001000014 /* ContentLibrary.swift in Sources */,
 				A1B2C3D4E5F60001000016 /* JourneyGenerationService.swift in Sources */,
+				8C2881A02F91C47300102B30 /* AdaptationBannerView.swift in Sources */,
 				A1B2C3D4E5F60001000017 /* LiveActivityService.swift in Sources */,
 				A1B2C3D4E5F60001000018 /* NotificationService.swift in Sources */,
 				A1B2C3D4E5F60001000020 /* StoreKitService.swift in Sources */,
@@ -889,6 +903,7 @@
 				8C58E3FF2F8712B3003ACA3A /* CommunityService.swift in Sources */,
 				A1B2C3D4E5F60001000058 /* ContentThemes_Batch3.swift in Sources */,
 				A1B2C3D4E5F60001000059 /* ContentThemes_Batch4.swift in Sources */,
+				8C28819C2F91BC4600102B30 /* JournalDraftStore.swift in Sources */,
 				A1B2C3D4E5F60001000100 /* WatchSyncService.swift in Sources */,
 				A1B2C3D4E5F60001000101 /* MilestoneCelebrationView.swift in Sources */,
 				A1B2C3D4E5F60001000102 /* FaithMapView.swift in Sources */,
@@ -1399,6 +1414,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8C2881AA2F9253C300102B30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.1;
+			};
+		};
 		8C58E48A2F87F8C4003ACA3A /* XCRemoteSwiftPackageReference "SwiftSDK" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/TelemetryDeck/SwiftSDK";
@@ -1410,6 +1433,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8C2881AB2F9253C300102B30 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C2881AA2F9253C300102B30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
 		8C58E48B2F87F8C4003ACA3A /* TelemetryDeck */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8C58E48A2F87F8C4003ACA3A /* XCRemoteSwiftPackageReference "SwiftSDK" */;

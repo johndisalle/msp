@@ -53,31 +53,26 @@ actor AIJourneyService {
         guard let urlString = cloudFunctionURL,
               !urlString.isEmpty,
               urlString != "YOUR_CLOUD_FUNCTION_URL",
-              let url = URL(string: urlString) else {
+              let url = URL(string: urlString),
+              let secret = appSecret,
+              !secret.isEmpty else {
             return nil
         }
 
-        var body: [String: Any] = [
+        // Unique device ID for rate limiting
+        let deviceId = await UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+
+        let body: [String: Any] = [
             "description": description,
             "theme": "spiritualGrowth",
+            "deviceId": deviceId
         ]
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 120
-
-        // New auth: Firebase ID token
-        if let token = await AuthService.shared.currentIDToken() {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-
-        // Legacy fallback for transition window
-        if let secret = appSecret, !secret.isEmpty {
-            request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
-            let deviceId = await UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
-            body["deviceId"] = deviceId
-        }
+        request.setValue(secret, forHTTPHeaderField: "X-App-Secret")
+        request.timeoutInterval = 120 // AI generation can take a while
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -88,6 +83,7 @@ actor AIJourneyService {
                 return nil
             }
 
+            // HTTP endpoint returns the journey JSON directly
             return try JSONDecoder().decode(AIJourneyPlan.self, from: data)
         } catch {
             return nil

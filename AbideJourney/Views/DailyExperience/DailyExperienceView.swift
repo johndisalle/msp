@@ -151,7 +151,7 @@ struct DailyExperienceView: View {
                                     HStack {
                                         Image(systemName: "checkmark.seal.fill")
                                             .accessibilityHidden(true)
-                                        Text("Complete Day \(day.dayNumber)")
+                                        Text("I’ve Abided — Day \(day.dayNumber)")
                                     }
                                 }
                                 .buttonStyle(AJPrimaryButtonStyle())
